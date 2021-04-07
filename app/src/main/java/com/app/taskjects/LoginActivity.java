@@ -13,4 +13,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_layout);
     }
     //Esto es un comentario
+
+    // Otro comentario de JMD
 }
