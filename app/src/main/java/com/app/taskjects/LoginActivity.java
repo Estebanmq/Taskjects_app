@@ -15,4 +15,6 @@ public class LoginActivity extends AppCompatActivity {
     //Esto es un comentario
 
     // Otro comentario de JMD
+
+    // Tercer comentario
 }
