@@ -57,6 +57,8 @@
 
 
     <!-- TextView recuperacion de contraseña -->
+
+    <!-- Boton de login -->
     <TextView
         android:id="@+id/textViewRecuperarContrasenia"
         android:layout_width="wrap_content"
@@ -69,11 +71,10 @@
         android:text="@string/recuperar_contrasenia"
         android:textColor="#64B5F6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.799"
+        app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContrasenia" />
 
-    <!-- Boton de login -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/containedButton"
         android:layout_width="300dp"
