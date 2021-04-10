@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.taskjects.controladores.ViewPagerController;
 import com.google.android.material.tabs.TabItem;
@@ -15,6 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     TabLayout tabLayoutEmpresaEmpleado;
     TabItem tabItemEmpresa,tabItemEmpleado;
     ViewPager viewPager;
+
 
     //Controlador / Adaptador para asignar a cada pestaña del TabLayout su propio fragment
     ViewPagerController adaptadorViewPager;
@@ -33,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
 
         //Llamada al metodo que se encarga de rellenar cada pestaña del TabLayout con su fragment asignado
         rellenarPestañasTabLayout();
-
 
     }
 

@@ -12,8 +12,8 @@
         android:id="@+id/tabLayoutEmpresaEmpleado"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#90CAF9"
-        app:tabIndicatorColor="#F57F17"
+        android:background="@color/purple_500"
+        app:tabIndicatorColor="@color/white"
         app:tabTextColor="@color/white">
 
         <!-- Tab Empleado -->
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empleado"
-            android:icon="@drawable/ic_empleado_24dp"/>
+            android:icon="@drawable/ic_empleado_24dp" />
 
         <!-- Tab Empresa -->
         <com.google.android.material.tabs.TabItem
