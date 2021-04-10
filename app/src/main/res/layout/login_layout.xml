@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <!-- Inicio Layout de pestañas -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutEmpresaEmpleado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#90CAF9"
+        app:tabIndicatorColor="#F57F17"
+        app:tabTextColor="@color/white">
+
+        <!-- Tab Empleado -->
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItemEmpleado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empleado"
+            android:icon="@drawable/ic_empleado_24dp"/>
+
+        <!-- Tab Empresa -->
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItemEmpresa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empresa"
+            android:icon="@drawable/ic_empresa_24dp"/>
+
+    </com.google.android.material.tabs.TabLayout>
+    <!-- Fin Layout de pestañas -->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- View Pager con el contenido de cada pestaña -->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="686dp" />
+
+</LinearLayout>
