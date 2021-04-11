@@ -15,7 +15,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
-        android:hint="Nombre de la empresa"
+        android:hint="@string/nombreEmpresa"
         app:startIconDrawable="@drawable/ic_empresa_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,8 @@
         <!-- TextInput con la contraseña-->
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
 
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -4,9 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.taskjects.controladores.ViewPagerController;
 import com.google.android.material.tabs.TabItem;
@@ -36,13 +33,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //Llamada al metodo que se encarga de rellenar cada pestaña del TabLayout con su fragment asignado
-        rellenarPestañasTabLayout();
+        rellenarTabsTabLayout();
 
     }
 
 
     //Este metodo se encarga de asignar a cada pestaña del TabLayout su fragment especifico
-    protected void rellenarPestañasTabLayout() {
+    protected void rellenarTabsTabLayout() {
 
         //Me creo el objeto ViewPagerController con el supportFragmentManager y el numero de pestañas que tiene el TabLayout
         adaptadorViewPager = new ViewPagerController(getSupportFragmentManager(), tabLayoutEmpresaEmpleado.getTabCount());
@@ -57,14 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                if (tab.getPosition() == 0) {
-                    adaptadorViewPager.notifyDataSetChanged();
-                }
-
-                if (tab.getPosition() == 1) {
-                    adaptadorViewPager.notifyDataSetChanged();
-                }
-
+                adaptadorViewPager.notifyDataSetChanged();
             }
 
             //Metodos sin utilizar
