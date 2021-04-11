@@ -1,5 +1,6 @@
 package com.app.taskjects;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -33,12 +34,12 @@ public class FragmentEmpleadoLogin extends Fragment {
         });
 
 
-        //Le agrego un Listener al TextView de registro /--para abrir la pantalla de registro --\
+        //Le agrego un Listener al TextView de registro para abrir la pantalla de registro para empleados
         textViewRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(view.getContext(), "Abro la pantalla de registro", Toast.LENGTH_LONG)
-                        .show();
+               Intent pantallaRegistroEmpleado = new Intent(view.getContext(),Registro_empleado_layout.class);
+               startActivity(pantallaRegistroEmpleado);
             }
         });
 

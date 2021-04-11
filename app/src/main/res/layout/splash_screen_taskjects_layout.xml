@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="#556270">
 
+    <!-- ImageView con el icono de la App -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="150dp"
