@@ -8,4 +8,5 @@
     <string name="recuperar_contrasenia">Recuperar contraseña</string>
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="registrate">Regístrate</string>
+    <string name="nombreEmpresa">Nombre de empresa</string>
 </resources>
