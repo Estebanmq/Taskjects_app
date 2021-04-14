@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +37,7 @@ public class FragmentEmpleadoLogin extends Fragment {
         textViewRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Intent pantallaRegistroEmpleado = new Intent(view.getContext(),Registro_empleado_layout.class);
+               Intent pantallaRegistroEmpleado = new Intent(view.getContext(), RegistroEmpleadoActivity.class);
                startActivity(pantallaRegistroEmpleado);
             }
         });

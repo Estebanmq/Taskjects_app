@@ -9,8 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Taskjects">
-        <activity android:name=".Registro_empresa_layout"></activity>
-        <activity android:name=".Registro_empleado_layout" />
+        <activity android:name=".RegistroEmpresaActivity"></activity>
+        <activity android:name=".RegistroEmpleadoActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

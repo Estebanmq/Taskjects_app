@@ -37,7 +37,7 @@ public class FragmentEmpresaLogin extends Fragment {
         textViewRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pantallaRegistroEmpresas = new Intent(view.getContext(),Registro_empresa_layout.class);
+                Intent pantallaRegistroEmpresas = new Intent(view.getContext(), RegistroEmpresaActivity.class);
                 startActivity(pantallaRegistroEmpresas);
             }
         });
