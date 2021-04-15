@@ -16,6 +16,7 @@ public class FragmentEmpresaLogin extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         //Creo un objeto View que tendra el inflater del fragment
         View view = inflater.inflate(R.layout.fragment_empresa_login, container, false);
 

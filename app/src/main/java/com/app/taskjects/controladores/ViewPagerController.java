@@ -13,7 +13,7 @@ import com.app.taskjects.FragmentEmpresaLogin;
 public class ViewPagerController extends FragmentPagerAdapter {
 
     //Atributo que almacena el numero de pestañas del TabLayout
-    private int numTabs;
+    private final int numTabs;
 
     //Constructor. El parametro behavior contiene el numero de pestañas del TabLayout
     public ViewPagerController(@NonNull FragmentManager fm, int behavior) {

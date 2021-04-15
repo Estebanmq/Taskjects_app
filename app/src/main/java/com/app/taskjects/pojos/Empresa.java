@@ -4,18 +4,18 @@ public class Empresa {
 
     public String cif;
     public String nombre;
-    public String password;
-    public String ubicacion;
+    public String direccion;
     public String email;
+    public String password;
 
     public Empresa() { }
 
-    public Empresa(String cif, String nombre, String password, String ubicacion, String email) {
+    public Empresa(String cif, String nombre, String direccion, String email, String password) {
         this.cif = cif;
         this.nombre = nombre;
-        this.password = password;
-        this.ubicacion = ubicacion;
+        this.direccion = direccion;
         this.email = email;
+        this.password = password;
     }
 
     public String getCif() {
@@ -34,6 +34,16 @@ public class Empresa {
         this.nombre = nombre;
     }
 
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
     public String getPassword() {
         return password;
     }
@@ -41,16 +51,4 @@ public class Empresa {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
-
-    public String getEmail() { return email; }
-
-    public void setEmail(String email) { this.email = email; }
 }
