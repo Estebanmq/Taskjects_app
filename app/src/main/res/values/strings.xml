@@ -14,4 +14,13 @@
     <string name="nombreEmpresa">Nombre de empresa</string>
     <string name="direccionEmpresa">Dirección de empresa</string>
 
+    <!-- Errores de aplicación -->
+    <string name="faltaCif">Informe el CIF</string>
+    <string name="cifErroneo">CIF erróneo</string>
+    <string name="faltaNombreEmpresa">Informe el nombre de empresa</string>
+    <string name="faltaEmail">Informe su email</string>
+    <string name="emailErroneo">Email erróneo</string>
+    <string name="faltaPassword">Informe la contraseña de acceso</string>
+    <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres</string>
+    <string name="faltaNombre">Informe su nombre</string>
 </resources>

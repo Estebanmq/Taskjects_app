@@ -3,12 +3,17 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.app.taskjects.pojos.Empresa;
+import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.rpc.context.AttributeContext;
 
 public class RegistroEmpresaActivity extends AppCompatActivity {
 
@@ -41,63 +47,72 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        etCif = (EditText)findViewById(R.id.etCif);
-        etNombre = (EditText)findViewById(R.id.etNombre);
-        etDireccion = (EditText)findViewById(R.id.etDireccion);
-        etEmail = (EditText)findViewById(R.id.etEmail);
-        etPassword = (EditText)findViewById(R.id.etPassword);
+        etCif = findViewById(R.id.etCif);
+        etNombre = findViewById(R.id.etNombre);
+        etDireccion = findViewById(R.id.etDireccion);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
 
     }
 
     public void registrar(View view) {
 
-        String validar = validarDatos();
-        if (validar == null) {
+        if (this.validarDatos()) {
             if (this.darAltaAuth()) {
                 if (this.darAltaEmpresa()) {
                     Toast.makeText(RegistroEmpresaActivity.this, "Empresa dada de alta correctamente", Toast.LENGTH_SHORT).show();
                 }
             }
-        } else {
-            Toast.makeText(RegistroEmpresaActivity.this, validar, Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    private String validarDatos() {
+    private boolean validarDatos() {
 
+        Log.d("debugeando", "entra en validar datos");
         if (etCif.getText().toString().isEmpty()) {
-            return "Informe el CIF de la empresa";
-        } else if (!etCif.getText().toString().matches("^[a-zA-Z]{1}[0-9]{7}[a-zA-Z0-9]{1}$")) {
-            return "CIF erróneo";
+            etCif.setError(getString(R.string.faltaCif));
+            return false;
+        } else if (!Validador.validarCif(etCif.getText().toString())) {
+            etCif.setError(getString(R.string.cifErroneo));
+            return false;
         }
 
         if (etNombre.getText().toString().isEmpty()) {
-            return "Informe el nombre de la empresa";
+            etNombre.setError(getString(R.string.faltaNombre));
+            return false;
         }
 
         if (etEmail.getText().toString().isEmpty()) {
-            return "Informe el email de la empresa";
-        } else if (!etEmail.getText().toString().matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$")) {
-            return "Email erróneo";
+            etEmail.setError(getString(R.string.faltaEmail));
+            return false;
+        } else if (!Validador.validarEmail(etEmail.getText().toString())) {
+            etEmail.setError(getString(R.string.emailErroneo));
+            return false;
         }
 
         if (etPassword.getText().toString().isEmpty()) {
-            return "Informe la contraseña de acceso";
-        } else if (!etPassword.getText().toString().matches("^[A-Za-z0-9$|@#!&*]{6,24}$")) {
-            return "Contraseña incorrecta. Teclee entre 6 y 24 caracteres";
+            etPassword.setError(getString(R.string.faltaPassword));
+            return false;
+        } else if (!Validador.validarPassword(etPassword.getText().toString())) {
+            etPassword.setError(getString(R.string.passwordErroneo));
+            return false;
         }
 
-        return null;
+        Log.d("debugeando", "sale de validar datos");
+        return true;
     }
 
     private boolean darAltaAuth() {
 
+        Log.d("debugeando", "entra en darAltaAuth");
         mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        Log.d("debugeando", "entra en onComplete:" + task.isSuccessful());
+
                         if(task.isSuccessful()) {
                             user = mAuth.getCurrentUser();
                             resultado = true;
@@ -108,11 +123,15 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                     }
                 }
                 );
+
+        SystemClock.sleep(1000);
+        Log.d("debugeando", "sale de darAltaAuth con resultado:" + resultado);
         return resultado;
     }
 
     private boolean darAltaEmpresa() {
 
+        Log.d("debugeando", "entra en darAltaEmpresa");
         Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString());
         db.collection("empresas").add(empresa)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -129,6 +148,8 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                         resultado = false;
                     }
                 });
+
+        Log.d("debugeando", "sale de darAltaEmpresa con resultado:" + resultado);
         return resultado;
     }
 
