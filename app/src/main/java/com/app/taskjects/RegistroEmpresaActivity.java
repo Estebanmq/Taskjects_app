@@ -3,12 +3,11 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.rpc.context.AttributeContext;
+
 
 public class RegistroEmpresaActivity extends AppCompatActivity {
 
@@ -37,7 +36,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     EditText etEmail;
     EditText etPassword;
 
-    boolean resultado;
+    Button btRegistrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,56 +52,64 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
 
+        btRegistrar = findViewById(R.id.btRegistrar);
+
     }
 
     public void registrar(View view) {
 
+        btRegistrar.setEnabled(false);
+
         if (this.validarDatos()) {
-            if (this.darAltaAuth()) {
-                if (this.darAltaEmpresa()) {
-                    Toast.makeText(RegistroEmpresaActivity.this, "Empresa dada de alta correctamente", Toast.LENGTH_SHORT).show();
-                }
-            }
+            this.darAltaAuth();
+        } else {
+            Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
         }
+
+        btRegistrar.setEnabled(true);
     }
 
     private boolean validarDatos() {
 
+        boolean resultado = true;
+
         Log.d("debugeando", "entra en validar datos");
-        if (etCif.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etCif.getText().toString())) {
             etCif.setError(getString(R.string.faltaCif));
-            return false;
+            resultado = false;
         } else if (!Validador.validarCif(etCif.getText().toString())) {
             etCif.setError(getString(R.string.cifErroneo));
-            return false;
+            resultado = false;
         }
 
-        if (etNombre.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etNombre.getText().toString())) {
             etNombre.setError(getString(R.string.faltaNombre));
-            return false;
+            resultado = false;
         }
 
-        if (etEmail.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etEmail.getText().toString())) {
             etEmail.setError(getString(R.string.faltaEmail));
-            return false;
+            resultado = false;
         } else if (!Validador.validarEmail(etEmail.getText().toString())) {
             etEmail.setError(getString(R.string.emailErroneo));
-            return false;
+            resultado = false;
         }
 
-        if (etPassword.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etPassword.getText().toString())) {
             etPassword.setError(getString(R.string.faltaPassword));
-            return false;
+            resultado = false;
         } else if (!Validador.validarPassword(etPassword.getText().toString())) {
             etPassword.setError(getString(R.string.passwordErroneo));
-            return false;
+            resultado = false;
         }
 
-        Log.d("debugeando", "sale de validar datos");
-        return true;
+        //Todo: Validar contra la BD los datos introducidos: - el CIF y el EMAIL no pueden existir
+
+        Log.d("debugeando", "sale de validar datos: " + resultado);
+        return resultado;
     }
 
-    private boolean darAltaAuth() {
+    private void darAltaAuth() {
 
         Log.d("debugeando", "entra en darAltaAuth");
         mAuth = FirebaseAuth.getInstance();
@@ -111,25 +118,23 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        Log.d("debugeando", "entra en onComplete:" + task.isSuccessful());
+                        Log.d("debugeando", "auth: entra en onComplete: " + task.isSuccessful());
 
                         if(task.isSuccessful()) {
                             user = mAuth.getCurrentUser();
-                            resultado = true;
+                            darAltaEmpresa();
                         } else {
-                            Toast.makeText(RegistroEmpresaActivity.this, "Registro de cuenta fallido", Toast.LENGTH_SHORT).show();
-                            resultado = false;
+                            Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
+                            //Todo: dejar log para arreglar el problema
                         }
                     }
                 }
                 );
 
-        SystemClock.sleep(1000);
-        Log.d("debugeando", "sale de darAltaAuth con resultado:" + resultado);
-        return resultado;
+        Log.d("debugeando", "sale de darAltaAuth");
     }
 
-    private boolean darAltaEmpresa() {
+    private void darAltaEmpresa() {
 
         Log.d("debugeando", "entra en darAltaEmpresa");
         Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString());
@@ -137,20 +142,25 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        resultado = true;
+                        Log.d("debugeando", "empresa: entra en onSuccess!");
+                        Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.altaEmpresaDone), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegistroEmpresaActivity.this, "Registro de empresa fallido", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                        resultado = false;
+                        Log.d("debugeando", "empresa: entra en onFailure!");
+                        Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
+                        //Todo: dejar log para arreglar el problema
                     }
                 });
 
-        Log.d("debugeando", "sale de darAltaEmpresa con resultado:" + resultado);
-        return resultado;
+        Log.d("debugeando", "sale de darAltaEmpresa");
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btRegistrar.setEnabled(true);
+    }
 }
