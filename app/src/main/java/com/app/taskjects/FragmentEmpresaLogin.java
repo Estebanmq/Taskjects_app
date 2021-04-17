@@ -92,6 +92,7 @@ public class FragmentEmpresaLogin extends Fragment {
 
 
     private void loginEmpresa() {
+        //Todo: icono del ojo sea toggle y poder ver la contraseña
         btnLoginEmpresa.setEnabled(false);
         Intent mainEmpresa = new Intent(view.getContext(), MainEmpresaActivity.class);
         if (verificarDatos()) {
@@ -102,7 +103,8 @@ public class FragmentEmpresaLogin extends Fragment {
                     if (task.isSuccessful()) {
                         startActivity(mainEmpresa);
                     } else {
-                        Toast.makeText(view.getContext(),"Email no registrado en la aplicación o la contraseña está mal",Toast.LENGTH_SHORT).show();
+                        //Todo: comprobar que campo esta mal, si email o contraseña
+                        Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
                         btnLoginEmpresa.setEnabled(true);
                     }
                 }
@@ -113,6 +115,7 @@ public class FragmentEmpresaLogin extends Fragment {
     }
 
     private boolean verificarDatos() {
+        //Todo: optimizar verificar datos
         boolean login = true;
         //Verifico todos los campos
         //Email

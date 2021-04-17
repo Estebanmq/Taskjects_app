@@ -14,6 +14,7 @@
     <string name="nombreEmpresa">Nombre de empresa</string>
     <string name="direccionEmpresa">Dirección de empresa</string>
     <string name="cifEmpleado">CIF de empleado</string>
+    <string name="emailEmpleado">Email de empleado</string>
 
 
     <!-- Errores de aplicación -->
@@ -25,7 +26,7 @@
     <string name="faltaPassword">Informe la contraseña de acceso</string>
     <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres</string>
     <string name="faltaNombre">Informe su nombre</string>
-
+    <string name="datosLoginEmpresaIncorrectos">Email o contraseña incorrecta</string>
     <string name="compruebeDatos">Compruebe los datos introducidos</string>
 
     <string name="registroCuentaFallido">Registro de cuenta fallido</string>

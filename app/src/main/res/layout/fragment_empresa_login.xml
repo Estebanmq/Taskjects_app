@@ -7,7 +7,7 @@
     tools:context=".FragmentEmpresaLogin"
     android:theme="@style/Theme.MaterialComponents.Light">
 
-    <!-- Inicio TextInputLayout del usuario -->
+    <!-- Inicio TextInputLayout del email empresa -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/outlinedTextFieldEmailEmpresa"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -23,13 +23,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:startIconDrawable="@drawable/ic_email_black_24dp">
 
-        <!-- TextInput con el usuario -->
+        <!-- TextInput con el email empresa -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmailEmpresa"
+            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
-    <!-- Fin TextInputLayout del usuario -->
+    <!-- Fin TextInputLayout del email empresa -->
 
 
     <!-- Inicio TextInputLayout de la contraseña -->
@@ -53,7 +55,8 @@
             android:id="@+id/etContraseniaEmpresa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:maxLines="1"/>
 
 
     </com.google.android.material.textfield.TextInputLayout>
