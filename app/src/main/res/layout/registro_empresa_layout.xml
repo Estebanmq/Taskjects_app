@@ -20,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <!-- TextInput con el usuario -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCif"
             android:layout_width="match_parent"

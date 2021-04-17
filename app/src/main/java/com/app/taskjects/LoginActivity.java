@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.app.taskjects.controladores.ViewPagerController;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 
 public class LoginActivity extends AppCompatActivity {
 

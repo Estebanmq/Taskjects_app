@@ -4,25 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentEmpresaLogin" android:theme="@style/Theme.MaterialComponents.Light">
+    tools:context=".FragmentEmpresaLogin"
+    android:theme="@style/Theme.MaterialComponents.Light">
 
     <!-- Inicio TextInputLayout del usuario -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextFieldUsuario"
+        android:id="@+id/outlinedTextFieldEmailEmpresa"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="61dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/emailEmpresa"
-        app:startIconDrawable="@drawable/ic_email_black_24dp"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_email_black_24dp">
 
         <!-- TextInput con el usuario -->
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmailEmpresa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -31,7 +34,7 @@
 
     <!-- Inicio TextInputLayout de la contraseña -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextFieldContrasenia"
+        android:id="@+id/outlinedTextFieldContraseniaEmpresa"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -43,10 +46,11 @@
         app:startIconCheckable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldUsuario">
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmailEmpresa">
 
         <!-- TextInput con la contraseña-->
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etContraseniaEmpresa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
@@ -57,8 +61,6 @@
 
 
     <!-- TextView recuperacion de contraseña -->
-
-    <!-- Boton de login -->
     <TextView
         android:id="@+id/textViewRecuperarContrasenia"
         android:layout_width="wrap_content"
@@ -73,10 +75,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.889"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContrasenia" />
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContraseniaEmpresa" />
 
+    <!-- Boton de login -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/containedButton"
+        android:id="@+id/btnLoginEmpresa"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginStart="24dp"
@@ -87,7 +90,7 @@
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContrasenia"
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContraseniaEmpresa"
         />
 
     <!-- View que dibuja simplemente una linea de separacion -->
@@ -101,7 +104,7 @@
         android:background="#707070"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containedButton" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginEmpresa" />
 
     <!-- TextView pregunta no tienes cuenta-->
     <TextView

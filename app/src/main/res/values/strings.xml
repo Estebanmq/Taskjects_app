@@ -13,6 +13,8 @@
     <string name="cifEmpresa">CIF de empresa</string>
     <string name="nombreEmpresa">Nombre de empresa</string>
     <string name="direccionEmpresa">Dirección de empresa</string>
+    <string name="cifEmpleado">CIF de empleado</string>
+
 
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
