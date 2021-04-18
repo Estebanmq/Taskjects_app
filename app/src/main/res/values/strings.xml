@@ -1,26 +1,36 @@
 <resources>
     <string name="app_name">Taskjects</string>
+
     <string name="empleado">Empleado</string>
     <string name="empresa">Empresa</string>
     <string name="contrasenia">Contraseña</string>
+
     <string name="usuario">Usuario</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="recuperar_contrasenia">Recuperar contraseña</string>
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="registrate">Regístrate</string>
     <string name="registrarse">Registrarse</string>
+
+    <string name="categoria">Categoría</string>
+
     <string name="emailEmpresa">Email de empresa</string>
-    <string name="cifEmpresa">CIF de empresa</string>
+    <string name="cifEmpresa">CIF de la empresa</string>
     <string name="nombreEmpresa">Nombre de empresa</string>
     <string name="direccionEmpresa">Dirección de empresa</string>
-    <string name="cifEmpleado">CIF de empleado</string>
-    <string name="emailEmpleado">Email de empleado</string>
 
+    <string name="nifEmpleado">NIF</string>
+    <string name="nombreEmpleado">Nombre</string>
+    <string name="apellidosEmpleado">Apellidos</string>
+    <string name="emailEmpleado">Email</string>
 
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
     <string name="cifErroneo">CIF erróneo</string>
     <string name="cifYaExtiste">El CIF informado ya existe</string>
+
+    <string name="faltaNif">Informe el NIF</string>
+    <string name="nifErroneo">NIF erróneo</string>
 
     <string name="faltaNombreEmpresa">Informe el nombre de empresa</string>
     <string name="faltaNombre">Informe su nombre</string>
@@ -39,7 +49,8 @@
     <string name="registroEmpresaFallido">Registro de empresa fallido</string>
     <string name="registroEmpleadoFallido">Registro de empleado fallido</string>
 
-    <string name="errorGeneral">Algo ha salido mal. Póngase en contacto con nosotros.</string>
+    <string name="errorGeneral">Ups! Algo ha salido mal. Póngase en contacto con nosotros.</string>
+    <string name="errorAccesoBD">Ups! Algo ha salido mal. Vuelva a intentarlo pasados unos minutos.</string>
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->

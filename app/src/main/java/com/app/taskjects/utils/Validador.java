@@ -10,6 +10,9 @@ public class Validador {
         return cif.matches("^[a-zA-Z]{1}[0-9]{7}[a-zA-Z0-9]{1}$");
     }
 
+    public static boolean validarNif(String nif) {
+        return nif.matches("^[0-9]{8}[A-Za-z]$");
+    }
     public static boolean validarEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();

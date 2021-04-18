@@ -25,7 +25,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
@@ -51,11 +50,11 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        etCif = findViewById(R.id.etCif);
-        etNombre = findViewById(R.id.etNombre);
+        etCif = findViewById(R.id.etCifEmpresa);
+        etNombre = findViewById(R.id.etNombreEmpleado);
         etDireccion = findViewById(R.id.etDireccion);
         etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
+        etPassword = findViewById(R.id.etPasswordEmpleado);
 
         btRegistrar = findViewById(R.id.btRegistrar);
 
@@ -78,7 +77,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         boolean resultado = true;
 
-        Log.d("debugeando", "entra en validar datos");
+        Log.d("taskjects", "entra en validar datos");
         if (TextUtils.isEmpty(etCif.getText().toString())) {
             etCif.setError(getString(R.string.faltaCif));
             resultado = false;
@@ -121,12 +120,12 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().isEmpty()) {
                         darAltaAuth();
-                        Log.d("debugeando", "es correcto, no está el cif");
+                        Log.d("taskjectsdebug", "es correcto, no está el cif");
                     } else {
                         etCif.setError(getString(R.string.cifYaExtiste));
                     }
                 } else {
-                    Log.d("debugeando", "la tarea no ha ido bien");
+                    Log.d("taskjectsdebug", "la tarea no ha ido bien");
                 }
             }
         });
@@ -135,7 +134,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
     private void darAltaAuth() {
 
-        Log.d("debugeando", "entra en darAltaAuth");
+        Log.d("taskjectsdebug", "entra en darAltaAuth");
         mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -151,24 +150,24 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                                 //Todo: dejar log para arreglar el problema
                             }
 
-                            Log.d("debugeando", "auth: error en task: " + task.getException());
+                            Log.d("taskjectsdebug", "auth: error en task: " + task.getException());
                         }
                     }
                 }
                 );
 
-        Log.d("debugeando", "sale de darAltaAuth");
+        Log.d("taskjectsdebug", "sale de darAltaAuth");
     }
 
     private void darAltaEmpresa() {
 
-        Log.d("debugeando", "entra en darAltaEmpresa");
+        Log.d("taskjectsdebug", "entra en darAltaEmpresa");
         Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
         db.collection("empresas").add(empresa)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d("debugeando", "empresa: entra en onSuccess!");
+                        Log.d("taskjectsdebug", "empresa: entra en onSuccess!");
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.altaEmpresaDone), Toast.LENGTH_SHORT).show();
 
                         //Todo: volver a la activity anterior o a la activity de empresas
@@ -177,13 +176,13 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("debugeando", "empresa: entra en onFailure! " + e.getMessage());
+                        Log.d("taskjectsdebug", "empresa: entra en onFailure! " + e.getMessage());
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
                         //Todo: dejar log para arreglar el problema
                     }
                 });
 
-        Log.d("debugeando", "sale de darAltaEmpresa");
+        Log.d("taskjectsdebug", "sale de darAltaEmpresa");
     }
 
     @Override

@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etCif"
+            android:id="@+id/etCifEmpresa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="9"
@@ -46,7 +46,7 @@
 
         <!-- TextInput con el usuario -->
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNombre"
+            android:id="@+id/etNombreEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="64"
@@ -119,7 +119,7 @@
 
         <!-- TextInput con el usuario -->
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPassword"
+            android:id="@+id/etPasswordEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
