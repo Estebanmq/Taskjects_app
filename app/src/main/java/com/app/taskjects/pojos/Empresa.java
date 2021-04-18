@@ -7,15 +7,17 @@ public class Empresa {
     public String direccion;
     public String email;
     public String password;
+    public String uid;
 
     public Empresa() { }
 
-    public Empresa(String cif, String nombre, String direccion, String email, String password) {
+    public Empresa(String cif, String nombre, String direccion, String email, String password, String uid) {
         this.cif = cif;
         this.nombre = nombre;
         this.direccion = direccion;
         this.email = email;
         this.password = password;
+        this.uid = uid;
     }
 
     public String getCif() {
@@ -50,5 +52,13 @@ public class Empresa {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

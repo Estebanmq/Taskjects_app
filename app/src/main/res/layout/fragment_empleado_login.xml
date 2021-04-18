@@ -26,8 +26,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:maxLength="64"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
     <!-- Fin TextInputLayout del usuario -->
 
@@ -53,7 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:maxLines="1"/>
+            android:maxLength="24"
+            android:maxLines="1" />
 
 
     </com.google.android.material.textfield.TextInputLayout>

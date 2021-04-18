@@ -1,5 +1,9 @@
 package com.app.taskjects.utils;
 
+import android.util.Patterns;
+
+import java.util.regex.Pattern;
+
 public class Validador {
 
     public static boolean validarCif(String cif) {
@@ -7,7 +11,8 @@ public class Validador {
     }
 
     public static boolean validarEmail(String email) {
-        return email.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$");
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(email).matches();
     }
 
     public static boolean validarPassword(String password) {

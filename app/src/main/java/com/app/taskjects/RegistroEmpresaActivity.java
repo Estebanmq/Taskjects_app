@@ -19,9 +19,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 public class RegistroEmpresaActivity extends AppCompatActivity {
@@ -60,8 +65,8 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         btRegistrar.setEnabled(false);
 
-        if (this.validarDatos()) {
-            this.darAltaAuth();
+        if (validarDatos()) {
+            validarCifFirestore(); // Valida el CIF contra BD y realiza las actualizaciones
         } else {
             Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
         }
@@ -103,29 +108,50 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
             resultado = false;
         }
 
-        //Todo: Validar contra la BD los datos introducidos: - el CIF y el EMAIL no pueden existir
-
-        Log.d("debugeando", "sale de validar datos: " + resultado);
         return resultado;
+    }
+
+    private void validarCifFirestore() {
+
+        CollectionReference empresasRef = db.collection("empresas");
+        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString());
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().isEmpty()) {
+                        darAltaAuth();
+                        Log.d("debugeando", "es correcto, no está el cif");
+                    } else {
+                        etCif.setError(getString(R.string.cifYaExtiste));
+                    }
+                } else {
+                    Log.d("debugeando", "la tarea no ha ido bien");
+                }
+            }
+        });
+
     }
 
     private void darAltaAuth() {
 
         Log.d("debugeando", "entra en darAltaAuth");
-        mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        Log.d("debugeando", "auth: entra en onComplete: " + task.isSuccessful());
-
                         if(task.isSuccessful()) {
                             user = mAuth.getCurrentUser();
                             darAltaEmpresa();
                         } else {
-                            Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
-                            //Todo: dejar log para arreglar el problema
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                etEmail.setError(getString(R.string.emailYaExiste));
+                            } else {
+                                Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
+                                //Todo: dejar log para arreglar el problema
+                            }
+
+                            Log.d("debugeando", "auth: error en task: " + task.getException());
                         }
                     }
                 }
@@ -137,19 +163,21 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     private void darAltaEmpresa() {
 
         Log.d("debugeando", "entra en darAltaEmpresa");
-        Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString());
+        Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
         db.collection("empresas").add(empresa)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("debugeando", "empresa: entra en onSuccess!");
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.altaEmpresaDone), Toast.LENGTH_SHORT).show();
+
+                        //Todo: volver a la activity anterior o a la activity de empresas
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("debugeando", "empresa: entra en onFailure!");
+                        Log.d("debugeando", "empresa: entra en onFailure! " + e.getMessage());
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
                         //Todo: dejar log para arreglar el problema
                     }

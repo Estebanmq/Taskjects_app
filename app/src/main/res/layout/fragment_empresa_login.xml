@@ -26,10 +26,11 @@
         <!-- TextInput con el email empresa -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmailEmpresa"
-            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"/>
+            android:inputType="textEmailAddress"
+            android:maxLength="64"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
     <!-- Fin TextInputLayout del email empresa -->
 
@@ -56,7 +57,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:maxLines="1"/>
+            android:maxLength="24"
+            android:maxLines="1" />
 
 
     </com.google.android.material.textfield.TextInputLayout>

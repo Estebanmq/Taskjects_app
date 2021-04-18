@@ -20,12 +20,18 @@
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
     <string name="cifErroneo">CIF erróneo</string>
+    <string name="cifYaExtiste">El CIF informado ya existe</string>
+
     <string name="faltaNombreEmpresa">Informe el nombre de empresa</string>
+    <string name="faltaNombre">Informe su nombre</string>
+
     <string name="faltaEmail">Informe su email</string>
     <string name="emailErroneo">Email erróneo</string>
+    <string name="emailYaExiste">El email ya está registrado</string>
+
     <string name="faltaPassword">Informe la contraseña de acceso</string>
     <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres</string>
-    <string name="faltaNombre">Informe su nombre</string>
+
     <string name="datosLoginEmpresaIncorrectos">Email o contraseña incorrecta</string>
     <string name="compruebeDatos">Compruebe los datos introducidos</string>
 
@@ -33,7 +39,7 @@
     <string name="registroEmpresaFallido">Registro de empresa fallido</string>
     <string name="registroEmpleadoFallido">Registro de empleado fallido</string>
 
-    <string name="errorGeneral">Algo ha ido mal. Póngase en contacto con nosotros.</string>
+    <string name="errorGeneral">Algo ha salido mal. Póngase en contacto con nosotros.</string>
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->
