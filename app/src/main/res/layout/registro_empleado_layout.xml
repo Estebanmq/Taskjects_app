@@ -7,6 +7,18 @@
     tools:context=".RegistroEmpleadoActivity"
     android:theme="@style/Theme.MaterialComponents.Light">
 
+    <!-- Linear progress indicator -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/lineaProgreso"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/outlinedTextFieldCifEmpleado"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -162,10 +174,9 @@
         app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCif" >
 
         <AutoCompleteTextView
-            android:id="@+id/categoriaEmpleado"
+            android:id="@+id/etCategoriaEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:editable="false"
             android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -1,9 +1,12 @@
 package com.app.taskjects;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -30,6 +34,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class RegistroEmpresaActivity extends AppCompatActivity {
 
+    final String EMPRESAS = "empresas";
+
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -41,6 +47,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     EditText etPassword;
 
     Button btRegistrar;
+    LinearProgressIndicator lineaProgreso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPasswordEmpleado);
 
         btRegistrar = findViewById(R.id.btRegistrar);
+        lineaProgreso = findViewById(R.id.lineaProgreso);
 
     }
 
@@ -66,8 +74,6 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         if (validarDatos()) {
             validarCifFirestore(); // Valida el CIF contra BD y realiza las actualizaciones
-        } else {
-            Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
         }
 
         btRegistrar.setEnabled(true);
@@ -77,7 +83,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         boolean resultado = true;
 
-        Log.d("taskjects", "entra en validar datos");
+        Log.d("taskjectsdebug", "entra en validar datos");
         if (TextUtils.isEmpty(etCif.getText().toString())) {
             etCif.setError(getString(R.string.faltaCif));
             resultado = false;
@@ -107,12 +113,24 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
             resultado = false;
         }
 
+        if (!resultado) {
+            Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
+        }
+
         return resultado;
     }
 
     private void validarCifFirestore() {
 
-        CollectionReference empresasRef = db.collection("empresas");
+        // Pone visible la linea de progreso
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                lineaProgreso.setVisibility(View.VISIBLE);
+            }
+        });
+
+        CollectionReference empresasRef = db.collection(EMPRESAS);
         Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString());
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -122,10 +140,11 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                         darAltaAuth();
                         Log.d("taskjectsdebug", "es correcto, no está el cif");
                     } else {
-                        etCif.setError(getString(R.string.cifYaExtiste));
+                        etCif.setError(getString(R.string.cifYaExiste));
+                        lineaProgreso.setVisibility(View.INVISIBLE);
                     }
                 } else {
-                    Log.d("taskjectsdebug", "la tarea no ha ido bien");
+                    Log.d("taskjectsdebug", "RegistroEmpresaActivity: la tarea no ha ido bien");
                 }
             }
         });
@@ -143,13 +162,13 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                             user = mAuth.getCurrentUser();
                             darAltaEmpresa();
                         } else {
+                            lineaProgreso.setVisibility(View.INVISIBLE);
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 etEmail.setError(getString(R.string.emailYaExiste));
                             } else {
                                 Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
                                 //Todo: dejar log para arreglar el problema
                             }
-
                             Log.d("taskjectsdebug", "auth: error en task: " + task.getException());
                         }
                     }
@@ -163,19 +182,25 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         Log.d("taskjectsdebug", "entra en darAltaEmpresa");
         Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
-        db.collection("empresas").add(empresa)
+        db.collection(EMPRESAS).add(empresa)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        lineaProgreso.setVisibility(View.INVISIBLE);
                         Log.d("taskjectsdebug", "empresa: entra en onSuccess!");
-                        Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.altaEmpresaDone), Toast.LENGTH_SHORT).show();
-
-                        //Todo: volver a la activity anterior o a la activity de empresas
+                        AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpresaActivity.this);
+                        dialogo.setMessage(getString(R.string.altaEmpresaDone)).setCancelable(false).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        lineaProgreso.setVisibility(View.INVISIBLE);
                         Log.d("taskjectsdebug", "empresa: entra en onFailure! " + e.getMessage());
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
                         //Todo: dejar log para arreglar el problema

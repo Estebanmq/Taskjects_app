@@ -7,6 +7,18 @@
     tools:context=".RegistroEmpresaActivity"
     android:theme="@style/Theme.MaterialComponents.Light">
 
+    <!-- Linear progress indicator -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/lineaProgreso"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/outlinedTextFieldCif"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -140,7 +152,6 @@
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldPassword"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

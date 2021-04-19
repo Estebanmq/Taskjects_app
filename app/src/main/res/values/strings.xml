@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Taskjects</string>
 
+    <string name="ok">De acuerdo</string>
+
     <string name="empleado">Empleado</string>
     <string name="empresa">Empresa</string>
     <string name="contrasenia">Contraseña</string>
@@ -27,13 +29,17 @@
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
     <string name="cifErroneo">CIF erróneo</string>
-    <string name="cifYaExtiste">El CIF informado ya existe</string>
+    <string name="cifYaExiste">El CIF informado ya existe</string>
+    <string name="cifNoExiste">El CIF informado no existe</string>
 
     <string name="faltaNif">Informe el NIF</string>
     <string name="nifErroneo">NIF erróneo</string>
+    <string name="nifYaExiste">El NIF informado ya existe</string>
 
     <string name="faltaNombreEmpresa">Informe el nombre de empresa</string>
     <string name="faltaNombre">Informe su nombre</string>
+
+    <string name="faltaApellidos">Informe su/s apellido/s</string>
 
     <string name="faltaEmail">Informe su email</string>
     <string name="emailErroneo">Email erróneo</string>
@@ -41,6 +47,8 @@
 
     <string name="faltaPassword">Informe la contraseña de acceso</string>
     <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres</string>
+
+    <string name="faltaCategoria">Seleccione la categoría profesional</string>
 
     <string name="datosLoginEmpresaIncorrectos">Email o contraseña incorrecta</string>
     <string name="compruebeDatos">Compruebe los datos introducidos</string>
@@ -55,5 +63,6 @@
 
     <!-- Mensajes de aplicación -->
     <string name="altaEmpresaDone">Empresa dada de alta correctamente</string>
+    <string name="altaEmpleadoDone">Empleado dado de alta correctamente</string>
     <!-- FIN Mensajes de aplicación -->
 </resources>

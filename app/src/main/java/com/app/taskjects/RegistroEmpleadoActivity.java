@@ -1,9 +1,12 @@
 package com.app.taskjects;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,13 +16,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -29,7 +40,10 @@ import java.util.Map;
 
 public class RegistroEmpleadoActivity extends AppCompatActivity {
 
-    //Componentes
+    final String EMPLEADOS = "empleados";
+    final String CATEGORIAS = "categorias";
+    final String EMPRESAS = "empresas";
+
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -45,7 +59,10 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
     AutoCompleteTextView categoriaEmpleado;
 
     Button btRegistrar;
+    LinearProgressIndicator lineaProgreso;
 
+    String uidCategoria;
+    String uidEmpresa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,20 +78,23 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmailEmpleado);
         etPassword = findViewById(R.id.etPasswordEmpleado);
         etCif = findViewById(R.id.etCifEmpresa);
-        categoriaEmpleado = findViewById(R.id.categoriaEmpleado);
+        categoriaEmpleado = findViewById(R.id.etCategoriaEmpleado);
+        categoriaEmpleado.setKeyListener(null);
 
         btRegistrar = findViewById(R.id.btRegistrar);
+        lineaProgreso = findViewById(R.id.lineaProgreso);
 
         mapCategorias = new LinkedHashMap<String, String>();
         cargarCategorias();
 
+        uidCategoria = "";
+        uidEmpresa = "";
     }
     
     private void cargarCategorias() {
 
         Log.d("taskjectsdebug", "entra a lectura categorías");
-        db.collection("categorias")
-                .get()
+        db.collection(CATEGORIAS).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -99,9 +119,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         btRegistrar.setEnabled(false);
 
         if (validarDatos()) {
-            darAltaAuth(); // Valida el CIF contra BD y realiza las actualizaciones
-        } else {
-            Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
+            validarNifFirestore(); // Valida el NIF contra BD, valida el CIF de la empresa contra BD y realiza las actualizaciones
         }
 
         btRegistrar.setEnabled(true);
@@ -114,13 +132,18 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(etNif.getText().toString())) {
             etNif.setError(getString(R.string.faltaNif));
             resultado = false;
-        } else if (!Validador.validarCif(etNif.getText().toString())) {
+        } else if (!Validador.validarNif(etNif.getText().toString())) {
             etNif.setError(getString(R.string.nifErroneo));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etNombre.getText().toString())) {
             etNombre.setError(getString(R.string.faltaNombre));
+            resultado = false;
+        }
+
+        if (TextUtils.isEmpty(etApellidos.getText().toString())) {
+            etApellidos.setError(getString(R.string.faltaApellidos));
             resultado = false;
         }
 
@@ -148,11 +171,135 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
             resultado = false;
         }
 
+        categoriaEmpleado.setError(null);
+        if (TextUtils.isEmpty(categoriaEmpleado.getText().toString())) {
+            categoriaEmpleado.setError(getString(R.string.faltaCategoria));
+            resultado = false;
+        } else {
+            uidCategoria = mapCategorias.get(categoriaEmpleado.getText().toString());
+        }
+
+        if (!resultado) {
+            Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
+        }
+
         return resultado;
+    }
+
+    private void validarNifFirestore() {
+
+        // Pone visible la linea de progreso
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                lineaProgreso.setVisibility(View.VISIBLE);
+            }
+        });
+
+        CollectionReference empleadosRef = db.collection(EMPLEADOS);
+        Query query = empleadosRef.whereEqualTo("nif", etNif.getText().toString());
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().isEmpty()) {
+                        validarCifFirestore();
+                    } else {
+                        etNif.setError(getString(R.string.nifYaExiste));
+                        lineaProgreso.setVisibility(View.INVISIBLE);
+                    }
+                } else {
+                    Log.d("taskjectsdebug", "RegistroEmpleadoActivity: la tarea no ha ido bien");
+                }
+            }
+        });
+
+    }
+
+
+    private void validarCifFirestore() {
+
+        CollectionReference empresasRef = db.collection(EMPRESAS);
+        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString());
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().isEmpty()) {
+                        etCif.setError(getString(R.string.cifNoExiste));
+                    } else {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            uidEmpresa = document.getId();
+                        }
+                        darAltaAuth();
+                        Log.d("taskjectsdebug", "es correcto, sí está el cif");
+                    }
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                } else {
+                    Log.d("taskjectsdebug", "la tarea no ha ido bien");
+                }
+            }
+        });
+
     }
 
     private void darAltaAuth() {
 
+        Log.d("taskjectsdebug", "entra en darAltaAuth");
+        mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    user = mAuth.getCurrentUser();
+                                    darAltaEmpleado();
+                                } else {
+                                    lineaProgreso.setVisibility(View.INVISIBLE);
+                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        etEmail.setError(getString(R.string.emailYaExiste));
+                                    } else {
+                                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
+                                        //Todo: dejar log para arreglar el problema
+                                    }
+                                    Log.d("taskjectsdebug", "auth: error en task: " + task.getException());
+                                }
+                            }
+                        }
+                );
+
+        Log.d("taskjectsdebug", "sale de darAltaAuth");    }
+
+
+    private void darAltaEmpleado() {
+
+        Log.d("taskjectsdebug", "entra en darAltaEmpresa");
+        Empleado empleado = new Empleado(etNif.getText().toString(), etNombre.getText().toString(), etApellidos.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), uidEmpresa, uidCategoria, user.getUid());
+        db.collection(EMPLEADOS).add(empleado)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        lineaProgreso.setVisibility(View.INVISIBLE);
+                        Log.d("taskjectsdebug", "empresa: entra en onSuccess!");
+                        AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
+                        dialogo.setMessage(getString(R.string.altaEmpleadoDone)).setCancelable(false).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        lineaProgreso.setVisibility(View.INVISIBLE);
+                        Log.d("taskjectsdebug", "empresa: entra en onFailure! " + e.getMessage());
+                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
+                        //Todo: dejar log para arreglar el problema
+                    }
+                });
+
+        Log.d("taskjectsdebug", "sale de darAltaEmpresa");
     }
 
     @Override
