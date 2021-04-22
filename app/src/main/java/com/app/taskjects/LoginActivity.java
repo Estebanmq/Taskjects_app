@@ -12,6 +12,8 @@ import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 
 public class LoginActivity extends AppCompatActivity {
 
+    //Todo: informar al usuario de que si inicia sesion sin conexion no puede iniciar sesion
+
     //Declaracion de componentes
     TabLayout tabLayoutEmpresaEmpleado;
     TabItem tabItemEmpresa,tabItemEmpleado;

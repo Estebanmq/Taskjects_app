@@ -26,6 +26,11 @@
     <string name="apellidosEmpleado">Apellidos</string>
     <string name="emailEmpleado">Email</string>
 
+    <string name="nombreProyecto">Nombre del proyecto</string>
+    <string name="descripcionProyecto">Descripcion del proyecto</string>
+    <string name="agregar">Agregar</string>
+    <string name="aniadirProyecto">Añadir proyecto</string>
+
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
     <string name="cifErroneo">CIF erróneo</string>
@@ -59,10 +64,17 @@
 
     <string name="errorGeneral">Ups! Algo ha salido mal. Póngase en contacto con nosotros.</string>
     <string name="errorAccesoBD">Ups! Algo ha salido mal. Vuelva a intentarlo pasados unos minutos.</string>
+
+    <string name="faltaNombreProyecto">Informe el nombre de proyecto</string>
+    <string name="faltaJefeProyecto">Informe el empleado jefe</string>
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->
     <string name="altaEmpresaDone">Empresa dada de alta correctamente</string>
     <string name="altaEmpleadoDone">Empleado dado de alta correctamente</string>
+    <string name="fechaInicio">Fecha de inicio</string>
+    <string name="jefeProyecto">Jefe del proyecto</string>
+    <string name="crearProyecto">Crear proyecto</string>
+
     <!-- FIN Mensajes de aplicación -->
 </resources>

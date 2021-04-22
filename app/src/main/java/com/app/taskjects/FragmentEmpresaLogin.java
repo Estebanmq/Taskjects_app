@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -92,18 +93,20 @@ public class FragmentEmpresaLogin extends Fragment {
 
 
     private void loginEmpresa() {
-        //Todo: icono del ojo sea toggle y poder ver la contraseña
         btnLoginEmpresa.setEnabled(false);
-        Intent mainEmpresa = new Intent(view.getContext(), MainEmpresaActivity.class);
+
+        //Todo: Quitar esta llamada
+       // startActivity(mainEmpresa);
+
+
         if (verificarDatos()) {
             mAuth = FirebaseAuth.getInstance();
             mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        startActivity(mainEmpresa);
+                        startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
                     } else {
-                        //Todo: comprobar que campo esta mal, si email o contraseña
                         Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
                         btnLoginEmpresa.setEnabled(true);
                     }

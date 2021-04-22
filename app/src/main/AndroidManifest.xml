@@ -18,8 +18,10 @@
         </activity>
         <activity android:name=".LoginActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".MainEmpresaActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".AniadirProyectoActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".RegistroEmpresaActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".RegistroEmpleadoActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-    </application>
 
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
