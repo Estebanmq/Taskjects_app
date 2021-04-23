@@ -92,7 +92,7 @@
             app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldDescripcionProyecto" >
 
             <AutoCompleteTextView
-                android:id="@+id/empleadosJefe"
+                android:id="@+id/atvJefeEmpleado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:editable="false"

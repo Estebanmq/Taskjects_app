@@ -26,10 +26,13 @@
     <string name="apellidosEmpleado">Apellidos</string>
     <string name="emailEmpleado">Email</string>
 
+
+    <string name="noHayProyectos">No hay proyectos</string>
     <string name="nombreProyecto">Nombre del proyecto</string>
     <string name="descripcionProyecto">Descripcion del proyecto</string>
     <string name="agregar">Agregar</string>
     <string name="aniadirProyecto">Añadir proyecto</string>
+    <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
 
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
@@ -67,6 +70,11 @@
 
     <string name="faltaNombreProyecto">Informe el nombre de proyecto</string>
     <string name="faltaJefeProyecto">Informe el empleado jefe</string>
+    <string name="faltaDescripcion">Informe de la descripcion del proyecto</string>
+    <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="noSeEncuentranJefes">No se ha encontrado ningun jefe, antes debe de tener al menos 1 registrado</string>
+
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->

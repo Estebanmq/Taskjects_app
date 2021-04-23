@@ -39,19 +39,18 @@
         app:srcCompat="@drawable/ic_plus_24dp"
         android:onClick="aniadirProyecto"/>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginTop="102dp"
-        android:layout_marginEnd="171dp"
-        android:layout_marginBottom="381dp"
-        android:text="Button"
+    <TextView
+        android:id="@+id/tvInfoNoProyectos"
+        android:layout_width="337dp"
+        android:layout_height="96dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/noHayProyectos"
+        android:textSize="24sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
