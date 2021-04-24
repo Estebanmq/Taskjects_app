@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.taskjects.pojos.Empresa;
+import com.app.taskjects.dialogos.RecuperarPasswordDialog;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,7 +23,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class FragmentEmpresaLogin extends Fragment {
 
@@ -49,7 +48,7 @@ public class FragmentEmpresaLogin extends Fragment {
         view = inflater.inflate(R.layout.fragment_empresa_login, container, false);
 
         //Una vez que tengo el objeto view puedo inicializar componentes del fragment
-        textViewRecuperarContrasenia = view.findViewById(R.id.textViewRecuperarContrasenia);
+        textViewRecuperarContrasenia = view.findViewById(R.id.textViewRecuperarContraseniaEmpresa);
         textViewRegistro = view.findViewById(R.id.textViewRegistro);
         etEmailEmpresa = view.findViewById(R.id.etEmailEmpresa);
         outlinedTextFieldEmailEmpresa = view.findViewById(R.id.outlinedTextFieldEmailEmpresa);
@@ -61,9 +60,8 @@ public class FragmentEmpresaLogin extends Fragment {
         textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textViewRecuperarContrasenia.setEnabled(false);
-                Toast.makeText(view.getContext(), "Llamo a recuperar contraseña", Toast.LENGTH_LONG)
-                        .show();
+                RecuperarPasswordDialog dialog = new RecuperarPasswordDialog();
+                dialog.show(getFragmentManager(), "Recuperar la contraseña Empresa");
             }
         });
 
@@ -141,6 +139,5 @@ public class FragmentEmpresaLogin extends Fragment {
         super.onResume();
         btnLoginEmpresa.setEnabled(true);
         textViewRegistro.setEnabled(true);
-        textViewRecuperarContrasenia.setEnabled(true);
     }
 }

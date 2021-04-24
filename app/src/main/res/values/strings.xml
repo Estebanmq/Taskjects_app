@@ -1,10 +1,15 @@
 <resources>
+
+    <!-- Textos de la aplicación -->
     <string name="app_name">Taskjects</string>
 
     <string name="ok">De acuerdo</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
 
     <string name="empleado">Empleado</string>
     <string name="empresa">Empresa</string>
+    <string name="email">Email</string>
     <string name="contrasenia">Contraseña</string>
 
     <string name="usuario">Usuario</string>
@@ -33,6 +38,7 @@
     <string name="agregar">Agregar</string>
     <string name="aniadirProyecto">Añadir proyecto</string>
     <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
+    <!-- FIN Textos de la aplicación -->
 
     <!-- Errores de aplicación -->
     <string name="faltaCif">Informe el CIF</string>
@@ -52,6 +58,7 @@
     <string name="faltaEmail">Informe su email</string>
     <string name="emailErroneo">Email erróneo</string>
     <string name="emailYaExiste">El email ya está registrado</string>
+    <string name="emailNoExiste">El email no está registrado</string>
 
     <string name="faltaPassword">Informe la contraseña de acceso</string>
     <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres</string>
@@ -72,7 +79,6 @@
     <string name="faltaJefeProyecto">Informe el empleado jefe</string>
     <string name="faltaDescripcion">Informe de la descripcion del proyecto</string>
     <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
-    <string name="cancelar">Cancelar</string>
     <string name="noSeEncuentranJefes">No se ha encontrado ningun jefe, antes debe de tener al menos 1 registrado</string>
 
     <!-- FIN Errores de aplicación -->
@@ -83,6 +89,8 @@
     <string name="fechaInicio">Fecha de inicio</string>
     <string name="jefeProyecto">Jefe del proyecto</string>
     <string name="crearProyecto">Crear proyecto</string>
+    <string name="envioEmail">Se le ha enviado un email a su cuenta</string>
 
     <!-- FIN Mensajes de aplicación -->
+
 </resources>

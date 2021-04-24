@@ -67,7 +67,7 @@
 
     <!-- TextView recuperacion de contraseña -->
     <TextView
-        android:id="@+id/textViewRecuperarContrasenia"
+        android:id="@+id/textViewRecuperarContraseniaEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

@@ -104,7 +104,6 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         //Todo: depurar e informar al usuario
         Log.d("Debug añadir tarea","entro dentro");
         boolean creoProyecto = true;
-        String jefeProyecto;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
             etNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
