@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 public class MainEmpresaActivity extends AppCompatActivity {
 
-    //Todo: Si borro el ultimo proyecto de una empresa no se quita de la interfaz SOLUCIONAR!!
     //Todo: Controlar el tamaño de los campos, se salen de los componentes
     //Componentes
     TextView tvInfoNoProyectos;

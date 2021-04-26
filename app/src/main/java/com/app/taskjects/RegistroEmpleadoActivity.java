@@ -3,6 +3,7 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -83,6 +84,37 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
 
         btRegistrar = findViewById(R.id.btRegistrar);
         lineaProgreso = findViewById(R.id.lineaProgreso);
+
+        //Inicializo la toolbar
+        Toolbar toolbarAniadirProyecto = findViewById(R.id.toolbarAniadirProyecto);
+        setSupportActionBar(toolbarAniadirProyecto);
+        toolbarAniadirProyecto.setTitle(getString(R.string.aniadirProyecto));
+        toolbarAniadirProyecto.inflateMenu(R.menu.menu_crear_proyecto);
+
+        //Muestro el boton de la flecha para volver atras
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbarAniadirProyecto.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
+                AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
+                alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaRegistroEmpleado))
+                        //Si pulsa en cancelar no salgo de la activity
+                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("taskjectsdebug","Salgo de la creacion de proyecto");
+                            }})
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            //Si pulsa en de acuerdo cierro la activity
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }})
+                        .show();
+            }
+        });
 
         mapCategorias = new LinkedHashMap<String, String>();
         cargarCategorias();
@@ -197,7 +229,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         });
 
         CollectionReference empleadosRef = db.collection(EMPLEADOS);
-        Query query = empleadosRef.whereEqualTo("nif", etNif.getText().toString());
+        Query query = empleadosRef.whereEqualTo("nif", etNif.getText().toString().toUpperCase());
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -220,7 +252,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
     private void validarCifFirestore() {
 
         CollectionReference empresasRef = db.collection(EMPRESAS);
-        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString());
+        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase());
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -273,7 +305,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
     private void darAltaEmpleado() {
 
         Log.d("taskjectsdebug", "entra en darAltaEmpresa");
-        Empleado empleado = new Empleado(etNif.getText().toString(), etNombre.getText().toString(), etApellidos.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), uidEmpresa, uidCategoria, user.getUid());
+        Empleado empleado = new Empleado(etNif.getText().toString().toUpperCase(), etNombre.getText().toString(), etApellidos.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), uidEmpresa, uidCategoria, user.getUid());
         db.collection(EMPLEADOS).add(empleado)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

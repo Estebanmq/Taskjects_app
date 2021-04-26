@@ -3,6 +3,7 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -66,6 +67,37 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         btRegistrar = findViewById(R.id.btRegistrar);
         lineaProgreso = findViewById(R.id.lineaProgreso);
 
+
+        //Inicializo la toolbar
+        Toolbar toolbarAniadirProyecto = findViewById(R.id.toolbarAniadirProyecto);
+        setSupportActionBar(toolbarAniadirProyecto);
+        toolbarAniadirProyecto.setTitle(getString(R.string.aniadirProyecto));
+        toolbarAniadirProyecto.inflateMenu(R.menu.menu_crear_proyecto);
+
+        //Muestro el boton de la flecha para volver atras
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbarAniadirProyecto.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
+                AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpresaActivity.this);
+                alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaRegistroEmpresa))
+                        //Si pulsa en cancelar no salgo de la activity
+                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("taskjectsdebug","Salgo de la creacion de proyecto");
+                            }})
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            //Si pulsa en de acuerdo cierro la activity
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }})
+                        .show();
+            }
+        });
     }
 
     public void registrar(View view) {
@@ -131,7 +163,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         });
 
         CollectionReference empresasRef = db.collection(EMPRESAS);
-        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString());
+        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase());
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -181,7 +213,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     private void darAltaEmpresa() {
 
         Log.d("taskjectsdebug", "entra en darAltaEmpresa");
-        Empresa empresa = new Empresa(etCif.getText().toString(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
+        Empresa empresa = new Empresa(etCif.getText().toString().toUpperCase(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
         db.collection(EMPRESAS).add(empresa)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

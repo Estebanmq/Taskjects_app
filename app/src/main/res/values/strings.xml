@@ -11,6 +11,9 @@
     <string name="empresa">Empresa</string>
     <string name="email">Email</string>
     <string name="contrasenia">Contraseña</string>
+    <string name="fechaInicio">Fecha de inicio</string>
+    <string name="jefeProyecto">Jefe de proyecto</string>
+    <string name="crearProyecto">Crear proyecto</string>
 
     <string name="usuario">Usuario</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
@@ -34,7 +37,7 @@
 
     <string name="noHayProyectos">No hay proyectos</string>
     <string name="nombreProyecto">Nombre del proyecto</string>
-    <string name="descripcionProyecto">Descripcion del proyecto</string>
+    <string name="descripcionProyecto">Descripción del proyecto</string>
     <string name="agregar">Agregar</string>
     <string name="aniadirProyecto">Añadir proyecto</string>
     <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
@@ -61,7 +64,7 @@
     <string name="emailNoExiste">El email no está registrado</string>
 
     <string name="faltaPassword">Informe la contraseña de acceso</string>
-    <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres</string>
+    <string name="passwordErroneo">"Contraseña incorrecta. Teclee entre 6 y 24 caracteres.</string>
 
     <string name="faltaCategoria">Seleccione la categoría profesional</string>
 
@@ -77,18 +80,17 @@
 
     <string name="faltaNombreProyecto">Informe el nombre de proyecto</string>
     <string name="faltaJefeProyecto">Informe el empleado jefe</string>
-    <string name="faltaDescripcion">Informe de la descripcion del proyecto</string>
+    <string name="faltaDescripcion">Informe de la descripción del proyecto</string>
     <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
-    <string name="noSeEncuentranJefes">No se ha encontrado ningun jefe, antes debe de tener al menos 1 registrado</string>
+    <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
+    <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
+    <string name="noSeEncuentranJefes">No se ha encontrado ningún jefe, antes debe de tener al menos 1 registrado</string>
 
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->
     <string name="altaEmpresaDone">Empresa dada de alta correctamente</string>
     <string name="altaEmpleadoDone">Empleado dado de alta correctamente</string>
-    <string name="fechaInicio">Fecha de inicio</string>
-    <string name="jefeProyecto">Jefe del proyecto</string>
-    <string name="crearProyecto">Crear proyecto</string>
     <string name="envioEmail">Se le ha enviado un email a su cuenta</string>
 
     <!-- FIN Mensajes de aplicación -->
