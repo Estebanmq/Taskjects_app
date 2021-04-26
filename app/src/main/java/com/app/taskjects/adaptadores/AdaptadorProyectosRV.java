@@ -1,4 +1,4 @@
-package com.app.taskjects.utils;
+package com.app.taskjects.adaptadores;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -39,7 +39,7 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.cvTvNombreProyecto.setText(listProyectos.get(position).getNombre());
         holder.cvTvDescripcionProyecto.setText(listProyectos.get(position).getDescripcion());
-        holder.cvTvJefeEmpleado.setText(listProyectos.get(position).getCifEmpleadoJefe());
+        holder.cvTvJefeEmpleado.setText(listProyectos.get(position).getUidEmpleadoJefe());
     }
 
 

@@ -5,15 +5,15 @@ public class Proyecto {
     public String uidEmpresa;
     public String nombre;
     public String descripcion;
-    public String cifEmpleadoJefe;
+    public String uidEmpleadoJefe;
 
     public Proyecto() {}
 
-    public Proyecto(String uidEmpresa, String nombre, String descripcion, String cifEmpleadoJefe) {
+    public Proyecto(String uidEmpresa, String nombre, String descripcion, String uidEmpleadoJefe) {
         this.uidEmpresa = uidEmpresa;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.cifEmpleadoJefe = cifEmpleadoJefe;
+        this.uidEmpleadoJefe = uidEmpleadoJefe;
     }
 
     public String getUidEmpresa() { return uidEmpresa; }
@@ -28,7 +28,7 @@ public class Proyecto {
 
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public String getCifEmpleadoJefe() { return cifEmpleadoJefe; }
+    public String getUidEmpleadoJefe() { return uidEmpleadoJefe; }
 
-    public void setCifEmpleadoJefe(String cifEmpleadoJefe) { this.cifEmpleadoJefe = cifEmpleadoJefe; }
+    public void setUidEmpleadoJefe(String uidEmpleadoJefe) { this.uidEmpleadoJefe = uidEmpleadoJefe; }
 }
