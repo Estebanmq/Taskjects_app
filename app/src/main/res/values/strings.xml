@@ -6,6 +6,8 @@
     <string name="ok">De acuerdo</string>
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
+    <string name="verPerfil">Ver perfil</string>
+    <string name="cerrarSesion">Cerrar sesión</string>
 
     <string name="empleado">Empleado</string>
     <string name="empresa">Empresa</string>

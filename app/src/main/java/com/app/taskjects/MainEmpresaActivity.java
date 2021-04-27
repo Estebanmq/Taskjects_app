@@ -16,6 +16,7 @@ import com.app.taskjects.pojos.Proyecto;
 import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.EventListener;
@@ -32,6 +33,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
     //Componentes
     TextView tvInfoNoProyectos;
     RecyclerView rvProyectos;
+    BottomAppBar bottomAppBar;
 
     //Variables para gestionar el usuario de firebase
     FirebaseAuth mAuth;
@@ -53,6 +55,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
 
         //Inicio componentes
         tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
+        bottomAppBar = findViewById(R.id.bottomAppBar);
 
         //Inicio variables
         mAuth = FirebaseAuth.getInstance();
@@ -76,9 +79,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
         Intent pantallaAniadirProyecto = new Intent(MainEmpresaActivity.this,AniadirProyectoActivity.class);
         pantallaAniadirProyecto.putExtra("uidEmpresa",uidEmpresa);
         startActivity(pantallaAniadirProyecto);
-
     }
-
 
     //Cargo el UID de la empresa que ha iniciado sesion en la app y si ok llamo a cargarProyectos()
     private void cargarUsuarioEmpresa() {
@@ -135,6 +136,4 @@ public class MainEmpresaActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 }
