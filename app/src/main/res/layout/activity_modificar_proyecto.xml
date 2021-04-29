@@ -49,7 +49,6 @@
                 android:id="@+id/etNombreProyecto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="60"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
         <!-- Fin TextInputLayout del nombre del proyecto -->
@@ -107,15 +106,13 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:text="@string/crearProyecto"
+            android:text="@string/modifProyecto"
             style="@style/Widget.MaterialComponents.Button"
             app:cornerRadius="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosJefe"
-            android:onClick="crearProyecto"
-            />
-
+            android:onClick="modificarProyecto" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,21 +11,15 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
-import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.pojos.Proyecto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -42,7 +36,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
     TextInputEditText etDescripcionProyecto;
     AutoCompleteTextView atvJefeEmpleado;
 
-    Map<String,String>mapJefes;
+    Map<String,String> mapJefes;
 
     //Variables para manejar la BBDD
     FirebaseFirestore db;
@@ -83,7 +77,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                         .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("AniadirProyectoActivity","Salgo de la creacion de proyecto");
+                                Log.d("AniadirProyectoActivity","Salgo de la creación de proyecto");
                             }
                         }).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             //Si pulsa en de acuerdo cierro la activity
@@ -121,7 +115,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
 
         if (creoProyecto) {
             //Aqui almaceno los datos del proyecto
-            Proyecto proyecto = new Proyecto(uidEmpresa,etNombreProyecto.getText().toString(),etDescripcionProyecto.getText().toString(),mapJefes.get(atvJefeEmpleado.getText().toString()));
+            Proyecto proyecto = new Proyecto(uidEmpresa, etNombreProyecto.getText().toString(), etDescripcionProyecto.getText().toString(), mapJefes.get(atvJefeEmpleado.getText().toString()));
             db.collection("proyectos")
                     .add(proyecto)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -168,12 +162,12 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                                 //Me recorro todos los datos que ha devuelto la query
                                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                     //Por cada empleado jefe que encuentra lo añade al map
-                                    mapJefes.put(documentSnapshot.getString("nombre") + " " + documentSnapshot.getString("apellidos"), documentSnapshot.getId());
+                                    mapJefes.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
                                 }
                             } else {
                                 //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
                                 atvJefeEmpleado.setError(getString(R.string.noSeEncuentranJefes));
-                                Log.d("AniadirProyectoActivity","No se han encontrado datos");
+                                Log.d("AniadirProyectoActivity","No se han encontrado empleados jefe");
                             }
                             //Le añado un adaptador al listado que mostrara los empelados jefe
                             atvJefeEmpleado.setAdapter(new ArrayAdapter<String>(AniadirProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
@@ -184,7 +178,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                                     .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            Log.d("AniadirProyectoActivity","Error al recuperar datos de la bbdd");
+                                            Log.d("AniadirProyectoActivity","Error al recuperar empleados jefe de la bbdd");
                                         }
                                     }).show();
                         }

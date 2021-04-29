@@ -16,6 +16,7 @@
     <string name="fechaInicio">Fecha de inicio</string>
     <string name="jefeProyecto">Jefe de proyecto</string>
     <string name="crearProyecto">Crear proyecto</string>
+    <string name="modifProyecto">Modificar proyecto</string>
 
     <string name="usuario">Usuario</string>
     <string name="iniciar_sesion">Iniciar sesión</string>

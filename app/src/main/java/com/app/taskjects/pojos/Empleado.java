@@ -1,19 +1,28 @@
 package com.app.taskjects.pojos;
 
+import com.google.firebase.firestore.DocumentId;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Empleado {
 
-    public String nif;
-    public String nombre;
-    public String apellidos;
-    public String email;
-    public String password;
-    public String uidEmpresa;
-    public String categoria;
-    public String uid;
+    @DocumentId
+    private String uid; // uid del registro en BD
+
+    private String nif;
+    private String nombre;
+    private String apellidos;
+    private String email;
+    private String password;
+    private String uidEmpresa;  // uid de la empresa del empleado
+    private String categoria;
+    private String uidAuth; // uid del empleado en Authentication
+    private List<String> uidProyectos;
 
     public Empleado() { }
 
-    public Empleado(String nif, String nombre, String apellidos, String email, String password, String uidEmpresa, String categoria, String uid) {
+    public Empleado(String nif, String nombre, String apellidos, String email, String password, String uidEmpresa, String categoria, String uidAuth) {
         this.nif = nif;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -21,6 +30,16 @@ public class Empleado {
         this.password = password;
         this.uidEmpresa = uidEmpresa;
         this.categoria = categoria;
+        this.uidAuth = uidAuth;
+        uidProyectos = new ArrayList<String>();
+    }
+
+    // GETTERS & SETTERS
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -66,12 +85,21 @@ public class Empleado {
         this.uidEmpresa = uidEmpresa;
     }
 
-    public String getUid() {
-        return uid;
+    public String getCategoria() { return categoria; }
+
+    public void setCategoria(String categoria) { this.categoria = categoria; }
+
+    public String getUidAuth() {
+        return uidAuth;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUidAuth(String uidAuth) {
+        this.uidAuth = uidAuth;
     }
+
+    public List<String> getUidProyectos() { return uidProyectos; }
+
+    public void setUidProyectos(List<String> uidProyectos) { this.uidProyectos = uidProyectos;
+    }
+
 }
-

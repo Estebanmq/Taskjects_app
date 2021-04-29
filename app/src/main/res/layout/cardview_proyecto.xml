@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/Theme.Taskjects"
+    android:padding="8dp"
     android:id="@+id/cvProyectos"
     android:animateLayoutChanges="true"
     app:cardCornerRadius="5dp"
     app:cardElevation="4dp"
-    app:cardUseCompatPadding="true">
+    app:cardUseCompatPadding="true"
+    android:clickable="true"
+    android:focusable="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
+        android:id="@+id/parent_layout"
         android:layout_width="match_parent"
-        android:layout_height="173dp"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/cvTvNombreProyecto"
-            android:layout_width="328dp"
-            android:layout_height="28dp"
+            android:layout_width="320dp"
+            android:layout_height="24dp"
             android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/cvTvDescripcionProyecto"
-            android:layout_width="327dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cvTvNombreProyecto" />
+            android:layout_width="320dp"
+            android:layout_height="56dp"
+            android:layout_below="@+id/cvTvNombreProyecto" />
 
         <TextView
             android:id="@+id/cvTvJefeEmpleado"
-            android:layout_width="322dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cvTvDescripcionProyecto" />
+            android:layout_width="320dp"
+            android:layout_height="24dp"
+            android:layout_below="@+id/cvTvDescripcionProyecto" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/cvTvUid"
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cvTvJefeEmpleado" />
+
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,22 +1,36 @@
 package com.app.taskjects.pojos;
 
+import com.google.firebase.firestore.DocumentId;
+
 public class Empresa {
 
-    public String cif;
-    public String nombre;
-    public String direccion;
-    public String email;
-    public String password;
-    public String uid;
+    @DocumentId
+    private String uid; // uid del registro en BD
+
+    private String cif;
+    private String nombre;
+    private String direccion;
+    private String email;
+    private String password;
+    private String uidAuth;
 
     public Empresa() { }
 
-    public Empresa(String cif, String nombre, String direccion, String email, String password, String uid) {
+    public Empresa(String cif, String nombre, String direccion, String email, String password, String uidAuth) {
         this.cif = cif;
         this.nombre = nombre;
         this.direccion = direccion;
         this.email = email;
         this.password = password;
+        this.uidAuth = uidAuth;
+    }
+
+    // GETTERS & SETTERS
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -54,11 +68,11 @@ public class Empresa {
         this.password = password;
     }
 
-    public String getUid() {
-        return uid;
+    public String getUidAuth() {
+        return uidAuth;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUidAuth(String uidAuth) {
+        this.uidAuth = uidAuth;
     }
 }
