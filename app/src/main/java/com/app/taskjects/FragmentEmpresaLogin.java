@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class FragmentEmpresaLogin extends Fragment {
         outlinedTextFieldEmailEmpresa = view.findViewById(R.id.outlinedTextFieldEmailEmpresa);
         etContraseniaEmpresa = view.findViewById(R.id.etContraseniaEmpresa);
         outlinedTextFieldContraseniaEmpresa = view.findViewById(R.id.outlinedTextFieldContraseniaEmpresa);
-        btnLoginEmpresa = view.findViewById(R.id.btnLoginEmpresa);
+        btnLoginEmpresa = view.findViewById(R.id.btnModifProyecto);
 
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
         textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +63,6 @@ public class FragmentEmpresaLogin extends Fragment {
                 dialog.show(getFragmentManager(), "Recuperar la contraseña Empresa");
             }
         });
-
 
         //Le agrego un Listener al TextView de registro para abrir la pantalla de registro para empresas
         textViewRegistro.setOnClickListener(new View.OnClickListener() {

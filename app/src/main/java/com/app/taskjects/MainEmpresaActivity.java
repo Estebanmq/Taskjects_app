@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.taskjects.pojos.Proyecto;
 import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
@@ -76,13 +77,6 @@ public class MainEmpresaActivity extends AppCompatActivity {
         cargarUsuarioEmpresa();
     }
 
-    //Metodo que muestra el fragment para añadir un proyecto
-    public void aniadirProyecto(View view) {
-        Intent pantallaAniadirProyecto = new Intent(MainEmpresaActivity.this,AniadirProyectoActivity.class);
-        pantallaAniadirProyecto.putExtra("uidEmpresa",uidEmpresa);
-        startActivity(pantallaAniadirProyecto);
-    }
-
     //Cargo el UID de la empresa que ha iniciado sesion en la app y si ok llamo a cargarProyectos()
     private void cargarUsuarioEmpresa() {
         db.collection("empresas")
@@ -121,21 +115,18 @@ public class MainEmpresaActivity extends AppCompatActivity {
                                     mapJefes.put(documentSnapshot.getId(), documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))));
                                 }
                                 //Una vez que ya he recuperados los usuarios Jefe cargo los proyectos (Promesas de firebase)
-                                cargarProyectos();
                             } else {
                                 //Si task.isEmpty() devuelve true entonces no se han encontrado registros
+                                Toast.makeText(MainEmpresaActivity.this, getString(R.string.noSeEncuentranJefes), Toast.LENGTH_LONG).show();
                                 Log.d("MainEmpresaActivity","No se han encontrado empleados jefe");
+                                findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
                             }
+                            cargarProyectos();
                         } else {
                             //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                            AlertDialog.Builder alertaNoDatosBBDD = new AlertDialog.Builder(MainEmpresaActivity.this);
-                            alertaNoDatosBBDD.setMessage(getString(R.string.errorAccesoBD))
-                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Log.d("MainEmpresaActivity","Error al recuperar empleados jefe de la bbdd");
-                                        }
-                                    }).show();
+                            Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
+                            Log.d("MainEmpresaActivity","ha habido algún error en la recuperación de empleados jefe");
                         }
                     }
                 });
@@ -179,5 +170,11 @@ public class MainEmpresaActivity extends AppCompatActivity {
                 });
     }
 
+    //Metodo que muestra el fragment para añadir un proyecto
+    public void aniadirProyecto(View view) {
+        Intent pantallaAniadirProyecto = new Intent(MainEmpresaActivity.this,AniadirProyectoActivity.class);
+        pantallaAniadirProyecto.putExtra("uidEmpresa", uidEmpresa);
+        startActivity(pantallaAniadirProyecto);
+    }
 
 }

@@ -84,7 +84,7 @@
 
     <!-- Boton de login -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLoginEmpresa"
+        android:id="@+id/btnModifProyecto"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginStart="24dp"
@@ -109,7 +109,7 @@
         android:background="#707070"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoginEmpresa" />
+        app:layout_constraintTop_toBottomOf="@+id/btnModifProyecto" />
 
     <!-- TextView pregunta no tienes cuenta-->
     <TextView

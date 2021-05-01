@@ -1,6 +1,8 @@
 package com.app.taskjects.pojos;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,9 @@ public class Empleado {
 
     @DocumentId
     private String uid; // uid del registro en BD
+
+    @ServerTimestamp
+    private Timestamp fechaHoraCreacion; // Fecha y hora a la que se crea el registro
 
     private String nif;
     private String nombre;
@@ -41,6 +46,14 @@ public class Empleado {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public Timestamp getFechaHoraCreacion() {
+        return fechaHoraCreacion;
+    }
+
+    public void setFechaHoraCreacion(Timestamp fechaHoraCreacion) {
+        this.fechaHoraCreacion = fechaHoraCreacion;
     }
 
     public String getNif() {

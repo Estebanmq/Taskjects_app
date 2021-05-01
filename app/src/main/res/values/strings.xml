@@ -37,13 +37,15 @@
     <string name="apellidosEmpleado">Apellidos</string>
     <string name="emailEmpleado">Email</string>
 
-
     <string name="noHayProyectos">No hay proyectos</string>
     <string name="nombreProyecto">Nombre del proyecto</string>
     <string name="descripcionProyecto">Descripción del proyecto</string>
     <string name="agregar">Agregar</string>
+    <string name="editar">Editar</string>
     <string name="aniadirProyecto">Añadir proyecto</string>
     <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
+
+    <string name="creadoEl">Creado el</string>
     <!-- FIN Textos de la aplicación -->
 
     <!-- Errores de aplicación -->
@@ -85,17 +87,16 @@
     <string name="faltaJefeProyecto">Informe el empleado jefe</string>
     <string name="faltaDescripcion">Informe de la descripción del proyecto</string>
     <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
+    <string name="confirmSalidaModifProyecto">¿Desea cancelar la modificación del proyecto? Los cambios se perderan</string>
     <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
     <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
-    <string name="noSeEncuentranJefes">No se ha encontrado ningún jefe, antes debe de tener al menos 1 registrado</string>
-
+    <string name="noSeEncuentranJefes">No se ha encontrado ningún jefe de proyecto, debe registrarse al menos uno</string>
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->
     <string name="altaEmpresaDone">Empresa dada de alta correctamente</string>
     <string name="altaEmpleadoDone">Empleado dado de alta correctamente</string>
     <string name="envioEmail">Se le ha enviado un email a su cuenta</string>
-
     <!-- FIN Mensajes de aplicación -->
 
 </resources>

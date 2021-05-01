@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarAniadirProyecto"
+            android:id="@+id/toolbarModificarProyecto"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/purple_500"
@@ -49,10 +49,11 @@
                 android:id="@+id/etNombreProyecto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
+                android:maxLength="60"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
         <!-- Fin TextInputLayout del nombre del proyecto -->
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/outlinedTextFieldDescripcionProyecto"
@@ -74,6 +75,7 @@
                 android:layout_height="match_parent"
                 android:gravity="top|start"
                 android:maxLength="254"
+                android:enabled="false"
                 android:maxLines="4" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,24 +97,40 @@
                 android:id="@+id/atvJefeEmpleado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:editable="false"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLoginEmpresa"
+            android:id="@+id/btnModifProyecto"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
+            android:onClick="modificarProyecto"
             android:text="@string/modifProyecto"
-            style="@style/Widget.MaterialComponents.Button"
+            android:visibility="invisible"
             app:cornerRadius="24dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.507"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosJefe"
-            android:onClick="modificarProyecto" />
+            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosJefe" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvFechaHoraCreacion"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </com.google.android.material.textview.MaterialTextView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

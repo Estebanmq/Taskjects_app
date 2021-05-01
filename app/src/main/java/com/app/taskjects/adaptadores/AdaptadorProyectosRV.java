@@ -54,6 +54,7 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
 
                 Intent pantallaModificarProyecto = new Intent(context, ModificarProyectoActivity.class);
                 pantallaModificarProyecto.putExtra("uidProyecto",listProyectos.get(position).getUid());
+                pantallaModificarProyecto.putExtra("uidEmpresa",listProyectos.get(position).getUidEmpresa());
                 context.startActivity(pantallaModificarProyecto);
 
             }

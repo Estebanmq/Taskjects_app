@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import com.app.taskjects.pojos.Proyecto;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -89,14 +90,40 @@ public class AniadirProyectoActivity extends AppCompatActivity {
             }
         });
 
-
         cargarEmpleadosJefe();
     }
 
+    private void cargarEmpleadosJefe() {
+        db.collection("empleados")
+                .whereEqualTo("uidEmpresa",uidEmpresa)
+                .whereEqualTo("categoria","1")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (!task.getResult().isEmpty()) {
+                                //Me recorro todos los datos que ha devuelto la query
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    //Por cada empleado jefe que encuentra lo añade al map
+                                    mapJefes.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
+                                }
+                                //Le añado un adaptador al listado que mostrara los empleados jefe
+                                atvJefeEmpleado.setAdapter(new ArrayAdapter<String>(AniadirProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
+                            } else {
+                                //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
+                                Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorGeneral), Toast.LENGTH_LONG).show();
+                                Log.d("AniadirProyectoActivity","No se han encontrado empleados jefe");
+                            }
+                        } else {
+                            //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                            Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
 
     public void crearProyecto(View view) {
-        //Todo: depurar e informar al usuario
-        Log.d("Debug añadir tarea","entro dentro");
         boolean creoProyecto = true;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
@@ -147,43 +174,6 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                     });
         }
 
-    }
-
-    private void cargarEmpleadosJefe() {
-        db.collection("empleados")
-                .whereEqualTo("uidEmpresa",uidEmpresa)
-                .whereEqualTo("categoria","1")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (!task.getResult().isEmpty()) {
-                                //Me recorro todos los datos que ha devuelto la query
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    //Por cada empleado jefe que encuentra lo añade al map
-                                    mapJefes.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
-                                }
-                            } else {
-                                //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
-                                atvJefeEmpleado.setError(getString(R.string.noSeEncuentranJefes));
-                                Log.d("AniadirProyectoActivity","No se han encontrado empleados jefe");
-                            }
-                            //Le añado un adaptador al listado que mostrara los empelados jefe
-                            atvJefeEmpleado.setAdapter(new ArrayAdapter<String>(AniadirProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
-                        } else {
-                            //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                            AlertDialog.Builder alertaNoDatosBBDD = new AlertDialog.Builder(AniadirProyectoActivity.this);
-                            alertaNoDatosBBDD.setMessage(getString(R.string.errorAccesoBD))
-                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Log.d("AniadirProyectoActivity","Error al recuperar empleados jefe de la bbdd");
-                                        }
-                                    }).show();
-                        }
-                    }
-                });
     }
 
 }
