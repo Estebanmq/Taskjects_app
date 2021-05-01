@@ -39,6 +39,7 @@ public class FragmentEmpleadoLogin extends Fragment {
             @Override
             public void onClick(View v) {
                startActivity(new Intent(view.getContext(), RegistroEmpleadoActivity.class));
+               getActivity().finish();
             }
         });
 

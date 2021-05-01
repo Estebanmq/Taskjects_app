@@ -3,7 +3,6 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,8 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainEmpresaActivity extends AppCompatActivity {
+public class MainEmpresaActivity extends MenuToolbarActivity {
 
     //Todo: Controlar el tamaño de los campos, se salen de los componentes
     //Componentes
@@ -67,6 +66,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
         //Inicio componentes
         tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
         bottomAppBar = findViewById(R.id.bottomAppBar);
+        setSupportActionBar(bottomAppBar);
 
         //Inicio variables
         mAuth = FirebaseAuth.getInstance();
@@ -197,4 +197,27 @@ public class MainEmpresaActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d("taskjectsdebug","Pulsado botón atrás en la activity");
+            AlertDialog.Builder alertaSalidaAplicacion = new AlertDialog.Builder(this);
+            alertaSalidaAplicacion.setMessage(getString(R.string.confirmSalidaAplicacion))
+                    //Si pulsa en cancelar no hace nada
+                    .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
+                        }})
+                    .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+                        //Si pulsa en de acuerdo cierra la aplicación
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            borrarSharedPreferences();
+                            finishAffinity();
+                        }}).show();
+        }
+
+        return true;
+    }
 }

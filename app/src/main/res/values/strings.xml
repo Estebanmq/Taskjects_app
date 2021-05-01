@@ -48,6 +48,13 @@
     <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
     <string name="modifProyectoCorrecta">El proyecto se ha modificado correctamente</string>
 
+    <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
+    <string name="confirmSalidaModifProyecto">¿Desea cancelar la modificación del proyecto? Los cambios se perderan</string>
+    <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
+    <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
+    <string name="confirmCerrarSesion">¿Desea cerrar la sesión?</string>
+    <string name="confirmSalidaAplicacion">¿Desea salir de la aplicación?</string>
+
     <string name="creadoEl">Creado el</string>
     <!-- FIN Textos de la aplicación -->
 
@@ -89,10 +96,6 @@
     <string name="faltaNombreProyecto">Informe el nombre de proyecto</string>
     <string name="faltaJefeProyecto">Informe el empleado jefe</string>
     <string name="faltaDescripcion">Informe de la descripción del proyecto</string>
-    <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
-    <string name="confirmSalidaModifProyecto">¿Desea cancelar la modificación del proyecto? Los cambios se perderan</string>
-    <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
-    <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
     <string name="noSeEncuentranJefes">No se ha encontrado ningún jefe de proyecto, debe registrarse al menos uno</string>
     <string name="noHayCambios">No se han producido cambios</string>
     <!-- FIN Errores de aplicación -->

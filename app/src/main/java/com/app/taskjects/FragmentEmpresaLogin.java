@@ -98,6 +98,7 @@ public class FragmentEmpresaLogin extends Fragment {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
+                        getActivity().finish();
                     } else {
                         Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
                         btnLoginEmpresa.setEnabled(true);

@@ -94,15 +94,14 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                             .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("taskjectsdebug","Salgo de la modificación de proyecto");
-                                }
-                            }).setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-                        //Si pulsa en de acuerdo cierro la activity
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    }).show();
+                                    Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
+                                }})
+                            .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+                                //Si pulsa en de acuerdo cierro la activity
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }}).show();
                 } else {
                     finish();
                 }
@@ -180,7 +179,6 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         etDescripcionProyecto.setText(proyecto.getDescripcion());
         atvJefeEmpleado.setText(nombreJefe);
         tvFechaHoraCreacion.setText(getString(R.string.creadoEl).concat(" ").concat(Conversor.timestampToString(Locale.getDefault(), proyecto.getFechaHoraCreacion())));
-
 
     }
 

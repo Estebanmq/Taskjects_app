@@ -6,7 +6,6 @@
     <item
         android:id="@+id/verPerfil"
         android:contentDescription="@string/verPerfil"
-        android:icon="@drawable/ic_cerrar_24dp"
         android:title="@string/verPerfil"
         app:showAsAction="never" />
 
