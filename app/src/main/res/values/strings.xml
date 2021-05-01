@@ -8,6 +8,7 @@
     <string name="cancelar">Cancelar</string>
     <string name="verPerfil">Ver perfil</string>
     <string name="cerrarSesion">Cerrar sesión</string>
+    <string name="salir">Salir</string>
 
     <string name="empleado">Empleado</string>
     <string name="empresa">Empresa</string>
@@ -41,9 +42,11 @@
     <string name="nombreProyecto">Nombre del proyecto</string>
     <string name="descripcionProyecto">Descripción del proyecto</string>
     <string name="agregar">Agregar</string>
+    <string name="volver">Volver</string>
     <string name="editar">Editar</string>
     <string name="aniadirProyecto">Añadir proyecto</string>
     <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
+    <string name="modifProyectoCorrecta">El proyecto se ha modificado correctamente</string>
 
     <string name="creadoEl">Creado el</string>
     <!-- FIN Textos de la aplicación -->
@@ -91,6 +94,7 @@
     <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
     <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
     <string name="noSeEncuentranJefes">No se ha encontrado ningún jefe de proyecto, debe registrarse al menos uno</string>
+    <string name="noHayCambios">No se han producido cambios</string>
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->

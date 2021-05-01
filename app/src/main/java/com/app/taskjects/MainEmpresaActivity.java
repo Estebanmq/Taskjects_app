@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -80,7 +82,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
     //Cargo el UID de la empresa que ha iniciado sesion en la app y si ok llamo a cargarProyectos()
     private void cargarUsuarioEmpresa() {
         db.collection("empresas")
-                .whereEqualTo("uid",user.getUid())
+                .whereEqualTo("uidAuth", user.getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -88,7 +90,9 @@ public class MainEmpresaActivity extends AppCompatActivity {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 uidEmpresa = documentSnapshot.getId();
-                                Log.d("MainEmpresaActivityDebug","Empresa actual: "+uidEmpresa);
+                                Log.d("taskjectsdebug","Empresa actual: "+uidEmpresa);
+                                //Carga las SharedPreferences de la empresa
+                                cargarSharedPreferences(documentSnapshot);
                                 //Una vez que ya he recuperado el usuario cargo sus empleados Jefe
                                 cargarEmpleadosJefe();
                             }
@@ -114,19 +118,19 @@ public class MainEmpresaActivity extends AppCompatActivity {
                                     //Por cada empleado jefe que encuentra lo añade al map
                                     mapJefes.put(documentSnapshot.getId(), documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))));
                                 }
-                                //Una vez que ya he recuperados los usuarios Jefe cargo los proyectos (Promesas de firebase)
                             } else {
                                 //Si task.isEmpty() devuelve true entonces no se han encontrado registros
                                 Toast.makeText(MainEmpresaActivity.this, getString(R.string.noSeEncuentranJefes), Toast.LENGTH_LONG).show();
-                                Log.d("MainEmpresaActivity","No se han encontrado empleados jefe");
+                                Log.d("taskjectsdebug","No se han encontrado empleados jefe");
                                 findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
                             }
+                            //Una vez que ya he recuperados los usuarios Jefe cargo los proyectos (Promesas de firebase)
                             cargarProyectos();
                         } else {
                             //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
                             Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                             findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
-                            Log.d("MainEmpresaActivity","ha habido algún error en la recuperación de empleados jefe");
+                            Log.d("taskjectsdebug","ha habido algún error en la recuperación de empleados jefe");
                         }
                     }
                 });
@@ -141,7 +145,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                         if (error != null) {
-                            Log.w("MainEmpresaActivityDebug", "Error en el listen");
+                            Log.d("taskjectsdebug", "Error en el listen");
                             return;
                         }
                         listProyectos.clear();
@@ -159,7 +163,7 @@ public class MainEmpresaActivity extends AppCompatActivity {
                                         documentSnapshot.getString("nombre"),
                                         descripcion,
                                         nombreJefeProyecto));
-                                Log.d("MainEmpresaActivityDebug", "Proyecto encontrado " + documentSnapshot.getString("nombre") +
+                                Log.d("taskjectsdebug", "Proyecto encontrado " + documentSnapshot.getString("nombre") +
                                         documentSnapshot.getString("uidEmpresa"));
                             }
 
@@ -175,6 +179,22 @@ public class MainEmpresaActivity extends AppCompatActivity {
         Intent pantallaAniadirProyecto = new Intent(MainEmpresaActivity.this,AniadirProyectoActivity.class);
         pantallaAniadirProyecto.putExtra("uidEmpresa", uidEmpresa);
         startActivity(pantallaAniadirProyecto);
+    }
+
+    private void cargarSharedPreferences(QueryDocumentSnapshot documentSnapshot) {
+
+        SharedPreferences pref = getSharedPreferences(uidEmpresa, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("tipoLogin", "E");
+        editor.putString("uidEmpresa", uidEmpresa);
+        editor.putString("cif", documentSnapshot.getString("cif"));
+        editor.putString("nombre", documentSnapshot.getString("nombre"));
+        editor.putString("direccion", documentSnapshot.getString("direccion"));
+        editor.putString("email", documentSnapshot.getString("email"));
+        editor.putString("password", documentSnapshot.getString("password"));
+        editor.putString("uidAuth", documentSnapshot.getString("uidAuth"));
+        editor.commit();
+
     }
 
 }

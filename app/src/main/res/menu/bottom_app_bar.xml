@@ -5,14 +5,21 @@
 
     <item
         android:id="@+id/verPerfil"
-        android:title="@string/verPerfil"
         android:contentDescription="@string/verPerfil"
+        android:icon="@drawable/ic_cerrar_24dp"
+        android:title="@string/verPerfil"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/cerrarSesion"
         android:title="@string/cerrarSesion"
         android:contentDescription="@string/cerrarSesion"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/salir"
+        android:title="@string/salir"
+        android:contentDescription="@string/salir"
         app:showAsAction="never" />
 
 </menu>

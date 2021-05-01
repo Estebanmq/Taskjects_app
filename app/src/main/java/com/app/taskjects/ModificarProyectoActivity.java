@@ -8,6 +8,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -49,6 +52,9 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     String uidProyecto;
     String uidEmpresa;
 
+    //Datos del proyecto antes de la actualización
+    Proyecto proyecto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,18 +77,14 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         mapJefes = new HashMap<>();
 
         //Inicializo la toolbar
-        Toolbar toolbarModificarProyecto = findViewById(R.id.toolbarModificarProyecto);
-        setSupportActionBar(toolbarModificarProyecto);
-        toolbarModificarProyecto.setTitle(getString(R.string.modifProyecto));
-        toolbarModificarProyecto.inflateMenu(R.menu.menu_modificar_proyecto);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        //Muestro el boton de la flecha para volver atras
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbarModificarProyecto.setNavigationOnClickListener(new View.OnClickListener() {
+        //Captura el click de volver atrás
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.d("taskjectsdebug", "Captura el click de volver atrás en la toolbar");
                 //Si está en modo edición...
                 if (modoEdit) {
                     //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
@@ -94,7 +96,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("taskjectsdebug","Salgo de la modificación de proyecto");
                                 }
-                            }).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            }).setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
                         //Si pulsa en de acuerdo cierro la activity
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -156,8 +158,6 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                                         nombreJefe = documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos"));
                                     }
                                 }
-                                //Le añado un adaptador al listado que mostrara los empleados jefe
-                                atvJefeEmpleado.setAdapter(new ArrayAdapter<>(ModificarProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
                                 cargarDatosPantalla();
                             } else {
                                 //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
@@ -173,10 +173,88 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     }
 
     private void cargarDatosPantalla() {
-        Proyecto proyecto = document.toObject(Proyecto.class);
+        //Obtiene el proyecto desde el DocumentSnapshot. Se quedan guardados sus datos para comprobar posteriormente si se han producido cambios
+        proyecto = document.toObject(Proyecto.class);
+
         etNombreProyecto.setText(proyecto.getNombre());
         etDescripcionProyecto.setText(proyecto.getDescripcion());
         atvJefeEmpleado.setText(nombreJefe);
         tvFechaHoraCreacion.setText(getString(R.string.creadoEl).concat(" ").concat(Conversor.timestampToString(Locale.getDefault(), proyecto.getFechaHoraCreacion())));
+
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_modificar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itemEditar:
+                editar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void editar() {
+        modoEdit = true;
+        etNombreProyecto.setEnabled(true);
+        etDescripcionProyecto.setEnabled(true);
+        //Le añado un adaptador al listado que mostrara los empleados jefe
+        atvJefeEmpleado.setAdapter(new ArrayAdapter<>(ModificarProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
+        atvJefeEmpleado.setEnabled(true);
+        findViewById(R.id.btnModifProyecto).setVisibility(View.VISIBLE);
+    }
+
+    public void modificarProyecto(View view) {
+
+        //Comprueba si se han producido cambios...
+        if (etNombreProyecto.getText().toString().equals(proyecto.getNombre()) &&
+                etDescripcionProyecto.getText().toString().equals(proyecto.getDescripcion()) &&
+                mapJefes.get(atvJefeEmpleado.getText().toString()).equals(proyecto.getUidEmpleadoJefe())) {
+            //Si no se han producido cambios se muestra un Toast y no permite continuar
+            Toast.makeText(ModificarProyectoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
+        } else {
+
+            proyecto.setNombre(etNombreProyecto.getText().toString());
+            proyecto.setDescripcion(etDescripcionProyecto.getText().toString());
+            proyecto.setUidEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()));
+
+            DocumentReference proyectoUpdate = db.collection("proyectos").document(uidProyecto);
+            proyectoUpdate.set(proyecto).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("ModificarProyectoActivity","Proyecto modificado correctamente");
+                        AlertDialog.Builder alertaModificacionProyectoCorrecta = new AlertDialog.Builder(ModificarProyectoActivity.this);
+                        alertaModificacionProyectoCorrecta.setMessage(getString(R.string.modifProyectoCorrecta))
+                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        finish();
+                                    }
+                                }).show();
+                    } else {
+                        AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(ModificarProyectoActivity.this);
+                        alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
+                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("AniadirProyectoActivity","Error al subir proyecto a bbdd");
+                                    }
+                                }).show();
+                    }
+                }
+            });
+
+        }
+
+    }
+
 }

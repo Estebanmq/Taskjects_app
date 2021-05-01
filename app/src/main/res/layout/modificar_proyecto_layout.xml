@@ -6,22 +6,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Definición de la Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarModificarProyecto"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_500"
-            android:paddingStart="6dp"
-            android:paddingEnd="16dp"
-            app:contentInsetStartWithNavigation="0dp"
-            />
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/top_toolbar" />
+
     </com.google.android.material.appbar.AppBarLayout>
+    <!-- FIN Definición de la toolbar -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"

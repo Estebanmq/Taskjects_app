@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/itemGuardarProyecto"
-        android:title="@string/agregar"
-        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/itemEditarProyecto"
+        android:id="@+id/itemEditar"
+        android:icon="@drawable/ic_edit_24dp"
+        android:iconTint="@color/white"
         android:title="@string/editar"
-        app:showAsAction="ifRoom" />
+        android:contentDescription="@string/editar"
+        app:showAsAction="always" />
 </menu>

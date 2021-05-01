@@ -35,7 +35,7 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
 
     @Override
     public AdaptadorProyectosRV.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.cardview_proyecto, null);
+        View view = mInflater.inflate(R.layout.cardview_proyecto, parent, false);
         return new ViewHolder(view);
     }
 

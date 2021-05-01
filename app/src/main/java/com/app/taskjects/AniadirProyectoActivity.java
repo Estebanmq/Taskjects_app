@@ -10,6 +10,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -60,15 +63,11 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         mapJefes = new HashMap<>();
 
         //Inicializo la toolbar
-        Toolbar toolbarAniadirProyecto = findViewById(R.id.toolbarAniadirProyecto);
-        setSupportActionBar(toolbarAniadirProyecto);
-        toolbarAniadirProyecto.setTitle(getString(R.string.aniadirProyecto));
-        toolbarAniadirProyecto.inflateMenu(R.menu.menu_crear_proyecto);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        //Muestro el boton de la flecha para volver atras
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbarAniadirProyecto.setNavigationOnClickListener(new View.OnClickListener() {
+        //Captura el click de volver atrás
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
@@ -80,7 +79,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Log.d("AniadirProyectoActivity","Salgo de la creación de proyecto");
                             }
-                        }).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        }).setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
                             //Si pulsa en de acuerdo cierro la activity
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -176,4 +175,21 @@ public class AniadirProyectoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_crear, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+//            case R.id. : // Aquí la opción pulsada
+//                .        // Aquí lo que haya que hacer
+//                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

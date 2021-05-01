@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/cvTvNombreProyecto"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_marginStart="2dp"
             android:textColor="@color/black"
@@ -30,13 +30,13 @@
 
         <TextView
             android:id="@+id/cvTvDescripcionProyecto"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_below="@+id/cvTvNombreProyecto" />
 
         <TextView
             android:id="@+id/cvTvJefeEmpleado"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:layout_below="@+id/cvTvDescripcionProyecto" />
 
