@@ -44,8 +44,8 @@ public class ModificarProyectoActivity extends AppCompatActivity {
 
     //Variables de control de la clase
     boolean modoEdit;
-    Map<String,String> mapJefesXNombre;
-    Map<String,String> mapJefesXUid;
+    Map<String,String> mapJefes;
+    String nombreJefe;
     String uidProyecto;
     String uidEmpresa;
 
@@ -68,8 +68,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         //Aqui almacenare los empleados jefe
-        mapJefesXNombre = new HashMap<>();
-        mapJefesXUid = new HashMap<>();
+        mapJefes = new HashMap<>();
 
         //Inicializo la toolbar
         Toolbar toolbarModificarProyecto = findViewById(R.id.toolbarModificarProyecto);
@@ -152,11 +151,13 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                                 //Me recorro todos los datos que ha devuelto la query
                                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                     //Por cada empleado jefe que encuentra lo añade al map
-                                    mapJefesXNombre.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
-                                    mapJefesXUid.put(documentSnapshot.getId(), documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))));
+                                    mapJefes.put(documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos")) , documentSnapshot.getId());
+                                    if (documentSnapshot.getId().equals(document.getString("uidEmpleadoJefe"))) {
+                                        nombreJefe = documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos"));
+                                    }
                                 }
                                 //Le añado un adaptador al listado que mostrara los empleados jefe
-                                atvJefeEmpleado.setAdapter(new ArrayAdapter<String>(ModificarProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefesXNombre.keySet())));
+                                atvJefeEmpleado.setAdapter(new ArrayAdapter<>(ModificarProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
                                 cargarDatosPantalla();
                             } else {
                                 //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
@@ -175,7 +176,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         Proyecto proyecto = document.toObject(Proyecto.class);
         etNombreProyecto.setText(proyecto.getNombre());
         etDescripcionProyecto.setText(proyecto.getDescripcion());
-        atvJefeEmpleado.setText(mapJefesXUid.get(proyecto.getUidEmpleadoJefe()));
+        atvJefeEmpleado.setText(nombreJefe);
         tvFechaHoraCreacion.setText(getString(R.string.creadoEl).concat(" ").concat(Conversor.timestampToString(Locale.getDefault(), proyecto.getFechaHoraCreacion())));
     }
 }
