@@ -16,4 +16,10 @@ public class Conversor {
         return DateFormat.format("dd MMMM yyyy hh:mm:ss", cal).toString();
     }
 
+    public static String timestampToString(Locale locale, Long timestamp) {
+        Calendar cal = Calendar.getInstance(locale);
+        cal.setTimeInMillis(timestamp);
+        return DateFormat.format("dd MMMM yyyy hh:mm:ss", cal).toString();
+    }
+
 }

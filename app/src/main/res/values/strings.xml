@@ -18,6 +18,7 @@
     <string name="jefeProyecto">Jefe de proyecto</string>
     <string name="crearProyecto">Crear proyecto</string>
     <string name="modifProyecto">Modificar proyecto</string>
+    <string name="modifPerfil">Modificar perfil</string>
 
     <string name="usuario">Usuario</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
@@ -47,18 +48,22 @@
     <string name="aniadirProyecto">Añadir proyecto</string>
     <string name="creacionProyectoCorrecta">El proyecto se ha creado correctamente</string>
     <string name="modifProyectoCorrecta">El proyecto se ha modificado correctamente</string>
+    <string name="modifPerfilCorrecta">El perfil se ha modificado correctamente</string>
 
     <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
     <string name="confirmSalidaModifProyecto">¿Desea cancelar la modificación del proyecto? Los cambios se perderan</string>
+    <string name="confirmSalidaModifPerfil">¿Desea cancelar la modificación del perfil? Los cambios se perderan</string>
     <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
     <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
     <string name="confirmCerrarSesion">¿Desea cerrar la sesión?</string>
     <string name="confirmSalidaAplicacion">¿Desea salir de la aplicación?</string>
 
     <string name="creadoEl">Creado el</string>
+    <string name="ultimoLoginEl">Último login el</string>
     <!-- FIN Textos de la aplicación -->
 
     <!-- Errores de aplicación -->
+    <string name="error">Error!</string>
     <string name="faltaCif">Informe el CIF</string>
     <string name="cifErroneo">CIF erróneo</string>
     <string name="cifYaExiste">El CIF informado ya existe</string>

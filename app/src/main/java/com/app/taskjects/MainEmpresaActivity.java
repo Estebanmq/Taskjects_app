@@ -182,7 +182,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
     private void cargarSharedPreferences(QueryDocumentSnapshot documentSnapshot) {
 
-        SharedPreferences pref = getSharedPreferences(uidEmpresa, Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("tipoLogin", "E");
         editor.putString("uidEmpresa", uidEmpresa);
@@ -192,7 +192,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
         editor.putString("email", documentSnapshot.getString("email"));
         editor.putString("password", documentSnapshot.getString("password"));
         editor.putString("uidAuth", documentSnapshot.getString("uidAuth"));
-        editor.commit();
+        editor.apply();
 
     }
 

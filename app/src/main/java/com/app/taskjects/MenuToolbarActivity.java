@@ -46,6 +46,17 @@ public class MenuToolbarActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.verPerfil:
                 Log.d("taskjectsdebug","Pulsada acción verPerfil");
+
+                Intent intent;
+                //Dependiendo de si es una empresa o un empleado llama a ver una activity u otra
+                if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
+                    intent = new Intent(MenuToolbarActivity.this, PerfilEmpresaActivity.class);
+                } else {
+                    //Todo: hacer PerfilEmpleadoActivity y cambiar la línea de abajo con el nombre correcto
+                    //intent = new Intent(MenuToolbarActivity.this, PerfilEmpleadoActivity.class);
+                    intent = new Intent(MenuToolbarActivity.this, PerfilEmpresaActivity.class);
+                }
+                startActivity(intent);
                 return true;
             case R.id.cerrarSesion:
                 Log.d("taskjectsdebug","Pulsada acción cerrarSesión");

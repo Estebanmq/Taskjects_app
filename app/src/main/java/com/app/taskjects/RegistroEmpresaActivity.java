@@ -38,12 +38,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class RegistroEmpresaActivity extends AppCompatActivity {
 
-    final String EMPRESAS = "empresas";
+    private final String EMPRESAS = "empresas";
 
+    //Variables para manejar la BBDD
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     FirebaseUser user;
 
+    //Componentes
     EditText etCif;
     EditText etNombre;
     EditText etDireccion;
@@ -69,7 +71,6 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         btRegistrar = findViewById(R.id.btRegistrar);
         lineaProgreso = findViewById(R.id.lineaProgreso);
-
 
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);

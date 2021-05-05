@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -212,13 +213,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
 
     public void modificarProyecto(View view) {
 
-        //Comprueba si se han producido cambios...
-        if (etNombreProyecto.getText().toString().equals(proyecto.getNombre()) &&
-                etDescripcionProyecto.getText().toString().equals(proyecto.getDescripcion()) &&
-                mapJefes.get(atvJefeEmpleado.getText().toString()).equals(proyecto.getUidEmpleadoJefe())) {
-            //Si no se han producido cambios se muestra un Toast y no permite continuar
-            Toast.makeText(ModificarProyectoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
-        } else {
+        if (validarDatos()) {
 
             proyecto.setNombre(etNombreProyecto.getText().toString());
             proyecto.setDescripcion(etDescripcionProyecto.getText().toString());
@@ -244,15 +239,42 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("AniadirProyectoActivity","Error al subir proyecto a bbdd");
+                                        Log.d("ModificarProyectoActivity","Error al subir proyecto a bbdd");
                                     }
                                 }).show();
                     }
                 }
             });
+        }
+    }
 
+    private boolean validarDatos() {
+        boolean creoProyecto = true;
+
+        if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
+            etNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
+            creoProyecto = false;
         }
 
+        if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString())) {
+            etDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
+            creoProyecto = false;
+        }
+        if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString())) {
+            atvJefeEmpleado.setError(getString(R.string.faltaJefeProyecto));
+            creoProyecto = false;
+        }
+
+        //Comprueba si se han producido cambios...
+        if (etNombreProyecto.getText().toString().equals(proyecto.getNombre()) &&
+                etDescripcionProyecto.getText().toString().equals(proyecto.getDescripcion()) &&
+                mapJefes.get(atvJefeEmpleado.getText().toString()).equals(proyecto.getUidEmpleadoJefe())) {
+            //Si no se han producido cambios se muestra un Toast y no permite continuar
+            Toast.makeText(ModificarProyectoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
+            creoProyecto = false;
+        }
+
+         return creoProyecto;
     }
 
 }

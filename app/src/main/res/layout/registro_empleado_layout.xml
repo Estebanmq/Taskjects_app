@@ -6,7 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".RegistroEmpleadoActivity"
+    android:theme="@style/Theme.MaterialComponents.Light">
 
     <!-- Definición de la Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -23,9 +25,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".RegistroEmpleadoActivity"
-        android:theme="@style/Theme.MaterialComponents.Light">
+        android:layout_height="match_parent">
 
 
         <!-- Linear progress indicator -->

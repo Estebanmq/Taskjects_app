@@ -7,6 +7,7 @@
         android:id="@+id/verPerfil"
         android:contentDescription="@string/verPerfil"
         android:title="@string/verPerfil"
+        app:startIconDrawable="@drawable/ic_email_24dp"
         app:showAsAction="never" />
 
     <item

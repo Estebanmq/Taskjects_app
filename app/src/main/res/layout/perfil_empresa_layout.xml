@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ModificarProyectoActivity"
+    tools:context=".PerfilEmpresaActivity"
     android:theme="@style/Theme.MaterialComponents.Light">
 
     <!-- Definición de la Toolbar -->
@@ -23,104 +24,138 @@
     <!-- FIN Definición de la toolbar -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:theme="@style/Theme.MaterialComponents.Light"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <!-- Inicio TextInputLayout del nombre del proyecto -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextFieldNombreProyecto"
+            android:id="@+id/outlinedTextFieldCif"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:hint="@string/nombreProyecto"
+            android:hint="@string/cifEmpresa"
+            app:startIconDrawable="@drawable/ic_cif_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- TextInput con el nombre del proyecto -->
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNombreProyecto"
+                android:id="@+id/etCifEmpresa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:maxLength="60"
+                android:maxLength="9"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
-        <!-- Fin TextInputLayout del nombre del proyecto -->
+
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextFieldDescripcionProyecto"
+            android:id="@+id/outlinedTextFieldNombre"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:hint="@string/descripcionProyecto"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldNombreProyecto">
-
-            <!-- TextInput con el nombre del proyecto-->
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescripcionProyecto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="top|start"
-                android:maxLength="254"
-                android:enabled="false"
-                android:maxLines="4" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextFieldEmpleadosJefe"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:hint="@string/jefeProyecto"
-            app:startIconDrawable="@drawable/ic_empleado_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldDescripcionProyecto" >
-
-            <AutoCompleteTextView
-                android:id="@+id/atvJefeEmpleado"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:editable="false"
-                android:inputType="none" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnModifProyecto"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:onClick="modificarProyecto"
-            android:text="@string/modifProyecto"
-            android:visibility="invisible"
-            app:cornerRadius="24dp"
+            android:hint="@string/nombreEmpresa"
+            app:startIconDrawable="@drawable/ic_empresa_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.507"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosJefe" />
+            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCif">
+
+            <!-- TextInput con el usuario -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombreEmpleado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:maxLength="64"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/outlinedTextFieldDireccion"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:hint="@string/direccionEmpresa"
+            app:startIconDrawable="@drawable/ic_place_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.507"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldNombre">
+
+            <!-- TextInput con el usuario -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:maxLength="254"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/outlinedTextFieldEmail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:hint="@string/emailEmpresa"
+            app:startIconDrawable="@drawable/ic_email_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.507"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldDireccion">
+
+            <!-- TextInput con el usuario -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:enabled="false"
+                android:maxLength="64"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btModificar"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/modifPerfil"
+            android:visibility="invisible"
+            style="@style/Widget.MaterialComponents.Button"
+            android:onClick="modificarPerfil"
+            app:cornerRadius="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmail" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvFechaHoraCreacion"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/tvFechaHoraUltimoLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvFechaHoraUltimoLogin"
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
@@ -128,7 +163,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
-
         </com.google.android.material.textview.MaterialTextView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
