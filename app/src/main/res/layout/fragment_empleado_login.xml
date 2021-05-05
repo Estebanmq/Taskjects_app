@@ -9,7 +9,7 @@
 
     <!-- Inicio TextInputLayout del usuario -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextFieldUsuario"
+        android:id="@+id/outlinedTextFieldEmailEmpleado"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -24,6 +24,7 @@
 
         <!-- TextInput con el usuario -->
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmailEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -35,7 +36,7 @@
 
     <!-- Inicio TextInputLayout de la contraseña -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlinedTextFieldContrasenia"
+        android:id="@+id/outlinedTextFieldContraseniaEmpleado"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -47,10 +48,11 @@
         app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldUsuario">
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmailEmpleado">
 
         <!-- TextInput con la contraseña-->
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etContraseniaEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -79,10 +81,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContrasenia" />
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContraseniaEmpleado" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/containedButton"
+        android:id="@+id/btnLoginEmpleado"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginStart="24dp"
@@ -93,7 +95,7 @@
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContrasenia"
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContraseniaEmpleado"
         />
 
     <!-- View que dibuja simplemente una linea de separacion -->
@@ -107,7 +109,7 @@
         android:background="#707070"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containedButton" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginEmpleado" />
 
     <!-- TextView pregunta no tienes cuenta-->
     <TextView

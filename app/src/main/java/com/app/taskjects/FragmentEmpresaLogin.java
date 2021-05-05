@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class FragmentEmpresaLogin extends Fragment {
 
+    //Todo: Comprobar empleaod hace login en empresa
     //Inicializacion compoenentes
     TextInputLayout outlinedTextFieldEmailEmpresa;
     TextInputEditText etEmailEmpresa;

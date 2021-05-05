@@ -104,6 +104,13 @@
     <string name="altaEmpresaDone">Empresa dada de alta correctamente</string>
     <string name="altaEmpleadoDone">Empleado dado de alta correctamente</string>
     <string name="envioEmail">Se le ha enviado un email a su cuenta</string>
+
+    <string name="estadoInicial">Inicial</string>
+    <string name="estadoPendiente">Pendiente</string>
+    <string name="estadoEnProceso">En proceso</string>
+    <string name="estadoPausada">Pausada</string>
+    <string name="estadoTerminada">Terminada</string>
+
     <!-- FIN Mensajes de aplicación -->
 
 </resources>

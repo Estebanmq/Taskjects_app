@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainEmpleadoActivity"
+    android:orientation="vertical">
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:scrollbars="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <!-- Inicio Scrollview vertical de tareas iniciales  -->
+            <ScrollView
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="@color/black"
+                        android:text="@string/estadoInicial"
+                        android:padding="4dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTareasIniciales"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:scrollbars="vertical"/>
+                </LinearLayout>
+            </ScrollView>
+            <!-- Fin Scrollview vertical de tareas iniciales  -->
+
+            <!-- Inicio Scrollview vertical de tareas pendientes  -->
+            <ScrollView
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="@color/black"
+                        android:text="@string/estadoPendiente"
+                        android:padding="4dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTareasPendientes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:scrollbars="vertical"/>
+                </LinearLayout>
+            </ScrollView>
+            <!-- Fin Scrollview vertical de tareas pendientes  -->
+
+            <!-- Inicio Scrollview vertical de tareas En proceso  -->
+            <ScrollView
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="@color/black"
+                        android:text="@string/estadoEnProceso"
+                        android:padding="4dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTareasEnProceso"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:scrollbars="vertical"/>
+                </LinearLayout>
+            </ScrollView>
+            <!-- Fin Scrollview vertical de tareas En proceso -->
+
+            <!-- Inicio Scrollview vertical de tareas pausadas  -->
+            <ScrollView
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="@color/black"
+                        android:text="@string/estadoPausada"
+                        android:padding="4dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTareasPausadas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:scrollbars="vertical"/>
+                </LinearLayout>
+            </ScrollView>
+            <!-- Fin Scrollview vertical de tareas pausadas -->
+
+            <!-- Inicio Scrollview vertical de tareas terminadas  -->
+            <ScrollView
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="@color/black"
+                        android:text="@string/estadoTerminada"
+                        android:padding="4dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTareasTerminadas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="3dp"
+                        android:scrollbars="vertical"/>
+                </LinearLayout>
+            </ScrollView>
+            <!-- Fin Scrollview vertical de tareas En proceso -->
+        </LinearLayout>
+    </HorizontalScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

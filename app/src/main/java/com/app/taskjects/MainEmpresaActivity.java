@@ -36,7 +36,6 @@ import java.util.Map;
 
 public class MainEmpresaActivity extends MenuToolbarActivity {
 
-    //Todo: Controlar el tamaño de los campos, se salen de los componentes
     //Componentes
     TextView tvInfoNoProyectos;
     RecyclerView rvProyectos;
