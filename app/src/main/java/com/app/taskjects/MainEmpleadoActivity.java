@@ -1,14 +1,17 @@
 package com.app.taskjects;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
 import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
@@ -16,6 +19,7 @@ import com.app.taskjects.pojos.Proyecto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,11 +32,12 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainEmpleadoActivity extends AppCompatActivity {
+public class MainEmpleadoActivity extends MenuToolbarActivity {
 
     //Componentes
     RecyclerView rvProyectosEmpleados;
     TextView tvInfoNoProyectos;
+    BottomAppBar bottomAppBar;
 
     //Variables para manejar la bbdd y sus datos
     FirebaseAuth mAuth;
@@ -55,8 +60,12 @@ public class MainEmpleadoActivity extends AppCompatActivity {
             LinearLayoutManager llm = new LinearLayoutManager(MainEmpleadoActivity.this);
             rvProyectosEmpleados.setLayoutManager(llm);
 
+            bottomAppBar = findViewById(R.id.bottomAppBar);
+            setSupportActionBar(bottomAppBar);
+
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
+
             db = FirebaseFirestore.getInstance();
 
             cargarUsuarioEmpleado();
@@ -143,11 +152,37 @@ public class MainEmpleadoActivity extends AppCompatActivity {
         editor.putString("uidEmpleado", uidEmpleado);
         editor.putString("nif", documentSnapshot.getString("nif"));
         editor.putString("nombre", documentSnapshot.getString("nombre"));
+        editor.putString("apellidos", documentSnapshot.getString("apellidos"));
         editor.putString("email", documentSnapshot.getString("email"));
         editor.putString("password", documentSnapshot.getString("password"));
         editor.putString("uidAuth", documentSnapshot.getString("uidAuth"));
         editor.putString("uidEmpresa",documentSnapshot.getString("uidEmpresa"));
         editor.putString("categoria",documentSnapshot.getString("categoria"));
 
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d("taskjectsdebug","Pulsado botón atrás en la activity");
+            AlertDialog.Builder alertaSalidaAplicacion = new AlertDialog.Builder(this);
+            alertaSalidaAplicacion.setMessage(getString(R.string.confirmSalidaAplicacion))
+                    //Si pulsa en cancelar no hace nada
+                    .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
+                        }})
+                    .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+                        //Si pulsa en de acuerdo cierra la aplicación
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            borrarSharedPreferences();
+                            finishAffinity();
+                        }}).show();
+        }
+
+        return true;
     }
 }

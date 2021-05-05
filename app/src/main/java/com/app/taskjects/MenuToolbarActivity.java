@@ -52,9 +52,7 @@ public class MenuToolbarActivity extends AppCompatActivity {
                 if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
                     intent = new Intent(MenuToolbarActivity.this, PerfilEmpresaActivity.class);
                 } else {
-                    //Todo: hacer PerfilEmpleadoActivity y cambiar la línea de abajo con el nombre correcto
-                    //intent = new Intent(MenuToolbarActivity.this, PerfilEmpleadoActivity.class);
-                    intent = new Intent(MenuToolbarActivity.this, PerfilEmpresaActivity.class);
+                    intent = new Intent(MenuToolbarActivity.this, PerfilEmpleadoActivity.class);
                 }
                 startActivity(intent);
                 return true;

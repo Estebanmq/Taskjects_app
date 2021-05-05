@@ -29,9 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class FragmentEmpleadoLogin extends Fragment {
 
     //Inicializacion componentes
-    TextInputLayout outlinedTextFieldEmailEmpleado;
     TextInputEditText etEmailEmpleado;
-    TextInputLayout outlinedTextFieldContraseniaEmpleado;
     TextInputEditText etContraseniaEmpleado;
     MaterialButton btnLoginEmpleado;
     TextView textViewRecuperarContrasenia;
@@ -53,12 +51,13 @@ public class FragmentEmpleadoLogin extends Fragment {
         //Una vez que tengo el objeto view puedo inicializar componentes del fragment
         textViewRecuperarContrasenia = view.findViewById(R.id.textViewRecuperarContraseniaEmpleado);
         textViewRegistro = view.findViewById(R.id.textViewRegistro);
-        outlinedTextFieldEmailEmpleado = view.findViewById(R.id.outlinedTextFieldEmailEmpleado);
         etEmailEmpleado = view.findViewById(R.id.etEmailEmpleado);
-        outlinedTextFieldContraseniaEmpleado = view.findViewById(R.id.outlinedTextFieldContraseniaEmpleado);
         etContraseniaEmpleado = view.findViewById(R.id.etContraseniaEmpleado);
         btnLoginEmpleado = view.findViewById(R.id.btnLoginEmpleado);
         db = FirebaseFirestore.getInstance();
+
+etEmailEmpleado.setText("jm.dios.martin@gmail.com");
+etContraseniaEmpleado.setText("admin1234");
 
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
         textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {

@@ -76,8 +76,6 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
                 if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
                     intent = new Intent(context, ModificarProyectoActivity.class);
                 } else {
-                    //Todo: hacer PerfilEmpleadoActivity y cambiar la línea de abajo con el nombre correcto
-                    //intent = new Intent(MenuToolbarActivity.this, PerfilEmpleadoActivity.class);
                     intent = new Intent(context, TareasProyectoActivity.class);
                 }
                 intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
