@@ -2,6 +2,7 @@ package com.app.taskjects.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +13,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.taskjects.MenuToolbarActivity;
 import com.app.taskjects.ModificarProyectoActivity;
+import com.app.taskjects.PerfilEmpresaActivity;
 import com.app.taskjects.R;
+import com.app.taskjects.TareasProyectoActivity;
 import com.app.taskjects.pojos.Proyecto;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
 public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyectosRV.ViewHolder> {
+
+    //Variables para gestionar el usuario de firebase
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+
+    //SharedPreferences
+    SharedPreferences sharedPreferences;
 
     private List<Proyecto> listProyectos;
     private LayoutInflater mInflater;
@@ -28,6 +41,13 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
         this.listProyectos = listProyectos;
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
+
+        //Inicio variables
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        sharedPreferences = context.getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
+
     }
 
     @Override
@@ -52,10 +72,17 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
             public void onClick(View v) {
                 Log.d("taskjectsdebug","entra en onClick: " + listProyectos.get(position).getUid());
 
-                Intent pantallaModificarProyecto = new Intent(context, ModificarProyectoActivity.class);
-                pantallaModificarProyecto.putExtra("uidProyecto",listProyectos.get(position).getUid());
-                pantallaModificarProyecto.putExtra("uidEmpresa",listProyectos.get(position).getUidEmpresa());
-                context.startActivity(pantallaModificarProyecto);
+                Intent intent;
+                if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
+                    intent = new Intent(context, ModificarProyectoActivity.class);
+                } else {
+                    //Todo: hacer PerfilEmpleadoActivity y cambiar la línea de abajo con el nombre correcto
+                    //intent = new Intent(MenuToolbarActivity.this, PerfilEmpleadoActivity.class);
+                    intent = new Intent(context, TareasProyectoActivity.class);
+                }
+                intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
+                intent.putExtra("uidEmpresa",listProyectos.get(position).getUidEmpresa());
+                context.startActivity(intent);
 
             }
         });
