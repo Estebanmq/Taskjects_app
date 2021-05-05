@@ -56,9 +56,6 @@ public class FragmentEmpleadoLogin extends Fragment {
         btnLoginEmpleado = view.findViewById(R.id.btnLoginEmpleado);
         db = FirebaseFirestore.getInstance();
 
-etEmailEmpleado.setText("jm.dios.martin@gmail.com");
-etContraseniaEmpleado.setText("admin1234");
-
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
         textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
             @Override

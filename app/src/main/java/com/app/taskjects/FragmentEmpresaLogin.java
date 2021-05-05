@@ -56,10 +56,6 @@ public class FragmentEmpresaLogin extends Fragment {
         outlinedTextFieldContraseniaEmpresa = view.findViewById(R.id.outlinedTextFieldContraseniaEmpresa);
         btnLoginEmpresa = view.findViewById(R.id.btnModifProyecto);
 
-etEmailEmpresa.setText("sagevit@gmail.com");
-etContraseniaEmpresa.setText("admin1234");
-
-
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
         textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
             @Override
