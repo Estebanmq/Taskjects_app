@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.pojos.Proyecto;
 import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -35,6 +38,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainEmpresaActivity extends MenuToolbarActivity {
+
+    private final String EMPRESAS = "empresas";
 
     //Componentes
     TextView tvInfoNoProyectos;
@@ -80,24 +85,28 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
     //Cargo el UID de la empresa que ha iniciado sesion en la app y si ok llamo a cargarProyectos()
     private void cargarUsuarioEmpresa() {
+
         db.collection("empresas")
                 .whereEqualTo("uidAuth", user.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                uidEmpresa = documentSnapshot.getId();
-                                Log.d("taskjectsdebug","Empresa actual: "+uidEmpresa);
-                                //Carga las SharedPreferences de la empresa
-                                cargarSharedPreferences(documentSnapshot);
-                                //Una vez que ya he recuperado el usuario cargo sus empleados Jefe
-                                cargarEmpleadosJefe();
-                            }
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
 
+                        if (e != null) {
+                            Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            return;
                         }
 
+                        for (QueryDocumentSnapshot doc : value) {
+                            Empresa empresa = doc.toObject(Empresa.class);
+                            uidEmpresa = empresa.getUid();
+                            Log.d("taskjectsdebug","Empresa actual: "+uidEmpresa);
+                            //Carga las SharedPreferences de la empresa
+                            cargarSharedPreferences(empresa);
+                            //Una vez que ya he recuperado el usuario cargo sus empleados Jefe
+                            cargarEmpleadosJefe();
+                        }
                     }
                 });
     }
@@ -153,7 +162,10 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                         } else {
                             tvInfoNoProyectos.setVisibility(TextView.INVISIBLE);
                             for (QueryDocumentSnapshot documentSnapshot : snapshot) {
-                                String nombreJefeProyecto = ":: ".concat(mapJefes.get(documentSnapshot.getString("uidEmpleadoJefe"))).concat(" ::");
+                                String nombreJefeProyecto = ":: Sin jefe de proyecto ::";
+                                if (mapJefes.get(documentSnapshot.getString("uidEmpleadoJefe")) != null) {
+                                    nombreJefeProyecto = ":: ".concat(mapJefes.get(documentSnapshot.getString("uidEmpleadoJefe"))).concat(" ::");
+                                }
                                 String descripcion = documentSnapshot.getString("descripcion");
                                 if (descripcion.length() > 130) {
                                     descripcion = descripcion.substring(0, 130).concat("...");
@@ -180,18 +192,18 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
         startActivity(pantallaAniadirProyecto);
     }
 
-    private void cargarSharedPreferences(QueryDocumentSnapshot documentSnapshot) {
+    private void cargarSharedPreferences(Empresa empresa) {
 
         SharedPreferences pref = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("tipoLogin", "E");
         editor.putString("uidEmpresa", uidEmpresa);
-        editor.putString("cif", documentSnapshot.getString("cif"));
-        editor.putString("nombre", documentSnapshot.getString("nombre"));
-        editor.putString("direccion", documentSnapshot.getString("direccion"));
-        editor.putString("email", documentSnapshot.getString("email"));
-        editor.putString("password", documentSnapshot.getString("password"));
-        editor.putString("uidAuth", documentSnapshot.getString("uidAuth"));
+        editor.putString("cif", empresa.getCif());
+        editor.putString("nombre", empresa.getNombre());
+        editor.putString("direccion", empresa.getDireccion());
+        editor.putString("email", empresa.getEmail());
+        editor.putString("password", empresa.getPassword());
+        editor.putString("uidAuth", empresa.getUidAuth());
         editor.apply();
 
     }

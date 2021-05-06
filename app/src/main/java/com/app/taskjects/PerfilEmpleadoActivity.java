@@ -70,11 +70,19 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
     String categoria;
 
     String uidCategoria;
+    String descCategoria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil_empleado_layout);
+
+        //Inicio variables
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
+        mapCategorias = new LinkedHashMap<>();
 
         //Inicializo componentes
         etNif = findViewById(R.id.etNifEmpleado);
@@ -83,6 +91,9 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmailEmpleado);
         categoriaEmpleado = findViewById(R.id.etCategoriaEmpleado);
         categoriaEmpleado.setKeyListener(null);
+
+        tvFechaHoraCreacion = findViewById(R.id.tvFechaHoraCreacion);
+        tvFechaHoraUltimoLogin = findViewById(R.id.tvFechaHoraUltimoLogin);
 
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -117,35 +128,10 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
             }
         });
 
-        mapCategorias = new LinkedHashMap<>();
-        cargarCategorias();
-
         cargarDatosPantalla();
 
-    }
+        cargarCategorias();
 
-
-    private void cargarCategorias() {
-
-        Log.d("taskjectsdebug", "entra a lectura categorías");
-        db.collection(CATEGORIAS).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                mapCategorias.put(document.getString("descripcion"), document.getId());
-                                Log.d("taskjectsdebug", "lectura categorías - dato recuperado:" + document.getId() + " " + document.getString("descripcion"));
-                            }
-
-                            // Carga el dropmenu de categorías con los datos recuperados
-                            categoriaEmpleado.setAdapter(new ArrayAdapter<>(PerfilEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<String>(mapCategorias.keySet())));
-                        } else {
-                            Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                            Log.d("taskjectsdebug", "lectura categorías: no se han recuperado datos!");
-                        }
-                    }
-                });
     }
 
     private void cargarDatosPantalla() {
@@ -167,6 +153,32 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         categoria = sharedPreferences.getString("categoria", getString(R.string.error));
     }
 
+    private void cargarCategorias() {
+
+        Log.d("taskjectsdebug", "entra a lectura categorías");
+        db.collection(CATEGORIAS).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                mapCategorias.put(document.getString("descripcion"), document.getId());
+                                if (document.getId().equals(categoria)) {
+                                    descCategoria = document.getString("descripcion");
+                                }
+                                Log.d("taskjectsdebug", "lectura categorías - dato recuperado:" + document.getId() + " " + document.getString("descripcion"));
+                            }
+
+                            // Carga el dropmenu de categorías con los datos recuperados
+                            categoriaEmpleado.setText(descCategoria);
+                            categoriaEmpleado.setAdapter(new ArrayAdapter<>(PerfilEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<String>(mapCategorias.keySet())));
+                        } else {
+                            Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            Log.d("taskjectsdebug", "lectura categorías: no se han recuperado datos!");
+                        }
+                    }
+                });
+    }
 
     public void modificarPerfil(View view) {
 

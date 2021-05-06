@@ -1,6 +1,7 @@
 package com.app.taskjects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,8 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
+import com.app.taskjects.pojos.Empleado;
+import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.pojos.Proyecto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,7 +27,9 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -75,17 +81,22 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     private void cargarUsuarioEmpleado() {
         db.collection("empleados")
                 .whereEqualTo("uidAuth",user.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                uidEmpleado = documentSnapshot.getId();
-                                Log.d("MainEmpleadoActivity", "Empleado actual -> " + uidEmpleado);
-                                cargarSharedPreferences(documentSnapshot);
-                                cargarProyectos();
-                            }
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+
+                        if (e != null) {
+                            Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        for (QueryDocumentSnapshot doc : value) {
+                            Empleado empleado = doc.toObject(Empleado.class);
+                            uidEmpleado = empleado.getUid();
+                            Log.d("MainEmpleadoActivity", "Empleado actual -> " + uidEmpleado);
+                            cargarSharedPreferences(empleado);
+                            cargarProyectos();
                         }
                     }
                 });
@@ -101,7 +112,7 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                     public void onSuccess(DocumentSnapshot snapshot) {
                         //PERO WTF!!
                         uidProyectos = (List<String>)snapshot.get("uidProyectos");
-                        if (uidProyectos == null ) {
+                        if (uidProyectos == null || uidProyectos.isEmpty()) {
                             tvInfoNoProyectos.setVisibility(TextView.VISIBLE);
                         } else {
                             tvInfoNoProyectos.setVisibility(TextView.INVISIBLE);
@@ -145,20 +156,20 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
 
     }
 
-    private void cargarSharedPreferences(QueryDocumentSnapshot documentSnapshot) {
-        SharedPreferences pref = getSharedPreferences(uidEmpleado, Context.MODE_PRIVATE);
+    private void cargarSharedPreferences(Empleado empleado) {
+        SharedPreferences pref = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("tipoLogin","C");
-        editor.putString("uidEmpleado", uidEmpleado);
-        editor.putString("nif", documentSnapshot.getString("nif"));
-        editor.putString("nombre", documentSnapshot.getString("nombre"));
-        editor.putString("apellidos", documentSnapshot.getString("apellidos"));
-        editor.putString("email", documentSnapshot.getString("email"));
-        editor.putString("password", documentSnapshot.getString("password"));
-        editor.putString("uidAuth", documentSnapshot.getString("uidAuth"));
-        editor.putString("uidEmpresa",documentSnapshot.getString("uidEmpresa"));
-        editor.putString("categoria",documentSnapshot.getString("categoria"));
-
+        editor.putString("uidEmpleado", empleado.getUid());
+        editor.putString("nif", empleado.getNif());
+        editor.putString("nombre", empleado.getNombre());
+        editor.putString("apellidos", empleado.getApellidos());
+        editor.putString("email", empleado.getEmail());
+        editor.putString("password", empleado.getPassword());
+        editor.putString("uidAuth", empleado.getUidAuth());
+        editor.putString("uidEmpresa", empleado.getUidEmpresa());
+        editor.putString("categoria", empleado.getCategoria());
+        editor.apply();
     }
 
 

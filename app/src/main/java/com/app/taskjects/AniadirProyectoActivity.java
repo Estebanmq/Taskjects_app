@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.pojos.Proyecto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,9 +26,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firestore.v1.WriteResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +60,8 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         etDescripcionProyecto = findViewById(R.id.etDescripcionProyecto);
         atvJefeEmpleado = findViewById(R.id.atvJefeEmpleado);
         db = FirebaseFirestore.getInstance();
+
+        //Recupera del intent el uid de la empresa donde dar de alta el proyecto
         uidEmpresa = getIntent().getStringExtra("uidEmpresa");
 
         //Aqui almacenare los empleados jefe
@@ -77,7 +82,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                         .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("AniadirProyectoActivity","Salgo de la creación de proyecto");
+                                Log.d("taskjectsdebug","Salgo de la creación de proyecto");
                             }
                         }).setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
                             //Si pulsa en de acuerdo cierro la activity
@@ -123,6 +128,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
     }
 
     public void crearProyecto(View view) {
+
         boolean creoProyecto = true;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
@@ -147,15 +153,9 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Log.d("AniadirProyectoActivity","Proyecto añadido correctamente");
-                            AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(AniadirProyectoActivity.this);
-                            alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
-                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            finish();
-                                        }
-                                    }).show();
+                            actualizarEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()), documentReference.getId());
+
+                            Log.d("taskjectsdebug","Proyecto añadido correctamente");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -166,13 +166,48 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                                     .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            Log.d("AniadirProyectoActivity","Error al subir proyecto a bbdd");
+                                            Log.d("taskjectsdebug","Error al subir proyecto a bbdd");
                                         }
                                     }).show();
                         }
                     });
         }
 
+    }
+
+    private void actualizarEmpleadoJefe(String uidEmpleadoJefe, String uidProyecto) {
+
+        Log.d("taskjectsdebug","Actualiza los proyectos del empleado jefe: " + uidEmpleadoJefe);
+        DocumentReference docRef = db.collection("empleados").document(uidEmpleadoJefe);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Empleado empleado = documentSnapshot.toObject(Empleado.class);
+                empleado.getUidProyectos().add(uidProyecto);
+                db.collection("empleados").document(uidEmpleadoJefe)
+                        .set(empleado)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(AniadirProyectoActivity.this);
+                                alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
+                                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                finish();
+                                            }
+                                        }).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
+                            }
+                        });
+
+            }
+        });
     }
 
     @Override
