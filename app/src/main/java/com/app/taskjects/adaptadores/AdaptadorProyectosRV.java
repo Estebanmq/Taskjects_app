@@ -80,6 +80,7 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
                 }
                 intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
                 intent.putExtra("uidEmpresa",listProyectos.get(position).getUidEmpresa());
+                intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
                 context.startActivity(intent);
 
             }

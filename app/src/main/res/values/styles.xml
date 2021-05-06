@@ -8,4 +8,5 @@
         <item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
+
 </resources>
