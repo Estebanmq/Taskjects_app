@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AniadirTareaActivity extends AppCompatActivity {
+public class AniadirTareaActivity extends MenuToolbarActivity {
 
     //Componentes pantalla
     ChipGroup cgPrioridades;
@@ -74,6 +74,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
         cargaEmpleadosEmpresa();
     }
 
+    //Metodo que carga el nombre y su id de todos los empleados de la empresa del proyecto
     private void cargaEmpleadosEmpresa() {
         db.collection("empleados")
                 .whereEqualTo("uidEmpresa",uidEmpresa)
@@ -108,6 +109,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
 
     }
 
+    //Metodo que verifica el formulario de la tarea
     private boolean verificarDatos() {
         if (etTarea.getText().toString().isEmpty()) {
             etTarea.setError(getString(R.string.faltaTarea));
@@ -116,9 +118,10 @@ public class AniadirTareaActivity extends AppCompatActivity {
         return true;
     }
 
+    //Metodo que crea tarea en la RTDB
     public void crearTarea(View view) {
+        //Si todos los datos ok creo tarea
         if (verificarDatos()) {
-            //Todo: Prio desde 0 no?
             String prioridad = "0";
             //Todo: el case da warning, ver otra forma
             switch (cgPrioridades.getCheckedChipId()) {
@@ -130,7 +133,12 @@ public class AniadirTareaActivity extends AppCompatActivity {
                     break;
             }
 
-            mDatabase.child("tareas").child(uidEmpresa).child(uidProyecto).push().setValue(new Tarea(etTarea.getText().toString(),mapEmpleados.get(atvEmpleados.getText().toString()),prioridad,uidProyecto))
+            String uidTarea =  mDatabase.child("tareas").child(uidEmpresa).child(uidProyecto).push().getKey();
+            mDatabase.child("tareas")
+                    .child(uidEmpresa)
+                    .child(uidProyecto)
+                    .child(uidTarea)
+                    .setValue(new Tarea(etTarea.getText().toString(),mapEmpleados.get(atvEmpleados.getText().toString()),prioridad,uidProyecto,uidTarea))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -156,8 +164,6 @@ public class AniadirTareaActivity extends AppCompatActivity {
                                     }).show();
                         }
                     });
-
-
         }
 
     }

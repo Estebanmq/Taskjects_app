@@ -98,7 +98,7 @@
                 android:checked="true"
                 app:chipBackgroundColor="@color/chip_prioridad_baja"
                 android:textColor="@color/black"
-                android:text="Baja" />
+                android:text="@string/prioBaja" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipPrioMedia"
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 app:chipBackgroundColor="@color/chip_prioridad_media"
                 android:textColor="@color/black"
-                android:text="Media" />
+                android:text="@string/prioMedia" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipPrioAlta"
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 app:chipBackgroundColor="@color/chip_prioridad_alta"
                 android:textColor="@color/black"
-                android:text="Alta" />
+                android:text="@string/prioAlta" />
 
 
         </com.google.android.material.chip.ChipGroup>

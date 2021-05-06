@@ -64,6 +64,7 @@
     <string name="crearTarea">Crear tarea</string>
     <string name="tarea">Tarea</string>
     <string name="creacionTareaCorrecta">La tarea se ha creado correctamente</string>
+    <string name="sinAsignar">Sin asignar</string>
 
     <!-- FIN Textos de la aplicación -->
 
@@ -123,6 +124,10 @@
     <string name="estadoPausada">Pausada</string>
     <string name="estadoTerminada">Terminada</string>
     <string name="empleadoAsignado">Empleado asignado</string>
+    <string name="prioBaja">Baja</string>
+    <string name="prioMedia">Media</string>
+    <string name="prioAlta">Alta</string>
+
 
     <!-- FIN Mensajes de aplicación -->
 

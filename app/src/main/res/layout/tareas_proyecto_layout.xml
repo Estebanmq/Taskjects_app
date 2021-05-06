@@ -10,18 +10,16 @@
     <HorizontalScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="horizontal"
-        android:scrollbars="horizontal">
+        android:orientation="horizontal">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <!-- Inicio Scrollview vertical de tareas iniciales  -->
             <ScrollView
                 android:layout_width="350dp"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical">
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -38,8 +36,7 @@
                         android:id="@+id/rvTareasIniciales"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="3dp"
-                        android:scrollbars="vertical"/>
+                        android:padding="3dp" />
                 </LinearLayout>
             </ScrollView>
             <!-- Fin Scrollview vertical de tareas iniciales  -->
@@ -47,8 +44,7 @@
             <!-- Inicio Scrollview vertical de tareas pendientes  -->
             <ScrollView
                 android:layout_width="350dp"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical">
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -65,8 +61,7 @@
                         android:id="@+id/rvTareasPendientes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="3dp"
-                        android:scrollbars="vertical"/>
+                        android:padding="3dp" />
                 </LinearLayout>
             </ScrollView>
             <!-- Fin Scrollview vertical de tareas pendientes  -->
@@ -74,8 +69,7 @@
             <!-- Inicio Scrollview vertical de tareas En proceso  -->
             <ScrollView
                 android:layout_width="350dp"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical">
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,8 +86,7 @@
                         android:id="@+id/rvTareasEnProceso"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="3dp"
-                        android:scrollbars="vertical"/>
+                        android:padding="3dp" />
                 </LinearLayout>
             </ScrollView>
             <!-- Fin Scrollview vertical de tareas En proceso -->
@@ -101,8 +94,7 @@
             <!-- Inicio Scrollview vertical de tareas pausadas  -->
             <ScrollView
                 android:layout_width="350dp"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical">
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,8 +111,7 @@
                         android:id="@+id/rvTareasPausadas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="3dp"
-                        android:scrollbars="vertical"/>
+                        android:padding="3dp" />
                 </LinearLayout>
             </ScrollView>
             <!-- Fin Scrollview vertical de tareas pausadas -->
@@ -128,8 +119,7 @@
             <!-- Inicio Scrollview vertical de tareas terminadas  -->
             <ScrollView
                 android:layout_width="350dp"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical">
+                android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -146,8 +136,7 @@
                         android:id="@+id/rvTareasTerminadas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="3dp"
-                        android:scrollbars="vertical"/>
+                        android:padding="3dp"/>
                 </LinearLayout>
             </ScrollView>
             <!-- Fin Scrollview vertical de tareas En proceso -->
