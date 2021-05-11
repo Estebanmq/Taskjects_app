@@ -33,11 +33,9 @@ import java.util.HashSet;
 
 public class TareasProyectoActivity extends MenuToolbarActivity {
 
-    RecyclerView rvTareasIniciales;
     FloatingActionButton fABTareas;
     BottomAppBar bottomAppBar;
 
-    AdaptadorTareasRV adaptadorTareasRV;
     ArrayList<Tarea> listTareas;
     String uidProyecto;
     String uidEmpresa;
@@ -57,15 +55,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
         fABTareas = findViewById(R.id.fABTareas);
-
-        listTareas = new ArrayList<>();
-        rvTareasIniciales = findViewById(R.id.rvTareasIniciales);
-        rvTareasIniciales.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(TareasProyectoActivity.this);
-        rvTareasIniciales.setLayoutManager(llm);
-        adaptadorTareasRV = new AdaptadorTareasRV(listTareas,TareasProyectoActivity.this);
-        rvTareasIniciales.setAdapter(adaptadorTareasRV);
-
 
         uidProyecto = getIntent().getStringExtra("uidProyecto");
         uidEmpresa = getIntent().getStringExtra("uidEmpresa");
@@ -89,14 +78,14 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 listTareas.add(snapshot.getValue(Tarea.class));
-                adaptadorTareasRV.notifyDataSetChanged();
+                //adaptadorTareasRV.notifyDataSetChanged();
 
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                adaptadorTareasRV.notifyDataSetChanged();
+                //adaptadorTareasRV.notifyDataSetChanged();
             }
 
             @Override
@@ -110,13 +99,13 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                         break;
                     }
                 }
-                adaptadorTareasRV.notifyDataSetChanged();
+                // adaptadorTareasRV.notifyDataSetChanged();
 
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                adaptadorTareasRV.notifyDataSetChanged();
+                //adaptadorTareasRV.notifyDataSetChanged();
             }
 
             @Override

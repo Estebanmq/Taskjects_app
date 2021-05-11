@@ -138,7 +138,7 @@ public class AniadirTareaActivity extends MenuToolbarActivity {
                     .child(uidEmpresa)
                     .child(uidProyecto)
                     .child(uidTarea)
-                    .setValue(new Tarea(etTarea.getText().toString(),mapEmpleados.get(atvEmpleados.getText().toString()),prioridad,uidProyecto,uidTarea))
+                    .setValue(new Tarea("0",etTarea.getText().toString(),mapEmpleados.get(atvEmpleados.getText().toString()),prioridad,uidProyecto,uidTarea))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

@@ -6,23 +6,29 @@ import com.google.firebase.firestore.DocumentId;
 @IgnoreExtraProperties
 public class Tarea {
 
-    public String tarea;
-    public String uidEmpleado;
-    public String prioridad;
-    public String uidProyecto;
+    private String estado;
+    private String tarea;
+    private String uidEmpleado;
+    private String prioridad;
+    private String uidProyecto;
 
     //Todo: Anotacion para que no te lo meta como campo en el "documento"
     public String uidTarea;
 
     public Tarea () {}
 
-    public Tarea(String tarea, String uidEmpleado, String prioridad,String uidProyecto,String uidTarea) {
+    public Tarea(String estado, String tarea, String uidEmpleado, String prioridad,String uidProyecto,String uidTarea) {
+        this.estado = estado;
         this.tarea = tarea;
         this.uidEmpleado = uidEmpleado;
         this.prioridad = prioridad;
         this.uidProyecto = uidProyecto;
         this.uidTarea = uidTarea;
     }
+
+    public String getEstado() { return estado; }
+
+    public void setEstado(String estado) { this.estado = estado; }
 
     public String getTarea() {
         return tarea;
