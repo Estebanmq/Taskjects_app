@@ -57,10 +57,10 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("MainEmpresaActivity","Entro en el onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_empresa_layout);
 
+        //Inicializa los componentes
         rvProyectos = findViewById(R.id.rvProyectos);
         rvProyectos.setHasFixedSize(true);
 
@@ -132,7 +132,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                                 Log.d("taskjectsdebug","No se han encontrado empleados jefe");
                                 findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
                             }
-                            //Una vez que ya he recuperados los usuarios Jefe cargo los proyectos (Promesas de firebase)
+                            //Una vez que ya he recuperados los Jefe de proyecto se cargan cargo los proyectos (Promesas de firebase)
                             cargarProyectos();
                         } else {
                             //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema

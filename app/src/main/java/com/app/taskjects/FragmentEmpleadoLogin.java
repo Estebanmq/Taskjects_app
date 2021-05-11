@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class FragmentEmpleadoLogin extends Fragment {
@@ -42,6 +44,9 @@ public class FragmentEmpleadoLogin extends Fragment {
     //View para hacer referancia a la pantalla de login
     View view;
 
+    //Variables de la clase
+    String uidEmpresa;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class FragmentEmpleadoLogin extends Fragment {
         etContraseniaEmpleado = view.findViewById(R.id.etContraseniaEmpleado);
         btnLoginEmpleado = view.findViewById(R.id.btnLoginEmpleado);
         db = FirebaseFirestore.getInstance();
+
+        uidEmpresa = "";
 
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
         textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +101,7 @@ public class FragmentEmpleadoLogin extends Fragment {
     }
 
     private void esEmpleado() {
+
         db.collection("empleados")
                 .whereEqualTo("email",etEmailEmpleado.getText().toString())
                 .get()
@@ -101,13 +109,17 @@ public class FragmentEmpleadoLogin extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
+                            Log.d("taskjectsdebug","empresa del empleado: " + uidEmpresa);
                             mAuth = FirebaseAuth.getInstance();
                             //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
                             mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        startActivity(new Intent(view.getContext(), MainEmpleadoActivity.class));
+                                        Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
+                                        intent.putExtra("uidEmpresa", uidEmpresa);
+                                        startActivity(intent);
                                     } else {
                                         Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
                                         btnLoginEmpleado.setEnabled(true);
