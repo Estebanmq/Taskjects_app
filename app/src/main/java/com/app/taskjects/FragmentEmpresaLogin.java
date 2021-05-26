@@ -3,7 +3,6 @@ package com.app.taskjects;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
@@ -15,18 +14,14 @@ import android.widget.Toast;
 
 import com.app.taskjects.dialogos.RecuperarPasswordDialog;
 import com.app.taskjects.utils.Validador;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class FragmentEmpresaLogin extends Fragment {
 
-    //Todo: Comprobar empleaod hace login en empresa
-    //Inicializacion compoenentes
+    //Inicializacion componentes
     TextInputLayout outlinedTextFieldEmailEmpresa;
     TextInputEditText etEmailEmpresa;
     TextInputLayout outlinedTextFieldContraseniaEmpresa;
@@ -83,17 +78,13 @@ public class FragmentEmpresaLogin extends Fragment {
         if (verificarDatos()) {
             mAuth = FirebaseAuth.getInstance();
             //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-
-            mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
-                        getActivity().finish();
-                    } else {
-                        Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
-                        btnLoginEmpresa.setEnabled(true);
-                    }
+            mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
+                    getActivity().finish();
+                } else {
+                    Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
+                    btnLoginEmpresa.setEnabled(true);
                 }
             });
         } else {
