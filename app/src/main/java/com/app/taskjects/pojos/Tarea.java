@@ -13,7 +13,7 @@ public class Tarea {
     private String uidProyecto;
 
     //Todo: Anotacion para que no te lo meta como campo en el "documento"
-    public String uidTarea;
+    private String uidTarea;
 
     public Tarea () {}
 
@@ -24,6 +24,28 @@ public class Tarea {
         this.prioridad = prioridad;
         this.uidProyecto = uidProyecto;
         this.uidTarea = uidTarea;
+    }
+
+    //Metodo que cambia los datos de la tarea con los nuevos datos de una tarea pasada como parametro
+    public void setNuevosDatos(Tarea tarea) {
+        if (!this.tarea.equals(tarea.getTarea()))
+            setTarea(tarea.getTarea());
+        if (!this.uidEmpleado.equals(tarea.getUidEmpleado()))
+            setUidEmpleado(tarea.getUidEmpleado());
+        if (!this.prioridad.equals(tarea.getPrioridad()))
+            setPrioridad(tarea.getPrioridad());
+    }
+
+    @Override
+    public String toString() {
+        return "Tarea{" +
+                "estado='" + estado + '\'' +
+                ", tarea='" + tarea + '\'' +
+                ", uidEmpleado='" + uidEmpleado + '\'' +
+                ", prioridad='" + prioridad + '\'' +
+                ", uidProyecto='" + uidProyecto + '\'' +
+                ", uidTarea='" + uidTarea + '\'' +
+                '}';
     }
 
     public String getEstado() { return estado; }
@@ -65,4 +87,6 @@ public class Tarea {
     public String getUidTarea() { return uidTarea; }
 
     public void setUidTarea(String uidTarea) { this.uidTarea = uidTarea; }
+
+
 }

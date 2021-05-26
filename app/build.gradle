@@ -46,9 +46,9 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:26.8.0')
 
-
-    //View Pager 2 para las pestañas del login
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
+
+    implementation "com.github.woxthebox:draglistview:1.7.2"
 }

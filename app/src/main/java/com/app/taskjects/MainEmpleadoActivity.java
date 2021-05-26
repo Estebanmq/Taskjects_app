@@ -69,6 +69,7 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.main_empleado_layout);
+            Log.d("MainEmpleadoActivityDebug","Entro en el onCreate");
 
             //Inicializacion de componentes
             tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
@@ -96,6 +97,18 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
 
             //Carga los Jefes de Proyecto de la empresa a la que pertenece el empleado
             cargarEmpleadosJefe();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("MainEmpleadoActivityDebug","Entro en el onDestroy");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("MainEmpleadoActivityDebug","Entro en el onStop");
     }
 
     private void cargarEmpleadosJefe() {

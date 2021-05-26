@@ -132,13 +132,16 @@ public class AniadirTareaActivity extends MenuToolbarActivity {
                     prioridad = "2";
                     break;
             }
+            String estado = "0";
+            if (!atvEmpleados.getText().toString().equals("-- Sin asignar --"))
+                estado = "1";
 
-            String uidTarea =  mDatabase.child("tareas").child(uidEmpresa).child(uidProyecto).push().getKey();
+            String uidEmpleadoATV = mapEmpleados.get(atvEmpleados.getText().toString());
+            String uidTarea =  mDatabase.child("tareas").child(uidEmpresa).child(uidProyecto).child(uidEmpleadoATV).push().getKey();
             mDatabase.child("tareas")
-                    .child(uidEmpresa)
                     .child(uidProyecto)
                     .child(uidTarea)
-                    .setValue(new Tarea("0",etTarea.getText().toString(),mapEmpleados.get(atvEmpleados.getText().toString()),prioridad,uidProyecto,uidTarea))
+                    .setValue(new Tarea(estado,etTarea.getText().toString(),mapEmpleados.get(atvEmpleados.getText().toString()),prioridad,uidProyecto,uidTarea))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

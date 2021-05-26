@@ -86,7 +86,7 @@
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosEmpresa"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPrioridad"
             app:singleLine="true"
             app:singleSelection="true">
 
@@ -96,27 +96,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                app:chipBackgroundColor="@color/chip_prioridad_baja"
+                android:text="@string/prioBaja"
                 android:textColor="@color/black"
-                android:text="@string/prioBaja" />
+                app:chipBackgroundColor="@color/chip_prioridad_baja" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipPrioMedia"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/chip_prioridad_media"
+                android:text="@string/prioMedia"
                 android:textColor="@color/black"
-                android:text="@string/prioMedia" />
+                app:chipBackgroundColor="@color/chip_prioridad_media" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipPrioAlta"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:chipBackgroundColor="@color/chip_prioridad_alta"
+                android:text="@string/prioAlta"
                 android:textColor="@color/black"
-                android:text="@string/prioAlta" />
+                app:chipBackgroundColor="@color/chip_prioridad_alta" />
 
 
         </com.google.android.material.chip.ChipGroup>
@@ -137,6 +137,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridades" />
+
+        <TextView
+            android:id="@+id/textViewPrioridad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:text="Prioridad"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosEmpresa" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
