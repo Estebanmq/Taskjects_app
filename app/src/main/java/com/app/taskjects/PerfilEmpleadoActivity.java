@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.taskjects.pojos.Empleado;
-import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.utils.Conversor;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -103,28 +103,12 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("taskjectsdebug", "Captura el click de volver atrás en la toolbar");
                 //Si está en modo edición...
                 if (modoEdit) {
-                    //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
-                    AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(PerfilEmpleadoActivity.this);
-                    alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaModifPerfil))
-                            //Si pulsa en cancelar no salgo de la activity
-                            .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
-                                }})
-                            .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-                                //Si pulsa en de acuerdo cierro la activity
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    finish();
-                                }}).show();
+                    mostrarDialogoSalida();
                 } else {
                     finish();
                 }
-
             }
         });
 
@@ -136,7 +120,7 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
 
     private void cargarDatosPantalla() {
 
-        Log.d("taskjectsdebug","Empresa actual: " + mAuth.getUid());
+        Log.d("taskjectsdebug","carga datos de SharedPreferences con el mAuth.uid: " + mAuth.getUid());
         SharedPreferences sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
         etNif.setText(sharedPreferences.getString("nif", getString(R.string.error)));
         etNombre.setText(sharedPreferences.getString("nombre", getString(R.string.error)));
@@ -156,7 +140,8 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
     private void cargarCategorias() {
 
         Log.d("taskjectsdebug", "entra a lectura categorías");
-        db.collection(CATEGORIAS).get()
+        db.collection(CATEGORIAS)
+                .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -182,6 +167,10 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
 
     public void modificarPerfil(View view) {
 
+        //Pone el botón de modificarPerfil como disabled para evitar doble-clic
+        findViewById(R.id.btModificar).setEnabled(false);
+
+        //Valida los datos y si están correctos se recupera el empleado para luego actualizarlo
         if (validarDatos()) {
 
             //Recupera la empresa desde la BD
@@ -192,15 +181,18 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                                Empleado empleado = null;
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    empleado = documentSnapshot.toObject(Empleado.class);
-                                }
+                                Empleado empleado = task.getResult().getDocuments().get(0).toObject(Empleado.class);
                                 actualizarEmpleado(empleado);
+                            } else {
+                                Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                                //Pone el botón de modificarPerfil como enabled
+                                findViewById(R.id.btModificar).setEnabled(true);
                             }
-
                         }
                     });
+        } else {
+            //Pone el botón de modificarPerfil como enabled
+            findViewById(R.id.btModificar).setEnabled(true);
         }
 
     }
@@ -236,10 +228,10 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         }
 
         //Comprueba si se han producido cambios...
-        if (etNif.getText().toString().equals(nif) &&
-                etNombre.getText().toString().equals(nombre) &&
-                etApellidos.getText().toString().equals(apellidos) &&
-                categoriaEmpleado.getText().toString().equals(categoria)) {
+        if (etNif.getText().toString().equalsIgnoreCase(nif) &&
+                etNombre.getText().toString().equalsIgnoreCase(nombre) &&
+                etApellidos.getText().toString().equalsIgnoreCase(apellidos) &&
+                uidCategoria.equalsIgnoreCase(categoria)) {
             //Si no se han producido cambios se muestra un Toast y no permite continuar
             Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
             resultado = false;
@@ -278,6 +270,8 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
                                     Log.d("taskjectsdebug","Error al subir la empresa a bbdd");
                                 }
                             }).show();
+                    //Pone el botón de modificarPerfil como enabled
+                    findViewById(R.id.btModificar).setEnabled(true);
                 }
             }
         });
@@ -316,5 +310,28 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
             categoriaEmpleado.setEnabled(true);
             findViewById(R.id.btModificar).setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //Si está en modo edición...
+            if (modoEdit) {
+                mostrarDialogoSalida();
+            } else {
+                finish();
+            }
+        }
+        return true;
+    }
+
+    private void mostrarDialogoSalida() {
+
+        AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(PerfilEmpleadoActivity.this);
+        //Si pulsa en cancelar no salgo de la activity
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+                .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
+                .show();
     }
 }

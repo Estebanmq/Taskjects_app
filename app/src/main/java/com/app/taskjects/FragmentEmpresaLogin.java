@@ -57,36 +57,26 @@ public class FragmentEmpresaLogin extends Fragment {
         btnLoginEmpresa = view.findViewById(R.id.btnModifProyecto);
 
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
-        textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RecuperarPasswordDialog dialog = new RecuperarPasswordDialog();
-                dialog.show(getFragmentManager(), "Recuperar la contraseña Empresa");
-            }
+        textViewRecuperarContrasenia.setOnClickListener(v -> {
+            textViewRecuperarContrasenia.setEnabled(false);
+            RecuperarPasswordDialog dialog = new RecuperarPasswordDialog();
+            dialog.show(getFragmentManager(), "Recuperar la contraseña Empresa");
+            textViewRecuperarContrasenia.setEnabled(true);
         });
 
         //Le agrego un Listener al TextView de registro para abrir la pantalla de registro para empresas
-        textViewRegistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textViewRegistro.setEnabled(false);
-                startActivity(new Intent(view.getContext(), RegistroEmpresaActivity.class));
-            }
+        textViewRegistro.setOnClickListener(v -> {
+            textViewRegistro.setEnabled(false);
+            startActivity(new Intent(view.getContext(), RegistroEmpresaActivity.class));
         });
 
 
         //Le agrego un Listener al btn para llamar a loginEmpresa
-        btnLoginEmpresa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginEmpresa();
-            }
-        });
+        btnLoginEmpresa.setOnClickListener(view -> loginEmpresa());
 
         //Devuelvo el objeto view (inflater del fragment)
         return view;
     }
-
 
     private void loginEmpresa() {
         btnLoginEmpresa.setEnabled(false);
@@ -139,5 +129,6 @@ public class FragmentEmpresaLogin extends Fragment {
         super.onResume();
         btnLoginEmpresa.setEnabled(true);
         textViewRegistro.setEnabled(true);
+        textViewRecuperarContrasenia.setEnabled(true);
     }
 }

@@ -11,18 +11,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.taskjects.pojos.Empresa;
-import com.app.taskjects.pojos.Proyecto;
 import com.app.taskjects.utils.Conversor;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,14 +28,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class PerfilEmpresaActivity extends AppCompatActivity {
@@ -93,24 +86,9 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("taskjectsdebug", "Captura el click de volver atrás en la toolbar");
                 //Si está en modo edición...
                 if (modoEdit) {
-                    //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
-                    AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(PerfilEmpresaActivity.this);
-                    alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaModifPerfil))
-                            //Si pulsa en cancelar no salgo de la activity
-                            .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
-                                }})
-                            .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-                                //Si pulsa en de acuerdo cierro la activity
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    finish();
-                                }}).show();
+                    mostrarDialogoSalida();
                 } else {
                     finish();
                 }
@@ -142,6 +120,9 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
 
     public void modificarPerfil(View view) {
 
+        //Pone el botón de modificarPerfil como disabled para evitar doble-clic
+        findViewById(R.id.btModificar).setEnabled(false);
+
         if (validarDatos()) {
 
             //Recupera la empresa desde la BD
@@ -152,17 +133,20 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                                Empresa empresa = null;
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    empresa = documentSnapshot.toObject(Empresa.class);
-                                }
+                                Empresa empresa = task.getResult().getDocuments().get(0).toObject(Empresa.class);
                                 actualizarEmpresa(empresa);
+                            } else {
+                                Toast.makeText(PerfilEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                                //Pone el botón de modificarPerfil como enabled
+                                findViewById(R.id.btModificar).setEnabled(true);
                             }
 
                         }
                     });
+        } else {
+            //Pone el botón de modificarPerfil como enabled
+            findViewById(R.id.btModificar).setEnabled(true);
         }
-
     }
 
     private boolean validarDatos() {
@@ -183,9 +167,9 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
         }
 
         //Comprueba si se han producido cambios...
-        if (etCif.getText().toString().equals(cif) &&
-                etNombre.getText().toString().equals(nombre) &&
-                etDireccion.getText().toString().equals(direccion)) {
+        if (etCif.getText().toString().equalsIgnoreCase(cif) &&
+                etNombre.getText().toString().equalsIgnoreCase(nombre) &&
+                etDireccion.getText().toString().equalsIgnoreCase(direccion)) {
             //Si no se han producido cambios se muestra un Toast y no permite continuar
             Toast.makeText(PerfilEmpresaActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
             resultado = false;
@@ -221,6 +205,8 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
                                     Log.d("taskjectsdebug","Error al subir la empresa a bbdd");
                                 }
                             }).show();
+                    //Pone el botón de modificarPerfil como enabled
+                    findViewById(R.id.btModificar).setEnabled(true);
                 }
             }
         });
@@ -260,4 +246,26 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //Si está en modo edición...
+            if (modoEdit) {
+                mostrarDialogoSalida();
+            } else {
+                finish();
+            }
+        }
+        return true;
+    }
+
+    private void mostrarDialogoSalida() {
+
+        AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(PerfilEmpresaActivity.this);
+        //Si pulsa en cancelar no salgo de la activity
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+                .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
+                .show();
+    }
 }

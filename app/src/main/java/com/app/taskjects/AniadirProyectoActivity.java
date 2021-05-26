@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,7 +31,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firestore.v1.WriteResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +49,6 @@ public class AniadirProyectoActivity extends AppCompatActivity {
     FirebaseFirestore db;
     String uidEmpresa;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +58,8 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         etNombreProyecto = findViewById(R.id.etNombreProyecto);
         etDescripcionProyecto = findViewById(R.id.etDescripcionProyecto);
         atvJefeEmpleado = findViewById(R.id.atvJefeEmpleado);
+
+        //Inicializacion de la BD
         db = FirebaseFirestore.getInstance();
 
         //Recupera del intent el uid de la empresa donde dar de alta el proyecto
@@ -75,22 +76,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
-                AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(AniadirProyectoActivity.this);
-                alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
-                        //Si pulsa en cancelar no salgo de la activity
-                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("taskjectsdebug","Salgo de la creación de proyecto");
-                            }
-                        }).setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-                            //Si pulsa en de acuerdo cierro la activity
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }
-                        }).show();
+                mostrarDialogoSalida();
             }
         });
 
@@ -129,6 +115,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
 
     public void crearProyecto(View view) {
 
+        findViewById(R.id.btnCrearProyecto).setEnabled(false);
         boolean creoProyecto = true;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
@@ -161,6 +148,9 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+
+                            findViewById(R.id.btnCrearProyecto).setEnabled(true);
+
                             AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(AniadirProyectoActivity.this);
                             alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
                                     .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -171,6 +161,8 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                                     }).show();
                         }
                     });
+        } else {
+            findViewById(R.id.btnCrearProyecto).setEnabled(true);
         }
 
     }
@@ -179,35 +171,46 @@ public class AniadirProyectoActivity extends AppCompatActivity {
 
         Log.d("taskjectsdebug","Actualiza los proyectos del empleado jefe: " + uidEmpleadoJefe);
         DocumentReference docRef = db.collection("empleados").document(uidEmpleadoJefe);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Empleado empleado = documentSnapshot.toObject(Empleado.class);
-                empleado.getUidProyectos().add(uidProyecto);
-                db.collection("empleados").document(uidEmpleadoJefe)
-                        .set(empleado)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(AniadirProyectoActivity.this);
-                                alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
-                                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                finish();
-                                            }
-                                        }).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
-                            }
-                        });
+        docRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-            }
-        });
+                        Empleado empleado = documentSnapshot.toObject(Empleado.class);
+                        empleado.getUidProyectos().add(uidProyecto);
+                        db.collection("empleados").document(uidEmpleadoJefe)
+                                .set(empleado)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
+
+                                        AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(AniadirProyectoActivity.this);
+                                        alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
+                                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        finish();
+                                                    }
+                                                }).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
+
+                                        Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
+                                    }
+                                });
+                    }})
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
+                        Log.d("taskjectsdebug","Error al leer el empleado de la BD");
+                    }
+                });
     }
 
     @Override
@@ -228,4 +231,21 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mostrarDialogoSalida();
+        }
+        return true;
+    }
+
+    private void mostrarDialogoSalida() {
+
+        AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(AniadirProyectoActivity.this);
+        //Si pulsa en cancelar no salgo de la activity
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+                .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
+                .show();
+    }
 }

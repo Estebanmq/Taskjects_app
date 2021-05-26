@@ -7,9 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,6 +88,11 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         btRegistrar = findViewById(R.id.btRegistrar);
         lineaProgreso = findViewById(R.id.lineaProgreso);
 
+        //Inicializo las variables de la clase
+        mapCategorias = new LinkedHashMap<>();
+        uidCategoria = "";
+        uidEmpresa = "";
+
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -96,35 +101,15 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
-                AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
-                alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaRegistroEmpleado))
-                        //Si pulsa en cancelar no salgo de la activity
-                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("taskjectsdebug","Salgo de la creacion de proyecto");
-                            }})
-                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            //Si pulsa en de acuerdo cierro la activity
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }})
-                        .show();
+                mostrarDialogoSalida();
             }
         });
 
-        mapCategorias = new LinkedHashMap<String, String>();
         cargarCategorias();
-
-        uidCategoria = "";
-        uidEmpresa = "";
     }
     
     private void cargarCategorias() {
 
-        Log.d("taskjectsdebug", "entra a lectura categorías");
         db.collection(CATEGORIAS).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -132,14 +117,11 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 mapCategorias.put(document.getString("descripcion"), document.getId());
-                                Log.d("taskjectsdebug", "lectura categorías - dato recuperado:" + document.getId() + " " + document.getString("descripcion"));
                             }
-
                             // Carga el dropmenu de categorías con los datos recuperados
                             categoriaEmpleado.setAdapter(new ArrayAdapter<String>(RegistroEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<String>(mapCategorias.keySet())));
                         } else {
                             Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                            Log.d("taskjectsdebug", "lectura categorías: no se han recuperado datos!");
                         }
                     }
                 });
@@ -147,13 +129,15 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
 
     public void registrar(View view) {
 
+        // Pone disabled el botón de registrarse
         btRegistrar.setEnabled(false);
+
+        // Pone visible la linea de progreso
+        lineaProgreso.setVisibility(View.VISIBLE);
 
         if (validarDatos()) {
             validarNifFirestore(); // Valida el NIF contra BD, valida el CIF de la empresa contra BD y realiza las actualizaciones
         }
-
-        btRegistrar.setEnabled(true);
     }
 
     private boolean validarDatos() {
@@ -212,20 +196,14 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
 
         if (!resultado) {
             Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
+            btRegistrar.setEnabled(true);
+            lineaProgreso.setVisibility(View.INVISIBLE);
         }
 
         return resultado;
     }
 
     private void validarNifFirestore() {
-
-        // Pone visible la linea de progreso
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                lineaProgreso.setVisibility(View.VISIBLE);
-            }
-        });
 
         CollectionReference empleadosRef = db.collection(EMPLEADOS);
         Query query = empleadosRef.whereEqualTo("nif", etNif.getText().toString().toUpperCase());
@@ -238,9 +216,13 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                     } else {
                         etNif.setError(getString(R.string.nifYaExiste));
                         lineaProgreso.setVisibility(View.INVISIBLE);
+                        btRegistrar.setEnabled(true);
                     }
                 } else {
-                    Log.d("taskjectsdebug", "RegistroEmpleadoActivity: la tarea no ha ido bien");
+                    //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                    Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    btRegistrar.setEnabled(true);
                 }
             }
         });
@@ -258,16 +240,18 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().isEmpty()) {
                         etCif.setError(getString(R.string.cifNoExiste));
+                        lineaProgreso.setVisibility(View.INVISIBLE);
+                        btRegistrar.setEnabled(true);
                     } else {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            uidEmpresa = document.getId();
-                        }
+                        uidEmpresa = task.getResult().getDocuments().get(0).getId();
+                        Log.d("taskjectsdebug", "es correcto, sí está el cif. Recupera el uid de empresa: " + uidEmpresa);
                         darAltaAuth();
-                        Log.d("taskjectsdebug", "es correcto, sí está el cif");
                     }
-                    lineaProgreso.setVisibility(View.INVISIBLE);
                 } else {
-                    Log.d("taskjectsdebug", "la tarea no ha ido bien");
+                    //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                    Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                    btRegistrar.setEnabled(true);
+                    lineaProgreso.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -276,7 +260,6 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
 
     private void darAltaAuth() {
 
-        Log.d("taskjectsdebug", "entra en darAltaAuth");
         mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -286,6 +269,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                                     darAltaEmpleado();
                                 } else {
                                     lineaProgreso.setVisibility(View.INVISIBLE);
+                                    btRegistrar.setEnabled(true);
                                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                         etEmail.setError(getString(R.string.emailYaExiste));
                                     } else {
@@ -297,20 +281,17 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                             }
                         }
                 );
-
-        Log.d("taskjectsdebug", "sale de darAltaAuth");    }
+        }
 
 
     private void darAltaEmpleado() {
 
-        Log.d("taskjectsdebug", "entra en darAltaEmpresa");
         Empleado empleado = new Empleado(etNif.getText().toString().toUpperCase(), etNombre.getText().toString(), etApellidos.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), uidEmpresa, uidCategoria, user.getUid());
         db.collection(EMPLEADOS).add(empleado)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         lineaProgreso.setVisibility(View.INVISIBLE);
-                        Log.d("taskjectsdebug", "empresa: entra en onSuccess!");
                         AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
                         dialogo.setMessage(getString(R.string.altaEmpleadoDone)).setCancelable(false).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
@@ -323,20 +304,19 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        btRegistrar.setEnabled(true);
                         lineaProgreso.setVisibility(View.INVISIBLE);
-                        Log.d("taskjectsdebug", "empresa: entra en onFailure! " + e.getMessage());
                         Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
                         //Todo: dejar log para arreglar el problema
                     }
                 });
-
-        Log.d("taskjectsdebug", "sale de darAltaEmpresa");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         btRegistrar.setEnabled(true);
+        lineaProgreso.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -355,5 +335,23 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mostrarDialogoSalida();
+        }
+        return true;
+    }
+
+    private void mostrarDialogoSalida() {
+
+        AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
+        //Si pulsa en cancelar no salgo de la activity
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+                .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
+                .show();
     }
 }

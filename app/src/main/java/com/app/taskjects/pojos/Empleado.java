@@ -39,6 +39,10 @@ public class Empleado {
         uidProyectos = new ArrayList<String>();
     }
 
+    public String getNombreApellidos () {
+        return this.nombre.concat(" ").concat(this.apellidos);
+    }
+
     // GETTERS & SETTERS
     public String getUid() {
         return uid;
@@ -52,29 +56,17 @@ public class Empleado {
         return fechaHoraCreacion;
     }
 
-    public void setFechaHoraCreacion(Timestamp fechaHoraCreacion) {
-        this.fechaHoraCreacion = fechaHoraCreacion;
-    }
+    public void setFechaHoraCreacion(Timestamp fechaHoraCreacion) { this.fechaHoraCreacion = fechaHoraCreacion; }
 
-    public String getNif() {
-        return nif;
-    }
+    public String getNif() { return nif; }
 
-    public void setNif(String nif) {
-        this.nif = nif;
-    }
+    public void setNif(String nif) { this.nif = nif; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getApellidos() {
-        return apellidos;
-    }
+    public String getApellidos() { return apellidos; }
 
     public void setApellidos(String apellidos) { this.apellidos = apellidos; }
 
@@ -82,37 +74,23 @@ public class Empleado {
 
     public void setEmail(String email) { this.email = email; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getUidEmpresa() {
-        return uidEmpresa;
-    }
+    public String getUidEmpresa() { return uidEmpresa; }
 
-    public void setUidEmpresa(String uidEmpresa) {
-        this.uidEmpresa = uidEmpresa;
-    }
+    public void setUidEmpresa(String uidEmpresa) { this.uidEmpresa = uidEmpresa; }
 
     public String getCategoria() { return categoria; }
 
     public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public String getUidAuth() {
-        return uidAuth;
-    }
+    public String getUidAuth() { return uidAuth; }
 
-    public void setUidAuth(String uidAuth) {
-        this.uidAuth = uidAuth;
-    }
+    public void setUidAuth(String uidAuth) { this.uidAuth = uidAuth; }
 
     public List<String> getUidProyectos() { return uidProyectos; }
 
-    public void setUidProyectos(List<String> uidProyectos) { this.uidProyectos = uidProyectos;
-    }
-
+    public void setUidProyectos(List<String> uidProyectos) { this.uidProyectos = uidProyectos; }
 }

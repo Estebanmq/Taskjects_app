@@ -13,17 +13,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.taskjects.pojos.Categoria;
 
 import com.app.taskjects.adaptadores.AdaptadorTareasDAD;
 import com.app.taskjects.pojos.Tarea;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,15 +37,38 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.database.Query;
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.ColumnProperties;
 import com.woxthebox.draglistview.DragItem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TareasProyectoActivity extends MenuToolbarActivity {
+
+    private final String CATEGORIAS = "categorias";
+
+    FloatingActionButton fABTareas;
+
+    MenuItem plusEmpleado;
+    BottomAppBar bottomAppBar;
+
+    Map<String, Categoria> mapCategorias;
+    String uidProyecto;
+    String uidEmpresa;
+    String uidEmpleado;
+
+    //Variables para manejar la bbdd y sus datos
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
+
+    SharedPreferences sharedPreferences;
 
     //Variables para las columnas de tareas
     int tareasCreadas = 0;
@@ -59,45 +87,30 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
     ArrayList<ArrayList<Pair<Long,Tarea>>> arrayAllEstados = new ArrayList<ArrayList<Pair<Long, Tarea>>>(){{add(arrayEstado0);add(arrayEstado1);add(arrayEstado2);add(arrayEstado3);add(arrayEstado4);}};
 
-    FloatingActionButton fABTareas;
-    BottomAppBar bottomAppBar;
-
-    String uidProyecto;
-    String uidEmpresa;
-    String uidEmpleado;
-
-    //Variables para manejar la bbdd y sus datos
-    FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
-
-    SharedPreferences sharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tareas_proyecto_layout);
 
-        //Inicializacion de variables
+        //Inicializo el acceso a la BD
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        //Inicializacion de componentes
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
         fABTareas = findViewById(R.id.fABTareas);
 
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
+        dadTareas = findViewById(R.id.dadTareas);
 
-        if (sharedPreferences.getString("categoria", "").equals("1")) {
-            findViewById(R.id.fABTareas).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.fABTareas).setVisibility(View.INVISIBLE);
-        }
-
-
+        //Inicialización de variables
+        mapCategorias = new TreeMap<>();
         uidProyecto = getIntent().getStringExtra("uidProyecto");
         uidEmpresa = getIntent().getStringExtra("uidEmpresa");
-        uidEmpleado = sharedPreferences.getString("uidEmpleado","");
 
-        dadTareas = findViewById(R.id.dadTareas);
+        sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
+        uidEmpleado = sharedPreferences.getString("uidEmpleado","");
 
         //Listener para controlar donde va cada card de cada tarea
         dadTareas.setBoardListener(new BoardView.BoardListener() {
@@ -161,16 +174,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
             @Override
             public void onItemChangedColumn(int oldColumn, int newColumn) {
-                /*
-                Toast.makeText(getContext(), "Nueva posicion de columna "+ newColumn+ " antigua " + oldColumn, Toast.LENGTH_SHORT).show();
-                //Esto es para cambiar el contador de cards de cada columna, puede estar guay implementarlo
-                TextView itemCount1 = mBoardView.getHeaderView(oldColumn).findViewById(R.id.item_count);
-                itemCount1.setText(String.valueOf(mBoardView.getAdapter(oldColumn).getItemCount()));
-                TextView itemCount2 = mBoardView.getHeaderView(newColumn).findViewById(R.id.item_count);
-                itemCount2.setText(String.valueOf(mBoardView.getAdapter(newColumn).getItemCount()));
-
-                 */
-
+                //Toast.makeText(getContext(), "Nueva posicion de columna "+ newColumn+ " antigua " + oldColumn, Toast.LENGTH_SHORT).show();
             }
 
 
@@ -220,11 +224,10 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             Log.d("debugFor","valor de i "+i);
             cargarColumnas(estados[i]);
         }
-
-        cargaDeTareas();
-        //imprimirTablaDAD();
-        //cargarTareasProyecto();
+        
+        recuperarCategorias();
     }
+
 
     private void cargarColumnas(String estado) {
 
@@ -299,7 +302,38 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         }
     }
 
+    private void recuperarCategorias() {
+
+        db.collection(CATEGORIAS).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Categoria categoria = document.toObject(Categoria.class);
+
+                                Log.d("taskjectsdebug", "almacena la categoría: " + document.getId() + " con descripcion: " + categoria.getDescripcion());
+                                mapCategorias.put(document.getId(), document.toObject(Categoria.class));
+                            }
+                            cargaDeTareas();
+                        } else {
+                            Toast.makeText(TareasProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
     private void cargaDeTareas() {
+
+        Categoria categoria = mapCategorias.get(sharedPreferences.getString("categoria", ""));
+        if (categoria.getMarca()) {
+            plusEmpleado.setVisible(true);
+            findViewById(R.id.fABTareas).setVisibility(View.VISIBLE);
+        } else {
+            plusEmpleado.setVisible(false);
+            findViewById(R.id.fABTareas).setVisibility(View.INVISIBLE);
+        }
+
         Query queryAE0 = mDatabase.child("tareas").child(uidProyecto).orderByChild("estado").equalTo("0");
         queryAE0.addChildEventListener(new ChildEventListener() {
             @Override
@@ -686,7 +720,36 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
     public void aniadirTarea(View view) {
         Intent pantallaAniadirTarea = new Intent(this,AniadirTareaActivity.class);
-        pantallaAniadirTarea.putExtra("uidProyecto",uidProyecto);
+        pantallaAniadirTarea.putExtra("uidProyecto", uidProyecto);
+        pantallaAniadirTarea.putExtra("uidEmpresa", uidEmpresa);
         startActivity(pantallaAniadirTarea);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        int plusEmpleadoId = -69;
+        if(menu.findItem(plusEmpleadoId) == null) {
+            plusEmpleado = menu.add(Menu.NONE, plusEmpleadoId, 2, getString(R.string.plusEmpleado) );
+
+            plusEmpleado.setVisible(false);
+            plusEmpleado.setIcon(R.drawable.ic_person_add_24dp);
+            plusEmpleado.setShowAsActionFlags(
+                    MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW |
+                            MenuItem.SHOW_AS_ACTION_ALWAYS
+            );
+
+            // Set a click listener for the new menu item
+            plusEmpleado.setOnMenuItemClickListener(menuItem -> {
+                Intent intent = new Intent(TareasProyectoActivity.this, AsignarEmpleadosActivity.class);
+                intent.putExtra("uidEmpresa", uidEmpresa);
+                intent.putExtra("uidProyecto", uidProyecto);
+                startActivity(intent);
+                return true;
+            });
+        }
+
+        super.onPrepareOptionsMenu(menu);
+        return true;
     }
 }

@@ -25,8 +25,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -35,11 +33,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainEmpresaActivity extends MenuToolbarActivity {
 
     private final String EMPRESAS = "empresas";
+    private final String CATEGORIAS = "categorias";
+    private final String EMPLEADOS = "empleados";
+    private final String PROYECTOS = "proyectos";
 
     //Componentes
     TextView tvInfoNoProyectos;
@@ -53,7 +55,9 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
     String uidEmpresa;
 
     // Variables de la clase
+    List<String> categoriasJefe;
     Map<String,String> mapJefes;
+    Empresa empresa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,54 +71,76 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
         LinearLayoutManager llm = new LinearLayoutManager(MainEmpresaActivity.this);
         rvProyectos.setLayoutManager(llm);
 
-        //Inicio componentes
+        //Inicialización de componentes
         tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
 
-        //Inicio variables
+        //Inicialización de variables de acceso a BD
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
+        //Inicialización de variables de clase
+        categoriasJefe = new ArrayList<>();
         mapJefes = new HashMap<String, String>();
+        empresa = new Empresa();
 
-        //Cargo el usuario empresa actual
-        cargarUsuarioEmpresa();
+        //Recupera todas las categorías de tipo Jefe de Proyecto (campo marca es true)
+        recuperarCategoriasTipoJefe();
+
     }
 
-    //Cargo el UID de la empresa que ha iniciado sesion en la app y si ok llamo a cargarProyectos()
+    private void recuperarCategoriasTipoJefe() {
+
+        db.collection(CATEGORIAS)
+                .whereEqualTo("marca", true)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                categoriasJefe.add(document.getId());
+                                Log.d("taskjectsdebug", "Recupera categoría Jefe: " + document.getId());
+                            }
+                            //Cargo el usuario empresa actual
+                            cargarUsuarioEmpresa();
+                        } else {
+                            Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
     private void cargarUsuarioEmpresa() {
 
-        db.collection("empresas")
+        db.collection(EMPRESAS)
                 .whereEqualTo("uidAuth", user.getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
+                    public void onEvent(@Nullable QuerySnapshot snapshot,
                                         @Nullable FirebaseFirestoreException e) {
 
                         if (e != null) {
                             Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                             return;
                         }
-
-                        for (QueryDocumentSnapshot doc : value) {
-                            Empresa empresa = doc.toObject(Empresa.class);
-                            uidEmpresa = empresa.getUid();
-                            Log.d("taskjectsdebug","Empresa actual: "+uidEmpresa);
-                            //Carga las SharedPreferences de la empresa
-                            cargarSharedPreferences(empresa);
-                            //Una vez que ya he recuperado el usuario cargo sus empleados Jefe
-                            cargarEmpleadosJefe();
-                        }
+                        empresa = snapshot.getDocuments().get(0).toObject(Empresa.class);
+                        uidEmpresa = empresa.getUid();
+                        Log.d("taskjectsdebug","Empresa actual: "+uidEmpresa);
+                        //Carga las SharedPreferences de la empresa
+                        cargarSharedPreferences(empresa);
+                        //Una vez que ya he recuperado el usuario cargo sus empleados Jefe
+                        cargarEmpleadosJefe();
                     }
                 });
     }
 
     private void cargarEmpleadosJefe() {
-        db.collection("empleados")
-                .whereEqualTo("uidEmpresa",uidEmpresa)
-                .whereEqualTo("categoria","1")
+        db.collection(EMPLEADOS)
+                .whereEqualTo("uidEmpresa", uidEmpresa)
+                .whereIn("categoria", categoriasJefe)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -146,14 +172,14 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
     private void cargarProyectos() {
         ArrayList<Proyecto>listProyectos = new ArrayList<>();
-        Log.d("MainEmpresaActivityDebug","Empresa en cargarProyecto: "+uidEmpresa);
-        db.collection("proyectos")
+        db.collection(PROYECTOS)
                 .whereEqualTo("uidEmpresa",uidEmpresa)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                         if (error != null) {
-                            Log.d("taskjectsdebug", "Error en el listen");
+                            Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
                             return;
                         }
                         listProyectos.clear();
@@ -174,8 +200,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                                         documentSnapshot.getString("nombre"),
                                         descripcion,
                                         nombreJefeProyecto));
-                                Log.d("taskjectsdebug", "Proyecto encontrado " + documentSnapshot.getString("nombre") +
-                                        documentSnapshot.getString("uidEmpresa"));
+                                Log.d("taskjectsdebug", "Proyecto encontrado " + documentSnapshot.getString("nombre") + " " + documentSnapshot.getString("uidEmpresa"));
                             }
 
                         }

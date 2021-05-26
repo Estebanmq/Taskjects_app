@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AsignarEmpleadosActivity"
+    android:theme="@style/Theme.MaterialComponents.Light">
+
+    <!-- Definición de la Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/top_toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <!-- FIN Definición de la toolbar -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Inicio Layout de los proyectos -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEmpleados"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="3dp"
+            android:scrollbars="vertical" />
+        <!-- Fin Layout de los proyectos -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -6,18 +6,21 @@
     android:layout_height="wrap_content"
     android:theme="@style/Theme.Taskjects"
     android:padding="8dp"
-    android:id="@+id/cvProyectos"
+    android:id="@+id/cvEmpleados"
     android:animateLayoutChanges="true"
     app:cardCornerRadius="5dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true"
     android:clickable="true"
     android:focusable="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:baselineAligned="false">
+
         <RelativeLayout
             android:id="@+id/parent_layout"
             android:layout_height="match_parent"
@@ -26,7 +29,7 @@
             android:layout_weight="4">
 
             <TextView
-                android:id="@+id/cvTvNombreTarea"
+                android:id="@+id/cvTvNombreEmpleado"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:layout_marginStart="2dp"
@@ -34,25 +37,26 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/cvTvEmpleado"
+                android:id="@+id/cvTvCategoria"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
-                android:layout_below="@+id/cvTvNombreTarea" />
+                android:layout_below="@+id/cvTvNombreEmpleado" />
+
         </RelativeLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvPrioridad"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:background="@drawable/circulo_prioridad" />
+            <CheckBox
+                android:id="@+id/cbIncluido"
+                style="Widget.MaterialComponents.CompoundButton.CheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                app:useMaterialThemeColors="true" />
         </LinearLayout>
     </LinearLayout>
-
-
 </com.google.android.material.card.MaterialCardView>

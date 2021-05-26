@@ -6,6 +6,7 @@
     <string name="ok">De acuerdo</string>
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
+    <string name="plusEmpleado">+Empleado</string>
     <string name="verPerfil">Ver perfil</string>
     <string name="cerrarSesion">Cerrar sesión</string>
     <string name="salir">Salir</string>
@@ -50,11 +51,12 @@
     <string name="modifProyectoCorrecta">El proyecto se ha modificado correctamente</string>
     <string name="modifPerfilCorrecta">El perfil se ha modificado correctamente</string>
 
-    <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderan</string>
-    <string name="confirmSalidaModifProyecto">¿Desea cancelar la modificación del proyecto? Los cambios se perderan</string>
-    <string name="confirmSalidaModifPerfil">¿Desea cancelar la modificación del perfil? Los cambios se perderan</string>
-    <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderan</string>
-    <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderan</string>
+    <string name="confirmSalidaCreacionProyecto">¿Desea cancelar la creación del proyecto? Los cambios se perderán</string>
+    <string name="confirmSalidaCreacionTarea">¿Desea cancelar la creación de la tarea? Los cambios se perderán</string>
+    <string name="confirmSalidaModifProyecto">¿Desea cancelar la modificación del proyecto? Los cambios se perderán</string>
+    <string name="confirmSalidaModifPerfil">¿Desea cancelar la modificación del perfil? Los cambios se perderán</string>
+    <string name="confirmSalidaRegistroEmpleado">¿Desea cancelar el registro de empleado? Los cambios se perderán</string>
+    <string name="confirmSalidaRegistroEmpresa">¿Desea cancelar el registro de la empresa? Los cambios se perderán</string>
     <string name="confirmCerrarSesion">¿Desea cerrar la sesión?</string>
     <string name="confirmSalidaAplicacion">¿Desea salir de la aplicación?</string>
 
@@ -110,7 +112,7 @@
     <string name="noSeEncuentranJefes">No se ha encontrado ningún jefe de proyecto, debe registrarse al menos uno</string>
     <string name="noHayCambios">No se han producido cambios</string>
 
-    <string name="faltaTarea">Informe de la tarea</string>
+    <string name="faltaTarea">Informe el texto de la tarea</string>
     <!-- FIN Errores de aplicación -->
 
     <!-- Mensajes de aplicación -->

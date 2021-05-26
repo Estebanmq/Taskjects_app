@@ -59,43 +59,31 @@ public class MenuToolbarActivity extends AppCompatActivity {
             case R.id.cerrarSesion:
                 Log.d("taskjectsdebug","Pulsada acción cerrarSesión");
                 AlertDialog.Builder alertaCerrarSesion = new AlertDialog.Builder(this);
+                //Si pulsa en de acuerdo cierra la aplicación
                 alertaCerrarSesion.setMessage(getString(R.string.confirmCerrarSesion))
                         //Si pulsa en cancelar no hace nada
-                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
-                            }})
-                        .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-                            //Si pulsa en de acuerdo cierra la aplicación
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                borrarSharedPreferences();
-                                mAuth.signOut();
+                        .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                        .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> {
+                            borrarSharedPreferences();
+                            mAuth.signOut();
 
-                                Intent intent = new Intent(MenuToolbarActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
+                            Intent intent1 = new Intent(MenuToolbarActivity.this, LoginActivity.class);
+                            startActivity(intent1);
+                            finish();
 
-                            }}).show();
+                        }).show();
                 return true;
             case R.id.salir:
                 Log.d("taskjectsdebug","Pulsada acción Salir");
                 AlertDialog.Builder alertaSalidaAplicacion = new AlertDialog.Builder(this);
+                //Si pulsa en de acuerdo cierra la aplicación
                 alertaSalidaAplicacion.setMessage(getString(R.string.confirmSalidaAplicacion))
                         //Si pulsa en cancelar no hace nada
-                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("taskjectsdebug","Ha pulsado cancelar, no se hace nada");
-                            }})
-                        .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-                            //Si pulsa en de acuerdo cierra la aplicación
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                borrarSharedPreferences();
-                                finishAffinity();
-                            }}).show();
+                        .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                        .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> {
+                            borrarSharedPreferences();
+                            finishAffinity();
+                        }).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

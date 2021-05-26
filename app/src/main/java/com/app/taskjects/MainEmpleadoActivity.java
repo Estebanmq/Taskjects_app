@@ -3,7 +3,6 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,22 +12,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
+import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
 import com.app.taskjects.pojos.Empleado;
-import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.pojos.Proyecto;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,18 +31,17 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class MainEmpleadoActivity extends MenuToolbarActivity {
 
     //Constantes
     private final String EMPLEADOS = "empleados";
     private final String PROYECTOS = "proyectos";
+    private final String CATEGORIAS = "categorias";
 
 
     //Componentes
@@ -61,42 +55,71 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     FirebaseFirestore db;
 
     // Variables de la clase
+    List<String> categoriasJefe;
     Map<String,String> mapJefes;
     Empleado empleado;
     String uidEmpresa;
 
+    Menu menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.main_empleado_layout);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_empleado_layout);
             Log.d("MainEmpleadoActivityDebug","Entro en el onCreate");
 
-            //Inicializacion de componentes
-            tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
+        //Inicializacion de componentes
+        tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
+        tvInfoNoProyectos.setVisibility(TextView.INVISIBLE);
 
-            rvProyectosEmpleados = findViewById(R.id.rvProyectosEmpleados);
-            rvProyectosEmpleados.setHasFixedSize(true);
+        rvProyectosEmpleados = findViewById(R.id.rvProyectosEmpleados);
+        rvProyectosEmpleados.setHasFixedSize(true);
 
-            LinearLayoutManager llm = new LinearLayoutManager(MainEmpleadoActivity.this);
-            rvProyectosEmpleados.setLayoutManager(llm);
+        LinearLayoutManager llm = new LinearLayoutManager(MainEmpleadoActivity.this);
+        rvProyectosEmpleados.setLayoutManager(llm);
 
-            //Inicialización de la toolbar
-            bottomAppBar = findViewById(R.id.bottomAppBar);
-            setSupportActionBar(bottomAppBar);
+        //Inicialización de la toolbar
+        bottomAppBar = findViewById(R.id.bottomAppBar);
+        setSupportActionBar(bottomAppBar);
 
-            //Inicializacion de variables
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
-            db = FirebaseFirestore.getInstance();
+        //Inicialización de variables de acceso a BD
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
-            mapJefes = new HashMap<String, String>();
-            empleado = new Empleado();
+        //Inicialización de variables de clase
+        categoriasJefe = new ArrayList<>();
+        mapJefes = new TreeMap<String, String>();
+        empleado = new Empleado();
 
-            //Recoge el uid de la empresa del empleado logueado
-            uidEmpresa = getIntent().getStringExtra("uidEmpresa");
+        //Recoge el uid de la empresa del empleado logueado
+        uidEmpresa = getIntent().getStringExtra("uidEmpresa");
 
-            //Carga los Jefes de Proyecto de la empresa a la que pertenece el empleado
-            cargarEmpleadosJefe();
+        //Recupera todas las categorías de tipo Jefe de Proyecto (campo marca es true)
+        recuperarCategoriasTipoJefe();
+
+    }
+
+    private void recuperarCategoriasTipoJefe() {
+
+        db.collection(CATEGORIAS)
+                .whereEqualTo("marca", true)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                categoriasJefe.add(document.getId());
+                                Log.d("taskjectsdebug", "Recupera categoría Jefe: " + document.getId());
+                            }
+                            //Carga los Jefes de Proyecto de la empresa a la que pertenece el empleado
+                            cargarEmpleadosJefe();
+                        } else {
+                            Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -114,7 +137,7 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     private void cargarEmpleadosJefe() {
         db.collection(EMPLEADOS)
                 .whereEqualTo("uidEmpresa", uidEmpresa)
-                .whereEqualTo("categoria","1")
+                .whereIn("categoria", categoriasJefe)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -125,19 +148,14 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                     //Por cada empleado jefe que encuentra lo añade al map
                                     mapJefes.put(documentSnapshot.getId(), documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))));
+                                    Log.d("taskjectsdebug","añade el siguiente empleado Jefe: " + documentSnapshot.getString("nombre"));
                                 }
-                            } else {
-                                //Si task.isEmpty() devuelve true entonces no se han encontrado registros
-                                Toast.makeText(MainEmpleadoActivity.this, getString(R.string.noSeEncuentranJefes), Toast.LENGTH_LONG).show();
-                                Log.d("taskjectsdebug","No se han encontrado empleados jefe");
-                                findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
                             }
                             //Una vez recuperados los empleados jefe de la empresa se cargan los datos del empleado que se ha logeado
                             cargarUsuarioEmpleado();
                         } else {
                             //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
                             Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                            findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
                             Log.d("taskjectsdebug","ha habido algún error en la recuperación de empleados jefe");
                         }
                     }
@@ -149,19 +167,17 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                 .whereEqualTo("uidAuth", user.getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshot,
-                                        @Nullable FirebaseFirestoreException e) {
-
-                        if (e != null) {
-                            Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                            return;
-                        } else {
+                    public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                        if (error == null) {
                             empleado = snapshot.getDocuments().get(0).toObject(Empleado.class);
-                            Log.d("MainEmpleadoActivity", "Empleado actual -> " + empleado.getUid());
-                            //Carga las SharedPreferences de la empresa
+                            Log.d("taskjectsdebug", "Empleado actual -> " + empleado.getUid());
+                            //Carga las SharedPreferences del empleado
                             cargarSharedPreferences(empleado);
                             //Una vez que recuperados los datos del empleado se cargan sus proyectos (Promesas de firebase)
                             cargarProyectos();
+                        } else {
+                            Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            Log.d("taskjectsdebug","ha habido algún error en la recuperación del empleado");
                         }
                     }
                 });
@@ -169,15 +185,14 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
 
     private void cargarProyectos() {
 
-        db.collection(PROYECTOS)
-                .whereIn(FieldPath.documentId(), empleado.getUidProyectos())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+        if (!empleado.getUidProyectos().isEmpty()) {
+            db.collection(PROYECTOS)
+                    .whereIn(FieldPath.documentId(), empleado.getUidProyectos())
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                             if (error == null) {
                                 if (snapshot != null && !snapshot.isEmpty()) {
-                                    tvInfoNoProyectos.setVisibility(TextView.INVISIBLE);
-
                                     List<Proyecto> listProyectos = new ArrayList<>();
                                     for (QueryDocumentSnapshot doc : snapshot) {
                                         Proyecto proyecto = doc.toObject(Proyecto.class);
@@ -198,13 +213,18 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                                     rvProyectosEmpleados.setAdapter(adaptadorProyectosRV);
 
                                 } else {
-                                    tvInfoNoProyectos.setVisibility(TextView.VISIBLE);
+                                    Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorGeneral), Toast.LENGTH_LONG).show();
+                                    Log.d("taskjectsdebug","no recupera los proyectos del empleado");
                                 }
                             } else {
-                                tvInfoNoProyectos.setVisibility(TextView.VISIBLE);
+                                Toast.makeText(MainEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                                Log.d("taskjectsdebug","ha habido algún error en la recuperación de los proyectos");
                             }
                         }
                     });
+        } else {
+            tvInfoNoProyectos.setVisibility(TextView.VISIBLE);
+        }
 
     }
 

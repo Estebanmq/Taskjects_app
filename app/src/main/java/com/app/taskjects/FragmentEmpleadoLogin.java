@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +20,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class FragmentEmpleadoLogin extends Fragment {
@@ -64,32 +61,30 @@ public class FragmentEmpleadoLogin extends Fragment {
         btnLoginEmpleado = view.findViewById(R.id.btnLoginEmpleado);
         db = FirebaseFirestore.getInstance();
 
+etEmailEmpleado.setText("jm.dios.martin@gmail.com");
+etContraseniaEmpleado.setText("admin1234");
+
         uidEmpresa = "";
 
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
-        textViewRecuperarContrasenia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RecuperarPasswordDialog dialog = new RecuperarPasswordDialog();
-                dialog.show(getFragmentManager(), "Recuperar la contraseña Empleado");
-            }
+        textViewRecuperarContrasenia.setOnClickListener(v -> {
+            textViewRecuperarContrasenia.setEnabled(false);
+            RecuperarPasswordDialog dialog = new RecuperarPasswordDialog();
+            dialog.show(getFragmentManager(), "Recuperar la contraseña Empleado");
+            textViewRecuperarContrasenia.setEnabled(true);
         });
 
 
         //Le agrego un Listener al TextView de registro para abrir la pantalla de registro para empleados
-        textViewRegistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               startActivity(new Intent(view.getContext(), RegistroEmpleadoActivity.class));
-               getActivity().finish();
-            }
+        textViewRegistro.setOnClickListener(v -> {
+            textViewRegistro.setEnabled(false);
+            startActivity(new Intent(view.getContext(), RegistroEmpleadoActivity.class));
         });
 
-        btnLoginEmpleado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { loginEmpleado(); }
-        });
+        //Le agrego un Listener al btn para llamar a loginEmpleado
+        btnLoginEmpleado.setOnClickListener(view -> loginEmpleado());
 
+        //Devuelvo el objeto view (inflater del fragment)
         return view;
 
     }
@@ -113,7 +108,6 @@ public class FragmentEmpleadoLogin extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
-                            Log.d("taskjectsdebug","empresa del empleado: " + uidEmpresa);
                             mAuth = FirebaseAuth.getInstance();
                             //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
                             mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -167,5 +161,6 @@ public class FragmentEmpleadoLogin extends Fragment {
         super.onResume();
         btnLoginEmpleado.setEnabled(true);
         textViewRegistro.setEnabled(true);
+        textViewRecuperarContrasenia.setEnabled(true);
     }
 }

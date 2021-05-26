@@ -7,9 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -80,35 +80,22 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Si hace click en el icono de la flecha para salir de la creacion de proyecto le muestro un pop up de confirmacion
-                AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpresaActivity.this);
-                alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaRegistroEmpresa))
-                        //Si pulsa en cancelar no salgo de la activity
-                        .setNeutralButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("taskjectsdebug","Salgo de la creacion de proyecto");
-                            }})
-                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            //Si pulsa en de acuerdo cierro la activity
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }})
-                        .show();
+                mostrarDialogoSalida();
             }
         });
     }
 
     public void registrar(View view) {
 
+        // Pone disabled el botón de registrarse
         btRegistrar.setEnabled(false);
+
+        // Pone visible la linea de progreso
+        lineaProgreso.setVisibility(View.VISIBLE);
 
         if (validarDatos()) {
             validarCifFirestore(); // Valida el CIF contra BD y realiza las actualizaciones
         }
-
-        btRegistrar.setEnabled(true);
     }
 
     private boolean validarDatos() {
@@ -147,20 +134,14 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
         if (!resultado) {
             Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.compruebeDatos), Toast.LENGTH_LONG).show();
+            btRegistrar.setEnabled(true);
+            lineaProgreso.setVisibility(View.INVISIBLE);
         }
 
         return resultado;
     }
 
     private void validarCifFirestore() {
-
-        // Pone visible la linea de progreso
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                lineaProgreso.setVisibility(View.VISIBLE);
-            }
-        });
 
         CollectionReference empresasRef = db.collection(EMPRESAS);
         Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase());
@@ -170,13 +151,16 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().isEmpty()) {
                         darAltaAuth();
-                        Log.d("taskjectsdebug", "es correcto, no está el cif");
                     } else {
                         etCif.setError(getString(R.string.cifYaExiste));
+                        btRegistrar.setEnabled(true);
                         lineaProgreso.setVisibility(View.INVISIBLE);
                     }
                 } else {
-                    Log.d("taskjectsdebug", "RegistroEmpresaActivity: la tarea no ha ido bien");
+                    //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                    Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    btRegistrar.setEnabled(true);
                 }
             }
         });
@@ -185,7 +169,6 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
     private void darAltaAuth() {
 
-        Log.d("taskjectsdebug", "entra en darAltaAuth");
         mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -194,6 +177,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                             user = mAuth.getCurrentUser();
                             darAltaEmpresa();
                         } else {
+                            btRegistrar.setEnabled(true);
                             lineaProgreso.setVisibility(View.INVISIBLE);
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 etEmail.setError(getString(R.string.emailYaExiste));
@@ -201,25 +185,20 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                                 Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
                                 //Todo: dejar log para arreglar el problema
                             }
-                            Log.d("taskjectsdebug", "auth: error en task: " + task.getException());
                         }
                     }
                 }
                 );
-
-        Log.d("taskjectsdebug", "sale de darAltaAuth");
     }
 
     private void darAltaEmpresa() {
 
-        Log.d("taskjectsdebug", "entra en darAltaEmpresa");
         Empresa empresa = new Empresa(etCif.getText().toString().toUpperCase(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
         db.collection(EMPRESAS).add(empresa)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         lineaProgreso.setVisibility(View.INVISIBLE);
-                        Log.d("taskjectsdebug", "empresa: entra en onSuccess!");
                         AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpresaActivity.this);
                         dialogo.setMessage(getString(R.string.altaEmpresaDone)).setCancelable(false).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
@@ -232,8 +211,8 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        btRegistrar.setEnabled(true);
                         lineaProgreso.setVisibility(View.INVISIBLE);
-                        Log.d("taskjectsdebug", "empresa: entra en onFailure! " + e.getMessage());
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
                         //Todo: dejar log para arreglar el problema
                     }
@@ -246,6 +225,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         btRegistrar.setEnabled(true);
+        lineaProgreso.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -264,5 +244,23 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mostrarDialogoSalida();
+        }
+        return true;
+    }
+
+    private void mostrarDialogoSalida() {
+
+        AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpresaActivity.this);
+        //Si pulsa en cancelar no salgo de la activity
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+                .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
+                .show();
     }
 }

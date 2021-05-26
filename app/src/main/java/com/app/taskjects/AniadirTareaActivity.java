@@ -3,12 +3,12 @@ package com.app.taskjects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -21,20 +21,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
-public class AniadirTareaActivity extends MenuToolbarActivity {
+public class AniadirTareaActivity extends AppCompatActivity {
 
     //Componentes pantalla
     ChipGroup cgPrioridades;
@@ -42,14 +39,13 @@ public class AniadirTareaActivity extends MenuToolbarActivity {
     AutoCompleteTextView atvEmpleados;
 
     //Variables para manejar la bbdd y sus datos
-    FirebaseAuth mAuth;
-    FirebaseFirestore db;
     DatabaseReference mDatabase;
+    FirebaseFirestore db;
+
     String uidEmpresa;
     String uidProyecto;
 
     Map<String,String> mapEmpleados;
-    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,23 +57,35 @@ public class AniadirTareaActivity extends MenuToolbarActivity {
         etTarea = findViewById(R.id.etTarea);
         atvEmpleados = findViewById(R.id.atvEmpleados);
 
-        mAuth = FirebaseAuth.getInstance();
+        //Inicializo las variables de manejo de la BD
         db = FirebaseFirestore.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
 
-        uidEmpresa = sharedPreferences.getString("uidEmpresa","");
+        //Inicializo las variables de la clase
+        uidEmpresa = getIntent().getStringExtra("uidEmpresa");
         uidProyecto = getIntent().getStringExtra("uidProyecto");
+        mapEmpleados = new TreeMap<>();
 
-        mapEmpleados = new HashMap<>();
+        //Inicializo la toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        //Captura el click de volver atrás
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarDialogoSalida();
+            }
+        });
 
         cargaEmpleadosEmpresa();
     }
 
     //Metodo que carga el nombre y su id de todos los empleados de la empresa del proyecto
     private void cargaEmpleadosEmpresa() {
+
         db.collection("empleados")
-                .whereEqualTo("uidEmpresa",uidEmpresa)
+                .whereArrayContains("uidProyectos", uidProyecto)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -86,7 +94,7 @@ public class AniadirTareaActivity extends MenuToolbarActivity {
                             if (!task.getResult().isEmpty()) {
                                 mapEmpleados.put("-- Sin asignar --", "noasignado");
                                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    Log.d("AniadirTareaActivity", documentSnapshot.getString("nombre"));
+                                    Log.d("taskjectsdebug", documentSnapshot.getString("nombre"));
                                     mapEmpleados.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))), documentSnapshot.getId());
 
                                 }
@@ -171,4 +179,21 @@ public class AniadirTareaActivity extends MenuToolbarActivity {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mostrarDialogoSalida();
+        }
+        return true;
+    }
+
+    private void mostrarDialogoSalida() {
+
+        AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(AniadirTareaActivity.this);
+        //Si pulsa en cancelar no salgo de la activity
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+                .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
+                .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
+                .show();
+    }
 }

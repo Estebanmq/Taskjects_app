@@ -26,7 +26,6 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:theme="@style/Theme.MaterialComponents.Light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!-- Inicio TextInputLayout del nombre del proyecto -->
