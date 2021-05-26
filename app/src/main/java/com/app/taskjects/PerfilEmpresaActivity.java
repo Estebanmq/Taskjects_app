@@ -263,7 +263,7 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
 
         AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(PerfilEmpresaActivity.this);
         //Si pulsa en cancelar no salgo de la activity
-        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaModifPerfil))
                 .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
                 .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
                 .show();

@@ -349,7 +349,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
 
         AlertDialog.Builder alertaSalidaCreacion = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
         //Si pulsa en cancelar no salgo de la activity
-        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaCreacionProyecto))
+        alertaSalidaCreacion.setMessage(getString(R.string.confirmSalidaRegistroEmpleado))
                 .setNeutralButton(getString(R.string.cancelar), (dialogInterface, i) -> { })
                 .setPositiveButton(getString(R.string.aceptar), (dialogInterface, i) -> finish())
                 .show();

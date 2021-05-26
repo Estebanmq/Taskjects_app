@@ -21,137 +21,141 @@
 
     </com.google.android.material.appbar.AppBarLayout>
     <!-- FIN Definición de la toolbar -->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:theme="@style/Theme.MaterialComponents.Light"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:scrollbars="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/Theme.MaterialComponents.Light"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Inicio TextInputLayout del nombre del proyecto -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextFieldTarea"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="24dp"
-            android:hint="@string/tarea"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_task_24dp">
-
-            <!-- TextInput con el nombre del proyecto -->
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTarea"
-                android:layout_width="match_parent"
+            <!-- Inicio TextInputLayout del nombre del proyecto -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextFieldTarea"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:maxLength="60"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <!-- Fin TextInputLayout del nombre del proyecto -->
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:hint="@string/tarea"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/ic_task_24dp">
+
+                <!-- TextInput con el nombre del proyecto -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTarea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="60"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Fin TextInputLayout del nombre del proyecto -->
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextFieldEmpleadosEmpresa"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:hint="@string/empleadoAsignado"
-            app:startIconDrawable="@drawable/ic_empleado_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldTarea">
-
-            <AutoCompleteTextView
-                android:id="@+id/atvEmpleados"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextFieldEmpleadosEmpresa"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:editable="false"
-                android:inputType="none" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:hint="@string/empleadoAsignado"
+                app:startIconDrawable="@drawable/ic_empleado_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldTarea">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupPrioridades"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPrioridad"
-            app:singleLine="true"
-            app:singleSelection="true">
+                <AutoCompleteTextView
+                    android:id="@+id/atvEmpleados"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipPrioBaja"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupPrioridades"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/prioBaja"
-                android:textColor="@color/black"
-                app:chipBackgroundColor="@color/chip_prioridad_baja" />
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewPrioridad"
+                app:singleLine="true"
+                app:singleSelection="true">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipPrioMedia"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPrioBaja"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/prioBaja"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/chip_prioridad_baja" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPrioMedia"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/prioMedia"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/chip_prioridad_media" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPrioAlta"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/prioAlta"
+                    android:textColor="@color/black"
+                    app:chipBackgroundColor="@color/chip_prioridad_alta" />
+
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCrearTarea"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:onClick="crearTarea"
+                android:text="@string/crearTarea"
+                app:cornerRadius="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridades" />
+
+            <TextView
+                android:id="@+id/textViewPrioridad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/prioMedia"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:textSize="18sp"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="@color/chip_prioridad_media" />
+                android:text="Prioridad"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosEmpresa" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipPrioAlta"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prioAlta"
-                android:textColor="@color/black"
-                app:chipBackgroundColor="@color/chip_prioridad_alta" />
-
-
-        </com.google.android.material.chip.ChipGroup>
-
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCrearTarea"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:onClick="crearTarea"
-            android:text="@string/crearTarea"
-            app:cornerRadius="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroupPrioridades" />
-
-        <TextView
-            android:id="@+id/textViewPrioridad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:text="Prioridad"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosEmpresa" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
