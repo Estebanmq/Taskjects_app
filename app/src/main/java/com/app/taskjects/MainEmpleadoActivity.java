@@ -66,7 +66,6 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_empleado_layout);
-            Log.d("MainEmpleadoActivityDebug","Entro en el onCreate");
 
         //Inicializacion de componentes
         tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
@@ -122,18 +121,6 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                 });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("MainEmpleadoActivityDebug","Entro en el onDestroy");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("MainEmpleadoActivityDebug","Entro en el onStop");
-    }
-
     private void cargarEmpleadosJefe() {
         db.collection(EMPLEADOS)
                 .whereEqualTo("uidEmpresa", uidEmpresa)
@@ -186,6 +173,7 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     private void cargarProyectos() {
 
         if (!empleado.getUidProyectos().isEmpty()) {
+            tvInfoNoProyectos.setVisibility(TextView.INVISIBLE);
             db.collection(PROYECTOS)
                     .whereIn(FieldPath.documentId(), empleado.getUidProyectos())
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -224,13 +212,14 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                     });
         } else {
             tvInfoNoProyectos.setVisibility(TextView.VISIBLE);
+            rvProyectosEmpleados.setAdapter(null);
         }
 
     }
 
     private void cargarSharedPreferences(Empleado empleado) {
-        SharedPreferences pref = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
+
+        SharedPreferences.Editor editor = getSharedPreferences(empleado.getUidAuth(), Context.MODE_PRIVATE).edit();
         editor.putString("tipoLogin","C");
         editor.putString("uidEmpleado", empleado.getUid());
         editor.putString("nif", empleado.getNif());
@@ -268,4 +257,5 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
 
         return true;
     }
+
 }

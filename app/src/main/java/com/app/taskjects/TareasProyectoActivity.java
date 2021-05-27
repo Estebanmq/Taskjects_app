@@ -62,6 +62,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
     Map<String, Categoria> mapCategorias;
     String uidProyecto;
+    String uidJefeProyecto;
     String uidEmpresa;
     String uidEmpleado;
 
@@ -109,6 +110,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         //Inicialización de variables
         mapCategorias = new TreeMap<>();
         uidProyecto = getIntent().getStringExtra("uidProyecto");
+        uidJefeProyecto = getIntent().getStringExtra("uidJefeProyecto");
         uidEmpresa = getIntent().getStringExtra("uidEmpresa");
 
         sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
@@ -752,6 +754,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                 Intent intent = new Intent(TareasProyectoActivity.this, AsignarEmpleadosActivity.class);
                 intent.putExtra("uidEmpresa", uidEmpresa);
                 intent.putExtra("uidProyecto", uidProyecto);
+                intent.putExtra("uidJefeProyecto", uidJefeProyecto);
                 startActivity(intent);
                 return true;
             });

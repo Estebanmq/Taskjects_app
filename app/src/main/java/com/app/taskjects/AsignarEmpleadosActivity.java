@@ -43,6 +43,7 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
 
     //Variables de control de la clase
     String uidProyecto;
+    String uidJefeProyecto;
     String uidEmpresa;
     Map<String, Categoria> mapCategorias;
 
@@ -53,6 +54,7 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
 
         //Recoge datos del intent
         uidProyecto = getIntent().getStringExtra("uidProyecto");
+        uidJefeProyecto = getIntent().getStringExtra("uidJefeProyecto");
         uidEmpresa = getIntent().getStringExtra("uidEmpresa");
 
         //Recoge la instancia de la BD
@@ -119,7 +121,7 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
                             Log.d("taskjectsdebug", "carga empleado " + empleado.getNombre());
                             listEmpleados.add(empleado);
                         }
-                        rvEmpleados.setAdapter(new AdaptadorEmpleadosRV(listEmpleados, mapCategorias, uidProyecto));
+                        rvEmpleados.setAdapter(new AdaptadorEmpleadosRV(listEmpleados, mapCategorias, uidProyecto, uidJefeProyecto));
                     }
                 });
     }

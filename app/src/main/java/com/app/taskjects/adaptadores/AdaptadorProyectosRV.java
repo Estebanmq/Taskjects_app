@@ -13,9 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.app.taskjects.MenuToolbarActivity;
 import com.app.taskjects.ModificarProyectoActivity;
-import com.app.taskjects.PerfilEmpresaActivity;
 import com.app.taskjects.R;
 import com.app.taskjects.TareasProyectoActivity;
 import com.app.taskjects.pojos.Proyecto;
@@ -70,7 +68,6 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
 
             @Override
             public void onClick(View v) {
-                Log.d("taskjectsdebug","entra en onClick: " + listProyectos.get(position).getUid());
 
                 Intent intent;
                 if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
@@ -78,9 +75,9 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
                 } else {
                     intent = new Intent(context, TareasProyectoActivity.class);
                 }
-                intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
-                intent.putExtra("uidEmpresa",listProyectos.get(position).getUidEmpresa());
-                intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
+                intent.putExtra("uidProyecto", listProyectos.get(position).getUid());
+                intent.putExtra("uidEmpresa", listProyectos.get(position).getUidEmpresa());
+                intent.putExtra("uidJefeProyecto", listProyectos.get(position).getUidEmpleadoJefe());
                 context.startActivity(intent);
 
             }

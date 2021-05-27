@@ -219,8 +219,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
     private void cargarSharedPreferences(Empresa empresa) {
 
-        SharedPreferences pref = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
+        SharedPreferences.Editor editor = getSharedPreferences(empresa.getUidAuth(), Context.MODE_PRIVATE).edit();
         editor.putString("tipoLogin", "E");
         editor.putString("uidEmpresa", uidEmpresa);
         editor.putString("cif", empresa.getCif());
@@ -256,4 +255,5 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
         return true;
     }
+
 }

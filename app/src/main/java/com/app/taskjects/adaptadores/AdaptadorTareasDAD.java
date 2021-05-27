@@ -1,7 +1,6 @@
 package com.app.taskjects.adaptadores;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import android.content.Context;
@@ -13,12 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.taskjects.R;
-import com.app.taskjects.TareasProyectoActivity;
-import com.app.taskjects.dialogos.CambiarDatosTareaDialog;
-import com.app.taskjects.dialogos.RecuperarPasswordDialog;
 import com.app.taskjects.pojos.Tarea;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.woxthebox.draglistview.DragItemAdapter;

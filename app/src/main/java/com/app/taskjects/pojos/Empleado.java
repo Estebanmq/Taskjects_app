@@ -2,6 +2,7 @@ package com.app.taskjects.pojos;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
@@ -39,7 +40,8 @@ public class Empleado {
         uidProyectos = new ArrayList<String>();
     }
 
-    public String getNombreApellidos () {
+    @Exclude
+    public String getNombreApellidos() {
         return this.nombre.concat(" ").concat(this.apellidos);
     }
 

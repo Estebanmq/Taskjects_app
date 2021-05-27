@@ -35,16 +35,18 @@ public class AdaptadorEmpleadosRV extends RecyclerView.Adapter<AdaptadorEmpleado
     private Map<String, Categoria> mapCategorias;
 
     private String uidProyecto;
+    private String uidJefeProyecto;
 
     //Variables para manejar la bbdd y sus datos
     FirebaseFirestore db;
 
-    public AdaptadorEmpleadosRV(List<Empleado>listEmpleados, Map<String, Categoria> mapCategorias, String uidProyecto) {
+    public AdaptadorEmpleadosRV(List<Empleado>listEmpleados, Map<String, Categoria> mapCategorias, String uidProyecto, String uidJefeProyecto) {
 
         //Inicializo las variables de la clase
         this.listEmpleados = listEmpleados;
         this.mapCategorias = mapCategorias;
         this.uidProyecto =  uidProyecto;
+        this.uidJefeProyecto = uidJefeProyecto;
 
         db = FirebaseFirestore.getInstance();
     }
@@ -69,6 +71,11 @@ public class AdaptadorEmpleadosRV extends RecyclerView.Adapter<AdaptadorEmpleado
         holder.cvTvCategoria.setText(mapCategorias.get(empleado.getCategoria()).getDescripcion());
         if (empleado.getUidProyectos().contains(uidProyecto)) {
             holder.cbIncluido.setChecked(true);
+            Log.d("taskjectsdebug", "uidEmpleadoJefe: " + uidJefeProyecto + " empleado.getUid(): " + empleado.getUid());
+            if (empleado.getUid().equalsIgnoreCase(this.uidJefeProyecto)) {
+                Log.d("taskjectsdebug", "desactiva este checkBox");
+                holder.cbIncluido.setEnabled(false);
+            }
         } else {
             holder.cbIncluido.setChecked(false);
         }
