@@ -1,6 +1,7 @@
 package com.app.taskjects.adaptadores;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import android.content.Context;
@@ -12,8 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.taskjects.R;
+import com.app.taskjects.TareasProyectoActivity;
+import com.app.taskjects.dialogos.CambiarDatosTareaDialog;
+import com.app.taskjects.dialogos.RecuperarPasswordDialog;
 import com.app.taskjects.pojos.Tarea;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.woxthebox.draglistview.DragItemAdapter;
@@ -50,6 +55,7 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
+
         String uidEmpleado = listTareasAux.get(position).second.getUidEmpleado();
         holder.tvTarea.setText(listTareasAux.get(position).second.getTarea());
         Log.d("AdaptadorDebug","Nombre de la tarea ->"+listTareasAux.get(position).second.getTarea());
@@ -97,7 +103,11 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
 
         @Override
         public void onItemClicked(View view) {
+            /*
             Toast.makeText(view.getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
+            TareasProyectoActivity.showDialog(this.tvTarea.getText().toString(),context);
+
+             */
         }
 
         @Override

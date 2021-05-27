@@ -306,7 +306,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         btRegistrar.setEnabled(true);
                         lineaProgreso.setVisibility(View.INVISIBLE);
-                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroEmpleadoFallido), Toast.LENGTH_SHORT).show();
                         //Todo: dejar log para arreglar el problema
                     }
                 });

@@ -80,6 +80,7 @@
     <string name="faltaNif">Informe el NIF</string>
     <string name="nifErroneo">NIF erróneo</string>
     <string name="nifYaExiste">El NIF informado ya existe</string>
+    <string name="faltaDireccion">Informe de la dirección</string>
 
     <string name="faltaNombreEmpresa">Informe el nombre de empresa</string>
     <string name="faltaNombre">Informe su nombre</string>
@@ -129,6 +130,8 @@
     <string name="prioBaja">Baja</string>
     <string name="prioMedia">Media</string>
     <string name="prioAlta">Alta</string>
+    <string name="prioridad">Prioridad</string>
+    <string name="cambiar_datos_tarea">Cambiar datos de la tarea</string>
 
 
     <!-- FIN Mensajes de aplicación -->

@@ -2,6 +2,7 @@ package com.app.taskjects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.taskjects.dialogos.CambiarDatosTareaDialog;
 import com.app.taskjects.pojos.Categoria;
 
 import com.app.taskjects.adaptadores.AdaptadorTareasDAD;
@@ -658,6 +660,12 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
     }
 
+    public static void showDialog(String nombreTarea, Context context) {
+        CambiarDatosTareaDialog cambiarDatosTareaDialog = new CambiarDatosTareaDialog();
+        cambiarDatosTareaDialog.setDatosTarea(nombreTarea);
+        cambiarDatosTareaDialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "Cambiar datos de la tarea");
+    }
+
     //Logica para hacer el drag de items
     private static class DragTarea extends DragItem {
 
@@ -752,4 +760,5 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         super.onPrepareOptionsMenu(menu);
         return true;
     }
+
 }

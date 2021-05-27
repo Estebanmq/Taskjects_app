@@ -161,6 +161,11 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
             resultado = false;
         }
 
+        if (TextUtils.isEmpty(etDireccion.getText().toString())) {
+            etDireccion.setError(getString(R.string.faltaDireccion));
+            resultado = false;
+        }
+
         if (TextUtils.isEmpty(etNombre.getText().toString())) {
             etNombre.setError(getString(R.string.faltaNombre));
             resultado = false;

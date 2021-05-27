@@ -54,6 +54,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
 
         //Inicializacion componentes
         cgPrioridades = findViewById(R.id.chipGroupPrioridades);
+        cgPrioridades.setSelectionRequired(true);
         etTarea = findViewById(R.id.etTarea);
         atvEmpleados = findViewById(R.id.atvEmpleados);
 
