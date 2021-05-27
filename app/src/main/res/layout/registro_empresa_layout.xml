@@ -21,24 +21,27 @@
 
     </com.google.android.material.appbar.AppBarLayout>
     <!-- FIN Definición de la toolbar -->
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".RegistroEmpresaActivity"
-            android:theme="@style/Theme.MaterialComponents.Light">
+            android:theme="@style/Theme.MaterialComponents.Light"
+            tools:context=".RegistroEmpresaActivity">
 
             <!-- Linear progress indicator -->
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/lineaProgreso"
-                android:indeterminate="true"
-                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
+                android:indeterminate="true"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -52,10 +55,10 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/cifEmpresa"
-                app:startIconDrawable="@drawable/ic_cif_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/ic_cif_24dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCifEmpresa"
@@ -74,11 +77,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/nombreEmpresa"
-                app:startIconDrawable="@drawable/ic_empresa_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCif">
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCif"
+                app:startIconDrawable="@drawable/ic_empresa_24dp">
 
                 <!-- TextInput con el usuario -->
                 <com.google.android.material.textfield.TextInputEditText
@@ -98,11 +101,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/direccionEmpresa"
-                app:startIconDrawable="@drawable/ic_place_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldNombre">
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldNombre"
+                app:startIconDrawable="@drawable/ic_place_24dp">
 
                 <!-- TextInput con el usuario -->
                 <com.google.android.material.textfield.TextInputEditText
@@ -122,11 +125,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/emailEmpresa"
-                app:startIconDrawable="@drawable/ic_email_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldDireccion">
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldDireccion"
+                app:startIconDrawable="@drawable/ic_email_24dp">
 
                 <!-- TextInput con el usuario -->
                 <com.google.android.material.textfield.TextInputEditText
@@ -148,11 +151,11 @@
                 android:layout_marginEnd="24dp"
                 android:hint="@string/contrasenia"
                 app:endIconMode="password_toggle"
-                app:startIconDrawable="@drawable/ic_password_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmail">
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmail"
+                app:startIconDrawable="@drawable/ic_password_24dp">
 
                 <!-- TextInput con el usuario -->
                 <com.google.android.material.textfield.TextInputEditText
@@ -166,14 +169,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btRegistrar"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="64dp"
                 android:layout_marginEnd="24dp"
-                android:text="@string/registrarse"
-                style="@style/Widget.MaterialComponents.Button"
                 android:onClick="registrar"
+                android:text="@string/registrarse"
                 app:cornerRadius="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,11 +1,9 @@
 package com.app.taskjects;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,16 +20,11 @@ import android.widget.Toast;
 import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.pojos.Proyecto;
 import com.app.taskjects.utils.Conversor;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,17 +88,14 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Captura el click de volver atrás
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Si está en modo edición...
-                if (modoEdit) {
-                    mostrarDialogoSalida();
-                } else {
-                    finish();
-                }
-
+        toolbar.setNavigationOnClickListener(view -> {
+            //Si está en modo edición...
+            if (modoEdit) {
+                mostrarDialogoSalida();
+            } else {
+                finish();
             }
+
         });
 
         recuperarDatos();
@@ -114,24 +104,21 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     private void recuperarDatos() {
 
         DocumentReference docRef = db.collection(PROYECTOS).document(uidProyecto);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("taskjectsdebug", "Encuentra el documento");
-                        recuperarCategoriasTipoJefe();
-                    } else {
-                        Log.d("taskjectsdebug", "Error! no encuentra el documento");
-                        Toast.makeText(ModificarProyectoActivity.this, R.string.errorGeneral, Toast.LENGTH_LONG).show();
-                        finish();
-                    }
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                document = task.getResult();
+                if (document.exists()) {
+                    Log.d("taskjectsdebug", "Encuentra el documento");
+                    recuperarCategoriasTipoJefe();
                 } else {
-                    Log.d("taskjectsdebug", "Error! la tarea de buscar el proyecto no ha ido bien");
-                    Toast.makeText(ModificarProyectoActivity.this, R.string.errorAccesoBD, Toast.LENGTH_LONG).show();
+                    Log.d("taskjectsdebug", "Error! no encuentra el documento");
+                    Toast.makeText(ModificarProyectoActivity.this, R.string.errorGeneral, Toast.LENGTH_LONG).show();
                     finish();
                 }
+            } else {
+                Log.d("taskjectsdebug", "Error! la tarea de buscar el proyecto no ha ido bien");
+                Toast.makeText(ModificarProyectoActivity.this, R.string.errorAccesoBD, Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }
@@ -141,19 +128,16 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         db.collection(CATEGORIAS)
                 .whereEqualTo("marca", true)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                categoriasJefe.add(document.getId());
-                                Log.d("taskjectsdebug", "Recupera categoría Jefe: " + document.getId());
-                            }
-                            //Recupera los empleados que son Jefe de Proyecto
-                            cargarEmpleadosJefe();
-                        } else {
-                            Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            categoriasJefe.add(document.getId());
+                            Log.d("taskjectsdebug", "Recupera categoría Jefe: " + document.getId());
                         }
+                        //Recupera los empleados que son Jefe de Proyecto
+                        cargarEmpleadosJefe();
+                    } else {
+                        Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -164,30 +148,27 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                 .whereEqualTo("uidEmpresa",uidEmpresa)
                 .whereIn("categoria",categoriasJefe)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (!task.getResult().isEmpty()) {
-                                Log.d("taskjectsdebug", "encuentra jefes de proyecto");
-                                //Me recorro todos los datos que ha devuelto la query
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    //Por cada empleado jefe que encuentra lo añade al map
-                                    mapJefes.put(documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos")) , documentSnapshot.getId());
-                                    if (documentSnapshot.getId().equals(document.getString("uidEmpleadoJefe"))) {
-                                        nombreJefe = documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos"));
-                                    }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            Log.d("taskjectsdebug", "encuentra jefes de proyecto");
+                            //Me recorro todos los datos que ha devuelto la query
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                //Por cada empleado jefe que encuentra lo añade al map
+                                mapJefes.put(documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos")) , documentSnapshot.getId());
+                                if (documentSnapshot.getId().equals(document.getString("uidEmpleadoJefe"))) {
+                                    nombreJefe = documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos"));
                                 }
-                                cargarDatosPantalla();
-                            } else {
-                                //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
-                                atvJefeEmpleado.setError(getString(R.string.noSeEncuentranJefes));
-                                Log.d("taskjectsdebug","No se han encontrado empleados jefe");
                             }
+                            cargarDatosPantalla();
                         } else {
-                            //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                            Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
+                            atvJefeEmpleado.setError(getString(R.string.noSeEncuentranJefes));
+                            Log.d("taskjectsdebug","No se han encontrado empleados jefe");
                         }
+                    } else {
+                        //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                        Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -242,38 +223,27 @@ public class ModificarProyectoActivity extends AppCompatActivity {
             proyecto.setUidEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()));
 
             DocumentReference proyectoUpdate = db.collection(PROYECTOS).document(uidProyecto);
-            proyectoUpdate.set(proyecto).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d("taskjectsdebug","Proyecto modificado correctamente");
+            proyectoUpdate.set(proyecto).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("taskjectsdebug","Proyecto modificado correctamente");
 
-                        if (cambioJefe) {
-                            actualizarEmpleadoJefe(uidJefeProyectoAnterior, proyecto.getUid(), true);
+                    if (cambioJefe) {
+                        actualizarEmpleadoJefe(uidJefeProyectoAnterior, proyecto.getUid(), true);
 
-                            actualizarEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()), proyecto.getUid(), false);
-                        } else {
-                            AlertDialog.Builder alertaModificacionProyectoCorrecta = new AlertDialog.Builder(ModificarProyectoActivity.this);
-                            alertaModificacionProyectoCorrecta.setMessage(getString(R.string.modifProyectoCorrecta))
-                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            finish();
-                                        }
-                                    }).show();
-                        }
-
+                        actualizarEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()), proyecto.getUid(), false);
                     } else {
-                        AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(ModificarProyectoActivity.this);
-                        alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
-                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        findViewById(R.id.btnModifProyecto).setEnabled(true);
-                                        Log.d("taskjectsdebug","Error al subir proyecto a bbdd");
-                                    }
-                                }).show();
+                        AlertDialog.Builder alertaModificacionProyectoCorrecta = new AlertDialog.Builder(ModificarProyectoActivity.this);
+                        alertaModificacionProyectoCorrecta.setMessage(getString(R.string.modifProyectoCorrecta))
+                                .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> finish()).show();
                     }
+
+                } else {
+                    AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(ModificarProyectoActivity.this);
+                    alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
+                            .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> {
+                                findViewById(R.id.btnModifProyecto).setEnabled(true);
+                                Log.d("taskjectsdebug","Error al subir proyecto a bbdd");
+                            }).show();
                 }
             });
         } else {
@@ -320,47 +290,30 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         Log.d("taskjectsdebug","Actualiza los proyectos del empleado jefe: " + uidEmpleadoJefe);
         DocumentReference docRef = db.collection(EMPLEADOS).document(uidEmpleadoJefe);
         docRef.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Empleado empleado = documentSnapshot.toObject(Empleado.class);
-                        if (quitar) {
-                            empleado.getUidProyectos().remove(uidProyecto);
-                        } else {
-                            empleado.getUidProyectos().add(uidProyecto);
-                        }
-                        db.collection(EMPLEADOS).document(uidEmpleadoJefe)
-                                .set(empleado)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        if (!quitar) {
-                                            AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(ModificarProyectoActivity.this);
-                                            alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
-                                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            finish();
-                                                        }
-                                                    }).show();
-                                        }
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        findViewById(R.id.btnModifProyecto).setEnabled(true);
-                                        Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
-                                    }
-                                });
+                .addOnSuccessListener(documentSnapshot -> {
+                    Empleado empleado = documentSnapshot.toObject(Empleado.class);
+                    if (quitar) {
+                        empleado.getUidProyectos().remove(uidProyecto);
+                    } else {
+                        empleado.getUidProyectos().add(uidProyecto);
                     }
+                    db.collection(EMPLEADOS).document(uidEmpleadoJefe)
+                            .set(empleado)
+                            .addOnSuccessListener(aVoid -> {
+                                if (!quitar) {
+                                    AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(ModificarProyectoActivity.this);
+                                    alertaCreacionProyectoCorrecta.setMessage(getString(R.string.modifProyectoCorrecta))
+                                            .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> finish()).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                findViewById(R.id.btnModifProyecto).setEnabled(true);
+                                Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
+                            });
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        findViewById(R.id.btnModifProyecto).setEnabled(true);
-                        Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
-                    }
+                .addOnFailureListener(e -> {
+                    findViewById(R.id.btnModifProyecto).setEnabled(true);
+                    Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
                 });
     }
 

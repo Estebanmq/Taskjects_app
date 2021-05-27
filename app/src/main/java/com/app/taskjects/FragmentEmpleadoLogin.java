@@ -50,9 +50,6 @@ public class FragmentEmpleadoLogin extends Fragment {
         etEmailEmpleado = view.findViewById(R.id.etEmailEmpleado);
         etContraseniaEmpleado = view.findViewById(R.id.etContraseniaEmpleado);
 
-        etEmailEmpleado.setText("estebanmq7890@gmail.com");
-        etContraseniaEmpleado.setText("admin1234");
-
         btnLoginEmpleado = view.findViewById(R.id.btnLoginEmpleado);
         db = FirebaseFirestore.getInstance();
 

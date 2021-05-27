@@ -21,15 +21,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
     <!-- FIN Definición de la toolbar -->
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="match_parent">
 
             <!-- Inicio TextInputLayout del nombre del proyecto -->
             <com.google.android.material.textfield.TextInputLayout
