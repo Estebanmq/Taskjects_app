@@ -90,7 +90,7 @@ public class FragmentEmpresaLogin extends Fragment {
                             mAuth = FirebaseAuth.getInstance();
                             //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
                             mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(task1 -> {
-                                if (task.isSuccessful()) {
+                                if (task1.isSuccessful()) {
                                     startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
                                     getActivity().finish();
                                 } else {

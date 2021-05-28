@@ -94,6 +94,7 @@ public class FragmentEmpleadoLogin extends Fragment {
                                     Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
                                     intent.putExtra("uidEmpresa", uidEmpresa);
                                     startActivity(intent);
+                                    getActivity().finish();
                                 } else {
                                     Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
                                     btnLoginEmpleado.setEnabled(true);
