@@ -121,7 +121,6 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot,
                                         @Nullable FirebaseFirestoreException e) {
-
                         if (e != null) {
                             Toast.makeText(MainEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                             return;
@@ -188,6 +187,9 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                         } else {
                             tvInfoNoProyectos.setVisibility(TextView.INVISIBLE);
                             for (QueryDocumentSnapshot documentSnapshot : snapshot) {
+
+                                Proyecto proyecto = documentSnapshot.toObject(Proyecto.class);
+
                                 String nombreJefeProyecto = ":: Sin jefe de proyecto ::";
                                 if (mapJefes.get(documentSnapshot.getString("uidEmpleadoJefe")) != null) {
                                     nombreJefeProyecto = ":: ".concat(mapJefes.get(documentSnapshot.getString("uidEmpleadoJefe"))).concat(" ::");
@@ -196,15 +198,14 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                                 if (descripcion.length() > 100) {
                                     descripcion = descripcion.substring(0, 100).concat("...");
                                 }
-
                                 String nombre = documentSnapshot.getString("nombre");
                                 if (nombre.length() > 33) {
                                     nombre = nombre.substring(0,33).concat("...");
                                 }
-                                listProyectos.add(new Proyecto(documentSnapshot.getId(), documentSnapshot.getString("uidEmpresa"),
-                                       nombre,
-                                        descripcion,
-                                        nombreJefeProyecto));
+                                proyecto.setDescripcion(descripcion);
+                                proyecto.setNombre(nombre);
+                                proyecto.setNombreEmpleadoJefe(nombreJefeProyecto);
+                                listProyectos.add(proyecto);
                                 Log.d("taskjectsdebug", "Proyecto encontrado " + documentSnapshot.getString("nombre") + " " + documentSnapshot.getString("uidEmpresa"));
                             }
 

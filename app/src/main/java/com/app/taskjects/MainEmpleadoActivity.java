@@ -199,9 +199,9 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                                             nombre = nombre.substring(0,33).concat("...");
                                         }
 
-                                        proyecto.setUidEmpleadoJefe(nombreJefeProyecto);
                                         proyecto.setDescripcion(descripcion);
                                         proyecto.setNombre(nombre);
+                                        proyecto.setNombreEmpleadoJefe(nombreJefeProyecto);
                                         listProyectos.add(proyecto);
                                     }
                                     AdaptadorProyectosRV adaptadorProyectosRV = new AdaptadorProyectosRV(listProyectos,MainEmpleadoActivity.this);

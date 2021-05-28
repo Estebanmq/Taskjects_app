@@ -3,7 +3,6 @@ package com.app.taskjects.adaptadores;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,30 +60,23 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.cvTvNombreProyecto.setText(listProyectos.get(position).getNombre());
         holder.cvTvDescripcionProyecto.setText(listProyectos.get(position).getDescripcion());
-        holder.cvTvJefeEmpleado.setText(listProyectos.get(position).getUidEmpleadoJefe());
+        holder.cvTvJefeEmpleado.setText(listProyectos.get(position).getNombreEmpleadoJefe());
         holder.cvTvUid.setText(listProyectos.get(position).getUid());
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Log.d("taskjectsdebug","entra en onClick: " + listProyectos.get(position).getUid());
-                Log.d("Valor del tipoLogin en sharedpreferences ->",sharedPreferences.getString("tipoLogin", ""));
-
                 Intent intent;
                 if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
-                    Log.d("Debug del adaptador proyectos","Entro en el if e inicio modificar proyecto");
                     intent = new Intent(context, ModificarProyectoActivity.class);
                 } else {
-                    Log.d("Debug del adaptador proyectos","Entro en el if e inicio tareas proyecto");
                     intent = new Intent(context, TareasProyectoActivity.class);
                 }
-
                 intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
                 intent.putExtra("uidEmpresa", listProyectos.get(position).getUidEmpresa());
                 intent.putExtra("uidJefeProyecto", listProyectos.get(position).getUidEmpleadoJefe());
                 context.startActivity(intent);
-
             }
         });
     }

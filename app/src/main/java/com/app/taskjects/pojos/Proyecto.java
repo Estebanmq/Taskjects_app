@@ -2,6 +2,7 @@ package com.app.taskjects.pojos;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.ServerTimestamp;
 
 public class Proyecto {
@@ -16,6 +17,8 @@ public class Proyecto {
     private String nombre;
     private String descripcion;
     private String uidEmpleadoJefe;
+
+    private String nombreEmpleadoJefe;
 
     public Proyecto() {}
 
@@ -66,5 +69,14 @@ public class Proyecto {
     public String getUidEmpleadoJefe() { return uidEmpleadoJefe; }
 
     public void setUidEmpleadoJefe(String uidEmpleadoJefe) { this.uidEmpleadoJefe = uidEmpleadoJefe; }
+
+    @Exclude
+    public String getNombreEmpleadoJefe() {
+        return nombreEmpleadoJefe;
+    }
+
+    public void setNombreEmpleadoJefe(String nombreEmpleadoJefe) {
+        this.nombreEmpleadoJefe = nombreEmpleadoJefe;
+    }
 
 }
