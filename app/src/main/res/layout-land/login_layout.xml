@@ -35,11 +35,17 @@
     </com.google.android.material.tabs.TabLayout>
     <!-- Fin Layout de pestañas -->
 
-
-    <!-- View Pager con el contenido de cada pestaña -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="686dp" />
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    android:fillViewport="true">
+        <!-- View Pager con el contenido de cada pestaña -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="686dp"
+            android:orientation="horizontal"/>
+</ScrollView>
 
 </LinearLayout>

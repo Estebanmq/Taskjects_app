@@ -2,6 +2,7 @@ package com.app.taskjects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -54,8 +56,6 @@ import java.util.TreeMap;
 public class TareasProyectoActivity extends MenuToolbarActivity {
 
     private final String CATEGORIAS = "categorias";
-
-    FloatingActionButton fABTareas;
 
     MenuItem plusEmpleado;
     BottomAppBar bottomAppBar;
@@ -103,7 +103,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         //Inicializacion de componentes
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
-        fABTareas = findViewById(R.id.fABTareas);
 
         dadTareas = findViewById(R.id.dadTareas);
 
@@ -127,7 +126,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             @Override
             public void onItemDragEnded(int fromColumn, int fromRow, int toColumn, int toRow) {
                 if (fromColumn != toColumn || fromRow != toRow) {
-                    if (fromColumn == 0 && toColumn == 1) {
+                    if (fromColumn == 0 && toColumn == 1 || toColumn == 2 || toColumn == 3 || toColumn == 4) {
                         mDatabase.child("tareas")
                                 .child(uidProyecto)
                                 .child(arrayAllEstados.get(toColumn).get(toRow).second.getUidTarea())
@@ -137,8 +136,22 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.d("Tarea asignada correcto"," Correcto");
-                                        arrayAllEstados.get(1).get(toRow).second.setUidEmpleado(uidEmpleado);
-                                        adaptadorTareasDADAE1.notifyDataSetChanged();
+                                        arrayAllEstados.get(toColumn).get(toRow).second.setUidEmpleado(uidEmpleado);
+                                        switch (toColumn) {
+                                            case 1:
+                                                adaptadorTareasDADAE1.notifyDataSetChanged();
+                                                break;
+                                            case 2:
+                                                adaptadorTareasDADAE2.notifyDataSetChanged();
+                                                break;
+                                            case 3:
+                                                adaptadorTareasDADAE3.notifyDataSetChanged();
+                                                break;
+                                            case 4:
+                                                adaptadorTareasDADAE4.notifyDataSetChanged();
+                                                break;
+                                        }
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -214,9 +227,8 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             public boolean canDropItemAtPosition(int oldColumn, int oldRow, int newColumn, int newRow) {
                 if (newColumn == 0) {
                     Toast.makeText(TareasProyectoActivity.this,"No te puedes desasignar la tarea",Toast.LENGTH_SHORT).show();
-                    return false;
                 }
-                return true;
+                return newColumn != 0;
             }
         });
 

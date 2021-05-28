@@ -81,37 +81,32 @@ public class FragmentEmpleadoLogin extends Fragment {
     private void loginEmpleado() {
         btnLoginEmpleado.setEnabled(false);
         if (verificarDatos()) {
-            esEmpleado();
+            db.collection("empleados")
+                    .whereEqualTo("email",etEmailEmpleado.getText().toString())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
+                            mAuth = FirebaseAuth.getInstance();
+                            //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+                            mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
+                                    intent.putExtra("uidEmpresa", uidEmpresa);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
+                                    btnLoginEmpleado.setEnabled(true);
+                                }
+                            }).addOnFailureListener(e -> Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show());
+                        } else {
+                            etEmailEmpleado.setError(getString(R.string.emailErroneo));
+                            btnLoginEmpleado.setEnabled(true);
+                        }
+                    });
         } else {
             btnLoginEmpleado.setEnabled(true);
         }
-    }
-
-    private void esEmpleado() {
-
-        db.collection("empleados")
-                .whereEqualTo("email",etEmailEmpleado.getText().toString())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
-                        mAuth = FirebaseAuth.getInstance();
-                        //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-                        mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()) {
-                                Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
-                                intent.putExtra("uidEmpresa", uidEmpresa);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
-                                btnLoginEmpleado.setEnabled(true);
-                            }
-                        }).addOnFailureListener(e -> Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show());
-                    } else {
-                        etEmailEmpleado.setError(getString(R.string.emailErroneo));
-                        btnLoginEmpleado.setEnabled(true);
-                    }
-                });
     }
 
     private boolean verificarDatos() {

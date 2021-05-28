@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentEmpresaLogin"
+    android:theme="@style/Theme.MaterialComponents.Light">
+
+    <!-- Inicio TextInputLayout del email empresa -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlinedTextFieldEmailEmpresa"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/emailEmpresa"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_email_24dp">
+
+        <!-- TextInput con el email empresa -->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmailEmpresa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:maxLength="64"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <!-- Fin TextInputLayout del email empresa -->
+
+
+    <!-- Inicio TextInputLayout de la contraseña -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlinedTextFieldContraseniaEmpresa"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:hint="@string/contrasenia"
+        app:endIconMode="password_toggle"
+        app:startIconDrawable="@drawable/ic_password_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmailEmpresa">
+
+        <!-- TextInput con la contraseña-->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etContraseniaEmpresa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:maxLength="24"
+            android:maxLines="1"/>
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <!-- Fin TextInputLayout de la contraseña -->
+
+
+    <!-- TextView recuperacion de contraseña -->
+
+    <!-- Boton de login -->
+    <TextView
+        android:id="@+id/textViewRecuperarContraseniaEmpresa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/recuperar_contrasenia"
+        android:textColor="#64B5F6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContraseniaEmpresa" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnModifProyecto"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/iniciar_sesion"
+        app:cornerRadius="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldContraseniaEmpresa" />
+
+    <!-- View que dibuja simplemente una linea de separacion -->
+
+    <!-- TextView pregunta no tienes cuenta-->
+    <TextView
+        android:id="@+id/textViewInfoRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="268dp"
+        android:layout_marginEnd="1dp"
+        android:text="@string/no_tienes_cuenta"
+        app:layout_constraintEnd_toStartOf="@+id/textViewRegistro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnModifProyecto" />
+
+    <!-- TextView texto registro-->
+    <TextView
+        android:id="@+id/textViewRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="268dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/registrate"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewInfoRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/btnModifProyecto" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

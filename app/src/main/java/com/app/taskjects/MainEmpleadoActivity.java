@@ -190,11 +190,18 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
                                             nombreJefeProyecto = ":: ".concat(mapJefes.get(proyecto.getUidEmpleadoJefe())).concat(" ::");
                                         }
                                         String descripcion = proyecto.getDescripcion();
-                                        if (descripcion.length() > 130) {
-                                            descripcion = descripcion.substring(0, 130).concat("...");
+                                        if (descripcion.length() > 100) {
+                                            descripcion = descripcion.substring(0, 100).concat("...");
                                         }
+
+                                        String nombre = proyecto.getNombre();
+                                        if (nombre.length() > 33) {
+                                            nombre = nombre.substring(0,33).concat("...");
+                                        }
+
                                         proyecto.setUidEmpleadoJefe(nombreJefeProyecto);
                                         proyecto.setDescripcion(descripcion);
+                                        proyecto.setNombre(nombre);
                                         listProyectos.add(proyecto);
                                     }
                                     AdaptadorProyectosRV adaptadorProyectosRV = new AdaptadorProyectosRV(listProyectos,MainEmpleadoActivity.this);

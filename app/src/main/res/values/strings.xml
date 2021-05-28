@@ -132,6 +132,8 @@
     <string name="prioAlta">Alta</string>
     <string name="prioridad">Prioridad</string>
     <string name="cambiar_datos_tarea">Cambiar datos de la tarea</string>
+    <string name="alerta">Alerta!</string>
+    <string name="noPuedesDesasignarTarea">No te puedes desasignar tareas</string>
 
 
     <!-- FIN Mensajes de aplicación -->

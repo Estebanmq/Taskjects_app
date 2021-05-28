@@ -18,8 +18,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FragmentEmpresaLogin extends Fragment {
+
+    private final String EMPRESAS = "empresas";
 
     //Inicializacion componentes
     TextInputLayout outlinedTextFieldEmailEmpresa;
@@ -32,6 +35,7 @@ public class FragmentEmpresaLogin extends Fragment {
 
     //Inicio de sesion Firebase
     FirebaseAuth mAuth;
+    FirebaseFirestore db;
 
     //View para hacer referencia a la pantalla de login
     View view;
@@ -50,6 +54,8 @@ public class FragmentEmpresaLogin extends Fragment {
         etContraseniaEmpresa = view.findViewById(R.id.etContraseniaEmpresa);
         outlinedTextFieldContraseniaEmpresa = view.findViewById(R.id.outlinedTextFieldContraseniaEmpresa);
         btnLoginEmpresa = view.findViewById(R.id.btnModifProyecto);
+
+        db = FirebaseFirestore.getInstance();
 
         //Le agrego un Listener al TextView de recuperar contraseña/--para llamar al metodo que cambia la contraseña--\
         textViewRecuperarContrasenia.setOnClickListener(v -> {
@@ -76,21 +82,34 @@ public class FragmentEmpresaLogin extends Fragment {
     private void loginEmpresa() {
         btnLoginEmpresa.setEnabled(false);
         if (verificarDatos()) {
-            mAuth = FirebaseAuth.getInstance();
-            //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-            mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
-                    getActivity().finish();
-                } else {
-                    Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
-                    btnLoginEmpresa.setEnabled(true);
-                }
-            });
+            db.collection(EMPRESAS)
+                    .whereEqualTo("email",etEmailEmpresa.getText().toString())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            mAuth = FirebaseAuth.getInstance();
+                            //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+                            mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(task1 -> {
+                                if (task.isSuccessful()) {
+                                    startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
+                                    getActivity().finish();
+                                } else {
+                                    Toast.makeText(view.getContext(),getString(R.string.datosLoginEmpresaIncorrectos),Toast.LENGTH_SHORT).show();
+                                    btnLoginEmpresa.setEnabled(true);
+                                }
+
+                            }).addOnFailureListener(e -> Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show());
+                        } else {
+                            etEmailEmpresa.setError(getString(R.string.emailErroneo));
+                            btnLoginEmpresa.setEnabled(true);
+                        }
+                    });
         } else {
             btnLoginEmpresa.setEnabled(true);
         }
     }
+
+
 
     private boolean verificarDatos() {
         //Todo: optimizar verificar datos

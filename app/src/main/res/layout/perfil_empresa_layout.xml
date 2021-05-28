@@ -23,9 +23,10 @@
     </com.google.android.material.appbar.AppBarLayout>
     <!-- FIN Definición de la toolbar -->
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -79,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:maxLength="64"
-                    android:maxLines="1" />
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -104,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:maxLength="254"
-                    android:maxLines="1" />
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -173,6 +174,6 @@
             </com.google.android.material.textview.MaterialTextView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 </LinearLayout>

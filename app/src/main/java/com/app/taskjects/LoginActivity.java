@@ -1,7 +1,9 @@
 package com.app.taskjects;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 
@@ -10,14 +12,14 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends FragmentActivity {
 
     //Todo: informar al usuario de que si inicia sesion sin conexion no puede iniciar sesion
 
     //Declaracion de componentes
     TabLayout tabLayoutEmpresaEmpleado;
     TabItem tabItemEmpresa,tabItemEmpleado;
-    ViewPager viewPager;
+    ViewPager2 viewPager;
 
 
     //Controlador / Adaptador para asignar a cada pestaña del TabLayout su propio fragment
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void rellenarTabsTabLayout() {
 
         //Me creo el objeto ViewPagerController con el supportFragmentManager y el numero de pestañas que tiene el TabLayout
-        adaptadorViewPager = new ViewPagerController(getSupportFragmentManager(), tabLayoutEmpresaEmpleado.getTabCount());
+        adaptadorViewPager = new ViewPagerController(this,tabLayoutEmpresaEmpleado.getTabCount());
 
         //Le asigno al ViewPager el adaptador anteriormente creado
         viewPager.setAdapter(adaptadorViewPager);
@@ -67,8 +69,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) { }
 
         });
-        //Le asigno otro Listener para el cambio entre pestañas al TabLayout de Empresa Empleados
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutEmpresaEmpleado));
     }
 
 }

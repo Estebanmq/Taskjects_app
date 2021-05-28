@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ModificarProyectoActivity"
+    tools:context=".AniadirProyectoActivity"
     android:theme="@style/Theme.MaterialComponents.Light">
 
     <!-- Definición de la Toolbar -->
@@ -27,12 +27,13 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:theme="@style/Theme.MaterialComponents.Light">
 
             <!-- Inicio TextInputLayout del nombre del proyecto -->
             <com.google.android.material.textfield.TextInputLayout
@@ -41,7 +42,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/nombreProyecto"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,11 +54,11 @@
                     android:id="@+id/etNombreProyecto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:maxLength="60"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
             <!-- Fin TextInputLayout del nombre del proyecto -->
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/outlinedTextFieldDescripcionProyecto"
@@ -78,9 +79,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="top|start"
-                    android:scrollbars="vertical"
                     android:maxLength="254"
-                    android:enabled="false" />
+                    android:scrollbars="vertical"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -101,42 +101,26 @@
                     android:id="@+id/atvJefeEmpleado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:editable="false"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnModifProyecto"
-                style="@style/Widget.MaterialComponents.Button"
+                android:id="@+id/btnCrearProyecto"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                android:onClick="modificarProyecto"
-                android:text="@string/modifProyecto"
-                android:visibility="invisible"
+                android:text="@string/crearProyecto"
+                style="@style/Widget.MaterialComponents.Button"
                 app:cornerRadius="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosJefe" />
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldEmpleadosJefe"
+                android:onClick="crearProyecto"
+                />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tvFechaHoraCreacion"
-                style="@style/Widget.MaterialComponents.TextView"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnModifProyecto">
-
-            </com.google.android.material.textview.MaterialTextView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

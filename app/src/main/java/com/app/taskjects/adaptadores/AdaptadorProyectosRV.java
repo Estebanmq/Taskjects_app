@@ -68,14 +68,19 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
 
             @Override
             public void onClick(View v) {
+                Log.d("taskjectsdebug","entra en onClick: " + listProyectos.get(position).getUid());
+                Log.d("Valor del tipoLogin en sharedpreferences ->",sharedPreferences.getString("tipoLogin", ""));
 
                 Intent intent;
                 if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
+                    Log.d("Debug del adaptador proyectos","Entro en el if e inicio modificar proyecto");
                     intent = new Intent(context, ModificarProyectoActivity.class);
                 } else {
+                    Log.d("Debug del adaptador proyectos","Entro en el if e inicio tareas proyecto");
                     intent = new Intent(context, TareasProyectoActivity.class);
                 }
-                intent.putExtra("uidProyecto", listProyectos.get(position).getUid());
+
+                intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
                 intent.putExtra("uidEmpresa", listProyectos.get(position).getUidEmpresa());
                 intent.putExtra("uidJefeProyecto", listProyectos.get(position).getUidEmpleadoJefe());
                 context.startActivity(intent);

@@ -23,10 +23,11 @@
     </com.google.android.material.appbar.AppBarLayout>
     <!-- FIN Definición de la toolbar -->
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -227,5 +228,5 @@
                     app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCategoria" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 </LinearLayout>
