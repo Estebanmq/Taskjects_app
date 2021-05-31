@@ -13,7 +13,8 @@ tools:context=".MainEmpresaActivity">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="3dp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:layout_marginBottom="56dp"/>
     <!-- Fin Layout de los proyectos -->
 
     <TextView

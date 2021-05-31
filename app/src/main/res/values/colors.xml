@@ -12,5 +12,12 @@
     <color name="prioAlta">#FFCDD2</color>
     <color name="prioMedia">#F0F4C3</color>
 
+    <color name="blue_primario">#00B4FF</color>
+    <color name="blue_secundario">#009DDF</color>
+    <!--
+    69D2E7
+    00B4CC
+    69D2E7
+    -->
     <color name="tareaItemBackground">#AACCCCCC</color>
 </resources>

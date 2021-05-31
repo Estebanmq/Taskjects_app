@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".AniadirProyectoActivity"
-    android:theme="@style/Theme.MaterialComponents.Light">
+    android:theme="@style/Theme.Taskjects">
 
     <!-- Definición de la Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -32,8 +32,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:theme="@style/Theme.MaterialComponents.Light">
+            android:layout_height="match_parent">
 
             <!-- Inicio TextInputLayout del nombre del proyecto -->
             <com.google.android.material.textfield.TextInputLayout

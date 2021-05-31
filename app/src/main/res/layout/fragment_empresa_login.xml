@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FragmentEmpresaLogin"
-    android:theme="@style/Theme.MaterialComponents.Light">
+    android:theme="@style/Theme.Taskjects">
 
     <!-- Inicio TextInputLayout del email empresa -->
     <com.google.android.material.textfield.TextInputLayout

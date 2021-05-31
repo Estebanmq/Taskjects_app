@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TareasProyectoActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Theme.Taskjects">
 
     <com.woxthebox.draglistview.BoardView
         android:id="@+id/dadTareas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -27,7 +29,6 @@
         android:id="@+id/fABTareas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/purple_500"
         app:srcCompat="@drawable/ic_plus_24dp"
         app:layout_anchor="@id/bottomAppBar"
         android:contentDescription="@string/agregar"

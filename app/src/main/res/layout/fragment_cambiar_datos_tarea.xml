@@ -54,7 +54,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPrioridadCDTarea"
         app:singleLine="true"
-        app:singleSelection="true">
+        app:singleSelection="true"
+        app:selectionRequired="true">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipPrioBajaCDTarea"

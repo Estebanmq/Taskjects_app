@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Taskjects</string>
+    <string name="ok">Agree</string>
+    <string name="aceptar">Accept</string>
+    <string name="cancelar">Cancel</string>
+    <string name="plusEmpleado">+Employee</string>
+    <string name="verPerfil">Show profile</string>
+    <string name="cerrarSesion">Sign off</string>
+    <string name="salir">Leave</string>
+    <string name="empleado">Employee</string>
+    <string name="empresa">Company</string>
+    <string name="email">Email</string>
+    <string name="contrasenia">Password</string>
+    <string name="fechaInicio">Start date</string>
+    <string name="jefeProyecto">Project manager</string>
+    <string name="crearProyecto">Create project</string>
+    <string name="modifProyecto">Modify project</string>
+    <string name="modifPerfil">Modify profile</string>
+    <string name="usuario">User</string>
+    <string name="iniciar_sesion">Login</string>
+    <string name="recuperar_contrasenia">Recover password</string>
+    <string name="no_tienes_cuenta">Need an account?</string>
+    <string name="registrate">Sign up</string>
+    <string name="registrarse">Check in</string>
+    <string name="categoria">Category</string>
+    <string name="emailEmpresa">Company email</string>
+    <string name="cifEmpresa">Company CIF</string>
+    <string name="nombreEmpresa">Company name</string>
+    <string name="direccionEmpresa">Company address</string>
+    <string name="nifEmpleado">NIF</string>
+    <string name="nombreEmpleado">Name</string>
+    <string name="apellidosEmpleado">Surnames</string>
+    <string name="emailEmpleado">Email</string>
+    <string name="noHayProyectos">No projects available</string>
+    <string name="nombreProyecto">Project name</string>
+    <string name="descripcionProyecto">Project description</string>
+    <string name="agregar">Add</string>
+    <string name="volver">Return</string>
+    <string name="editar">Edit</string>
+    <string name="aniadirProyecto">Add project</string>
+    <string name="creacionProyectoCorrecta">Project creation succesfully</string>
+    <string name="modifProyectoCorrecta">Project modified succesfully</string>
+    <string name="modifPerfilCorrecta">Profile modified succesfully</string>
+    <string name="confirmSalidaCreacionProyecto">Do you want to cancel the creation of the project? the changes will be lost</string>
+    <string name="confirmSalidaCreacionTarea">Do you want to cancel the creation of the task? the changes will be lost</string>
+    <string name="confirmSalidaModifProyecto">Do you want to cancel the project modification? the changes will be lost</string>
+    <string name="confirmSalidaModifPerfil">Do you want to cancel the profile modification? the changes will be lost</string>
+    <string name="confirmSalidaRegistroEmpleado">Do you want to cancel the employee registration? the changes will be lost</string>
+    <string name="confirmSalidaRegistroEmpresa">Do you want to cancel the company registration? the changes will be lost</string>
+    <string name="confirmCerrarSesion">Sign off?</string>
+    <string name="confirmSalidaAplicacion">Do you want to exit the application?</string>
+    <string name="creadoEl">"Created on "</string>
+    <string name="ultimoLoginEl">"Last login on "</string>
+    <string name="crearTarea">Create task</string>
+    <string name="tarea">Task</string>
+    <string name="creacionTareaCorrecta">Task creation succesfully</string>
+    <string name="sinAsignar">Unassigned</string>
+    <string name="modifTareaCorrecta">Task modified succesfully</string>
+    <string name="error">Error!</string>
+    <string name="faltaCif">Enter CIF</string>
+    <string name="cifErroneo">Wrong CIF</string>
+    <string name="cifYaExiste">CIF already exists</string>
+    <string name="cifNoExiste">CIF doesn\'t exists</string>
+    <string name="faltaNif">Enter NIF</string>
+    <string name="nifErroneo">Wrong NIF</string>
+    <string name="nifYaExiste">NIF already exists</string>
+    <string name="faltaDireccion">Enter address</string>
+    <string name="faltaNombreEmpresa">Enter company name</string>
+    <string name="faltaNombre">Enter your name</string>
+    <string name="faltaApellidos">Enter your surname</string>
+    <string name="faltaEmail">Enter email</string>
+    <string name="emailErroneo">Wrong email</string>
+    <string name="emailYaExiste">Email already registered</string>
+    <string name="emailNoExiste">Email is not registered</string>
+    <string name="faltaPassword">Enter password</string>
+    <string name="passwordErroneo">"Wrong password. Type between 6 and 24 characters "</string>
+    <string name="faltaCategoria">Select your employment</string>
+    <string name="datosLoginEmpresaIncorrectos">Wrong email or password</string>
+    <string name="compruebeDatos">Check the fields</string>
+    <string name="registroCuentaFallido">Account registration failed</string>
+    <string name="registroEmpresaFallido">Company registration failed</string>
+    <string name="registroEmpleadoFallido">Employee registration failed</string>
+    <string name="errorGeneral">Ups! Something went wrong. Contact us</string>
+    <string name="errorAccesoBD">Ups! Something went wrong. Try again in a few minutes</string>
+    <string name="faltaNombreProyecto">Enter project name</string>
+    <string name="faltaJefeProyecto">Enter project manager</string>
+    <string name="faltaDescripcion">Enter project description</string>
+    <string name="noSeEncuentranJefes">No project manager found, at least one must be registered</string>
+    <string name="noHayCambios">No changes have occurred</string>
+    <string name="faltaTarea">Enter task name</string>
+    <string name="altaEmpresaDone">Company registered succesfully</string>
+    <string name="altaEmpleadoDone">Employee registered succesfully</string>
+    <string name="envioEmail">Email sent to your account</string>
+
+    <string-array name="estados_array">
+        <item>Initial</item>
+        <item>Earring</item>
+        <item>In progress</item>
+        <item>Leisurely</item>
+        <item>Finished</item>
+    </string-array>
+
+    <string name="empleadoAsignado">Assigned employee</string>
+    <string name="prioBaja">Low</string>
+    <string name="prioMedia">Medium</string>
+    <string name="prioAlta">High</string>
+    <string name="prioridad">Priority</string>
+    <string name="cambiar_datos_tarea">Change task information</string>
+    <string name="alerta">Alert!</string>
+    <string name="noPuedesDesasignarTarea">You cannot unassign a task!</string>
+    <string name="modifTareaError">An error occurred while modifying the task</string>
+</resources>

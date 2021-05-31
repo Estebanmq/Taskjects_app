@@ -1,6 +1,7 @@
 package com.app.taskjects.adaptadores;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import android.content.Context;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.taskjects.R;
+import com.app.taskjects.TareasProyectoActivity;
+import com.app.taskjects.dialogos.CambiarDatosTareaDialog;
 import com.app.taskjects.pojos.Tarea;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,7 +26,9 @@ import java.util.ArrayList;
 
 public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,AdaptadorTareasDAD.ViewHolder> {
 
+    //Accceso a la base de datos
     FirebaseFirestore db;
+
     private ArrayList<Pair<Long, Tarea>> listTareasAux;
     private Context context;
     private int mLayoutId;
@@ -47,13 +52,16 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
         return new ViewHolder(view);
     }
 
+    //Metodo que se encarga de asignar los datos de la tarea a los componentes de la tarjeta
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
+        //Objeto que almacena los datos de la tarea
+        Tarea aux = listTareasAux.get(position).second;
+        String uidEmpleado = aux.getUidEmpleado();
 
-        String uidEmpleado = listTareasAux.get(position).second.getUidEmpleado();
-        holder.tvTarea.setText(listTareasAux.get(position).second.getTarea());
-        Log.d("AdaptadorDebug","Nombre de la tarea ->"+listTareasAux.get(position).second.getTarea());
+        holder.tvTarea.setText(aux.getTarea());
+        //Log.d("AdaptadorTareas onBindViewHolder","Nombre de la tarea ->"+listTareasAux.get(position).second.getTarea());
         if (uidEmpleado.equals("noasignado"))
             holder.tvEmpleadoTarea.setText(R.string.sinAsignar);
         else {
@@ -67,7 +75,8 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
                         }
                     });
         }
-        switch (listTareasAux.get(position).second.getPrioridad()) {
+
+        switch (aux.getPrioridad()) {
             case "0":
                 holder.tvPrioridad.setBackgroundTintList(context.getResources().getColorStateList(R.color.color_prio_baja,context.getTheme()));
                 break;
@@ -78,37 +87,41 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
                 holder.tvPrioridad.setBackgroundTintList(context.getResources().getColorStateList(R.color.color_prio_alta,context.getTheme()));
                 break;
         }
+        holder.tvUidProyectoUidTareaPrioridad.setText(String.format("%s*%s*%s", aux.getUidProyecto(), aux.getUidTarea(),aux.getPrioridad()));
     }
 
     @Override
     public long getUniqueItemId(int position) { return mItemList.get(position).first; }
 
+    //Clase que instancia los componentes de la tarjeta y los listener de las mismas
     class ViewHolder extends DragItemAdapter.ViewHolder {
         TextView tvPrioridad;
         TextView tvTarea;
         TextView tvEmpleadoTarea;
-
+        //Este textView es uno que esta invisible y se encarga de almacenar datos importantes para luego poder acceder facilmente a la tarea en la base de datos
+        TextView tvUidProyectoUidTareaPrioridad;
 
         ViewHolder(final View itemView) {
             super(itemView, mGrabHandleId, mDragOnLongPress);
             tvPrioridad = itemView.findViewById(R.id.tvPrioridad);
             tvTarea = itemView.findViewById(R.id.tvTarea);
             tvEmpleadoTarea = itemView.findViewById(R.id.tvEmpleadoTarea);
+            tvUidProyectoUidTareaPrioridad = itemView.findViewById(R.id.tvUidProyectoUidTareaPrioridad);
         }
 
+        //Metodo que detecta cuando se hace clic en una tarjeta especifica
         @Override
         public void onItemClicked(View view) {
-            /*
-            Toast.makeText(view.getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
-            TareasProyectoActivity.showDialog(this.tvTarea.getText().toString(),context);
+            //Creo el dialogo que muestra el layout de la modificacion
+            CambiarDatosTareaDialog cambiarDatosTareaDialog = new CambiarDatosTareaDialog();
+            //Una vez que tengo el objeto del dialogo creado llamo al metodo setDatosTarea que se encarga de almacenar los datos de la tarea seleccionada
+            cambiarDatosTareaDialog.setDatosTarea(this.tvTarea.getText().toString(),this.tvUidProyectoUidTareaPrioridad.getText().toString());
+            //Muestro el dialogo en el contexto TareasProyecto con el tag Cambiar datos de la tarea
+            cambiarDatosTareaDialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "Cambiar datos de la tarea");
 
-             */
         }
 
         @Override
-        public boolean onItemLongClicked(View view) {
-            Toast.makeText(view.getContext(), "Item long clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+        public boolean onItemLongClicked(View view) { return true; }
     }
 }

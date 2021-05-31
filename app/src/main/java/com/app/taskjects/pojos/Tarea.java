@@ -1,7 +1,7 @@
 package com.app.taskjects.pojos;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.firestore.DocumentId;
 
 @IgnoreExtraProperties
 public class Tarea {
@@ -11,9 +11,7 @@ public class Tarea {
     private String uidEmpleado;
     private String prioridad;
     private String uidProyecto;
-
-    //Todo: Anotacion para que no te lo meta como campo en el "documento"
-    private String uidTarea;
+    @Exclude private String uidTarea;
 
     public Tarea () {}
 
@@ -84,6 +82,7 @@ public class Tarea {
         this.uidProyecto = uidProyecto;
     }
 
+    @Exclude
     public String getUidTarea() { return uidTarea; }
 
     public void setUidTarea(String uidTarea) { this.uidTarea = uidTarea; }

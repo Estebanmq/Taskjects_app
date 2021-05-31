@@ -40,6 +40,15 @@
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:background="@drawable/circulo_prioridad" />
 
+            <TextView
+                android:id="@+id/tvUidProyectoUidTareaPrioridad"
+                android:layout_margin="0dp"
+                android:layout_width="0dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="gone"
+                android:layout_height="0dp" />
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

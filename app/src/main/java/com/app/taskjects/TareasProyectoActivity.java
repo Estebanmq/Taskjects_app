@@ -2,8 +2,6 @@ package com.app.taskjects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,17 +21,17 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.taskjects.dialogos.CambiarDatosTareaDialog;
 import com.app.taskjects.pojos.Categoria;
 
 import com.app.taskjects.adaptadores.AdaptadorTareasDAD;
 import com.app.taskjects.pojos.Tarea;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -45,10 +42,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.database.Query;
+
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.ColumnProperties;
 import com.woxthebox.draglistview.DragItem;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,9 +56,11 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
     private final String CATEGORIAS = "categorias";
 
+    //Variables para el menu de abajo
     MenuItem plusEmpleado;
     BottomAppBar bottomAppBar;
 
+    //Variables que almacenan informacion relevante
     Map<String, Categoria> mapCategorias;
     String uidProyecto;
     String uidJefeProyecto;
@@ -71,24 +72,23 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
+    //Variable para acceder al sharedpreferences
     SharedPreferences sharedPreferences;
 
     //Variables para las columnas de tareas
     int tareasCreadas = 0;
     BoardView dadTareas;
     boolean mGridLayout;
-    AdaptadorTareasDAD adaptadorTareasDADAE0;
-    ArrayList<Pair<Long,Tarea>> arrayEstado0 = new ArrayList<>();
-    AdaptadorTareasDAD adaptadorTareasDADAE1;
-    ArrayList<Pair<Long,Tarea>> arrayEstado1 = new ArrayList<>();
-    AdaptadorTareasDAD adaptadorTareasDADAE2;
-    ArrayList<Pair<Long,Tarea>> arrayEstado2 = new ArrayList<>();
-    AdaptadorTareasDAD adaptadorTareasDADAE3;
-    ArrayList<Pair<Long,Tarea>> arrayEstado3 = new ArrayList<>();
-    AdaptadorTareasDAD adaptadorTareasDADAE4;
-    ArrayList<Pair<Long,Tarea>> arrayEstado4 = new ArrayList<>();
 
+    ArrayList<Pair<Long,Tarea>> arrayEstado0 = new ArrayList<>();
+    ArrayList<Pair<Long,Tarea>> arrayEstado1 = new ArrayList<>();
+    ArrayList<Pair<Long,Tarea>> arrayEstado2 = new ArrayList<>();
+    ArrayList<Pair<Long,Tarea>> arrayEstado3 = new ArrayList<>();
+    ArrayList<Pair<Long,Tarea>> arrayEstado4 = new ArrayList<>();
+    //Array de arrays para almacenar todos los arrays de tareas
     ArrayList<ArrayList<Pair<Long,Tarea>>> arrayAllEstados = new ArrayList<ArrayList<Pair<Long, Tarea>>>(){{add(arrayEstado0);add(arrayEstado1);add(arrayEstado2);add(arrayEstado3);add(arrayEstado4);}};
+    //Array de arrays para almacenar todos los adaptadores
+    ArrayList<AdaptadorTareasDAD>arrayAllAdaptadores = new ArrayList<AdaptadorTareasDAD>(){};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +103,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         //Inicializacion de componentes
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
-
         dadTareas = findViewById(R.id.dadTareas);
 
         //Inicialización de variables
@@ -112,20 +111,30 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         uidJefeProyecto = getIntent().getStringExtra("uidJefeProyecto");
         uidEmpresa = getIntent().getStringExtra("uidEmpresa");
 
+        //Inicializacion sharedpreferences
         sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
         uidEmpleado = sharedPreferences.getString("uidEmpleado","");
 
+        //Llamas a los metodos que cargan todoo lo relacionado con las tareas (columnas,datos de las tareas en la bbdd y categorias)
+        cargarEscuchadoresDadTareas();
+        cargaDeColumnas();
+        recuperarCategorias();
+    }
+
+    //Metodo que agrega un listener para gesitonar los cambios de las tareas entre las distintas columnas
+    private void cargarEscuchadoresDadTareas() {
         //Listener para controlar donde va cada card de cada tarea
         dadTareas.setBoardListener(new BoardView.BoardListener() {
-            @Override
-            public void onItemDragStarted(int column, int row) {
-                // Toast.makeText(getContext(), "Start - column: " + column + " row: " + row, Toast.LENGTH_SHORT).show();
-            }
 
-            //Listener que al terminar el drag and drop te dice antigua columna y fila y la nueva columna y fila
+            @Override
+            public void onItemDragStarted(int column, int row) { }
+
+            //Listener para el drop de una tarea en concreto
             @Override
             public void onItemDragEnded(int fromColumn, int fromRow, int toColumn, int toRow) {
+                //Si la nueva posicion no es la misma
                 if (fromColumn != toColumn || fromRow != toRow) {
+                    //Si la tarea pasa del estado inicial a cualquier otra, le asigno al uid del empleado de la tarea el uid del empleado actual
                     if (fromColumn == 0 && toColumn == 1 || toColumn == 2 || toColumn == 3 || toColumn == 4) {
                         mDatabase.child("tareas")
                                 .child(uidProyecto)
@@ -136,22 +145,10 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.d("Tarea asignada correcto"," Correcto");
+                                        //Cambio el dato uidEmpleado donde corresponde
                                         arrayAllEstados.get(toColumn).get(toRow).second.setUidEmpleado(uidEmpleado);
-                                        switch (toColumn) {
-                                            case 1:
-                                                adaptadorTareasDADAE1.notifyDataSetChanged();
-                                                break;
-                                            case 2:
-                                                adaptadorTareasDADAE2.notifyDataSetChanged();
-                                                break;
-                                            case 3:
-                                                adaptadorTareasDADAE3.notifyDataSetChanged();
-                                                break;
-                                            case 4:
-                                                adaptadorTareasDADAE4.notifyDataSetChanged();
-                                                break;
-                                        }
-
+                                        //Notifico al array donde se deposita la tarea
+                                        arrayAllAdaptadores.get(toColumn).notifyDataSetChanged();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -161,6 +158,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                                     }
                                 });
                     }
+                    //Actualizo el estado de la tarea (columna donde se deposita)
                     mDatabase.child("tareas")
                             .child(uidProyecto)
                             .child(arrayAllEstados.get(toColumn).get(toRow).second.getUidTarea())
@@ -182,142 +180,62 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                     Log.d("oldrow -> " + fromRow, " new row -> " + toRow);
                 }
             }
-
             @Override
-            public void onItemChangedPosition(int oldColumn, int oldRow, int newColumn, int newRow) {
-                //Toast.makeText(TareasProyectoActivity.this, "Position changed - column: " + newColumn + " row: " + newRow, Toast.LENGTH_SHORT).show();
-                //Log.d("oldColumn -> " + oldColumn, " newColumn -> " + newColumn);
-            }
-
+            public void onItemChangedPosition(int oldColumn, int oldRow, int newColumn, int newRow) { }
             @Override
-            public void onItemChangedColumn(int oldColumn, int newColumn) {
-                //Toast.makeText(getContext(), "Nueva posicion de columna "+ newColumn+ " antigua " + oldColumn, Toast.LENGTH_SHORT).show();
-            }
-
-
+            public void onItemChangedColumn(int oldColumn, int newColumn) { }
             @Override
-            public void onFocusedColumnChanged(int oldColumn, int newColumn) {
-                //Toast.makeText(getContext(), "Focused column changed from " + oldColumn + " to " + newColumn, Toast.LENGTH_SHORT).show();
-            }
-
+            public void onFocusedColumnChanged(int oldColumn, int newColumn) { }
             @Override
-            public void onColumnDragStarted(int position) {
-                //Toast.makeText(getContext(), "Column drag started from " + position, Toast.LENGTH_SHORT).show();
-            }
-
+            public void onColumnDragStarted(int position) { }
             @Override
-            public void onColumnDragChangedPosition(int oldPosition, int newPosition) {
-                //Toast.makeText(getContext(), "Column changed from " + oldPosition + " to " + newPosition, Toast.LENGTH_SHORT).show();
-            }
-
+            public void onColumnDragChangedPosition(int oldPosition, int newPosition) { }
             @Override
-            public void onColumnDragEnded(int position) {
-                //Toast.makeText(getContext(), "Column drag ended at " + position, Toast.LENGTH_SHORT).show();
-            }
+            public void onColumnDragEnded(int position) { }
         });
         //Listener para evitar drop en ciertas columnas
         dadTareas.setBoardCallback(new BoardView.BoardCallback() {
             @Override
-            public boolean canDragItemAtPosition(int column, int dragPosition) {
-                // Add logic here to prevent an item to be dragged
-                return true;
-            }
+            public boolean canDragItemAtPosition(int column, int dragPosition) { return true; }
 
+            //Metodo para impedir que una tarea pueda desasignarse (volver a la columna pendientes)
             @Override
             public boolean canDropItemAtPosition(int oldColumn, int oldRow, int newColumn, int newRow) {
                 if (newColumn == 0) {
-                    Toast.makeText(TareasProyectoActivity.this,"No te puedes desasignar la tarea",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TareasProyectoActivity.this,getString(R.string.noPuedesDesasignarTarea),Toast.LENGTH_SHORT).show();
                 }
                 return newColumn != 0;
             }
         });
+    }
 
+    //Metodo que carga las 5 columnas en la vista
+    private void cargaDeColumnas() {
+        //Siempre que entro en esta activity limpio el board de las tareas
         dadTareas.clearBoard();
+        //Le asigno el listener para cada tarea
         dadTareas.setCustomDragItem(mGridLayout ? null  : new DragTarea(TareasProyectoActivity.this, R.layout.dad_column_tarea_layout));
 
-        String[]estados = {"Inicial","Pendiente","En proceso","Pausada","Terminada"};
+        //Recorro el array por cada estado para crear una columna por cada uno de los 5 estados
+        String[]estados = getResources().getStringArray(R.array.estados_array);
+
+        //Bucle que se encarga de crear todoo lo necesario por columna (adaptador, header y propiedades) y luego la agrega al board
         for (int i=0; i<estados.length;i++) {
-            Log.d("debugFor","valor de i "+i);
-            cargarColumnas(estados[i]);
-        }
-        
-        recuperarCategorias();
-    }
+            LinearLayoutManager layoutManager = mGridLayout ? new GridLayoutManager(TareasProyectoActivity.this, 4) : new LinearLayoutManager(TareasProyectoActivity.this);
+            arrayAllAdaptadores.add(new AdaptadorTareasDAD(arrayAllEstados.get(i),this,R.layout.dad_column_tarea_layout,R.id.item_layout,true));
+            View header = View.inflate(this, R.layout.dad_column_header, null);
+            ((TextView) header.findViewById(R.id.tvEstado)).setText(estados[i]);
+            ColumnProperties columnProperties = ColumnProperties.Builder.newBuilder(arrayAllAdaptadores.get(i))
+                    .setLayoutManager(layoutManager)
+                    .setHasFixedItemSize(false)
+                    .setHeader(header)
+                    .build();
 
-
-    private void cargarColumnas(String estado) {
-
-        LinearLayoutManager layoutManager = mGridLayout ? new GridLayoutManager(TareasProyectoActivity.this, 4) : new LinearLayoutManager(TareasProyectoActivity.this);
-        switch (estado) {
-            case "Inicial":
-                adaptadorTareasDADAE0 = new AdaptadorTareasDAD(arrayAllEstados.get(0),this, R.layout.dad_column_tarea_layout, R.id.item_layout, true);
-                View headerAE0 = View.inflate(this, R.layout.dad_column_header, null);
-                ((TextView) headerAE0.findViewById(R.id.tvEstado)).setText(estado);
-
-                ColumnProperties columnPropertiesAE0 = ColumnProperties.Builder.newBuilder(adaptadorTareasDADAE0)
-                        .setLayoutManager(layoutManager)
-                        .setHasFixedItemSize(false)
-                        .setHeader(headerAE0)
-                        .build();
-
-                dadTareas.addColumn(columnPropertiesAE0);
-                break;
-            case "Pendiente":
-                adaptadorTareasDADAE1 = new AdaptadorTareasDAD(arrayAllEstados.get(1),this, R.layout.dad_column_tarea_layout, R.id.item_layout, true);
-                View headerAE1 = View.inflate(this, R.layout.dad_column_header, null);
-                ((TextView) headerAE1.findViewById(R.id.tvEstado)).setText(estado);
-
-                ColumnProperties columnPropertiesAE1 = ColumnProperties.Builder.newBuilder(adaptadorTareasDADAE1)
-                        .setLayoutManager(layoutManager)
-                        .setHasFixedItemSize(false)
-                        .setHeader(headerAE1)
-                        .build();
-
-                dadTareas.addColumn(columnPropertiesAE1);
-                break;
-            case "En proceso":
-                adaptadorTareasDADAE2 = new AdaptadorTareasDAD(arrayAllEstados.get(2), this,R.layout.dad_column_tarea_layout, R.id.item_layout, true);
-                View headerAE2 = View.inflate(this, R.layout.dad_column_header, null);
-                ((TextView) headerAE2.findViewById(R.id.tvEstado)).setText(estado);
-
-                ColumnProperties columnPropertiesAE2 = ColumnProperties.Builder.newBuilder(adaptadorTareasDADAE2)
-                        .setLayoutManager(layoutManager)
-                        .setHasFixedItemSize(false)
-                        .setHeader(headerAE2)
-                        .build();
-
-                dadTareas.addColumn(columnPropertiesAE2);
-                break;
-            case "Pausada":
-                adaptadorTareasDADAE3 = new AdaptadorTareasDAD(arrayAllEstados.get(3),this, R.layout.dad_column_tarea_layout, R.id.item_layout, true);
-                View headerAE3 = View.inflate(this, R.layout.dad_column_header, null);
-                ((TextView) headerAE3.findViewById(R.id.tvEstado)).setText(estado);
-
-                ColumnProperties columnPropertiesAE3 = ColumnProperties.Builder.newBuilder(adaptadorTareasDADAE3)
-                        .setLayoutManager(layoutManager)
-                        .setHasFixedItemSize(false)
-                        .setHeader(headerAE3)
-                        .build();
-
-                dadTareas.addColumn(columnPropertiesAE3);
-                break;
-
-            case "Terminada":
-                adaptadorTareasDADAE4 = new AdaptadorTareasDAD(arrayAllEstados.get(4),this,R.layout.dad_column_tarea_layout, R.id.item_layout, true);
-                View headerAE4 = View.inflate(this, R.layout.dad_column_header, null);
-                ((TextView) headerAE4.findViewById(R.id.tvEstado)).setText(estado);
-
-                ColumnProperties columnPropertiesAE4 = ColumnProperties.Builder.newBuilder(adaptadorTareasDADAE4)
-                        .setLayoutManager(layoutManager)
-                        .setHasFixedItemSize(false)
-                        .setHeader(headerAE4)
-                        .build();
-
-                dadTareas.addColumn(columnPropertiesAE4);
-                break;
+            dadTareas.addColumn(columnProperties);
         }
     }
 
+    //Metodo que recupera de la base de datos las categorias de empleados
     private void recuperarCategorias() {
 
         db.collection(CATEGORIAS).get()
@@ -339,8 +257,8 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                 });
     }
 
+    //Metodo que crea un listener por cada estado de tarea, estos listener detectan cambios en la base de datos sobre las tareas
     private void cargaDeTareas() {
-
         Categoria categoria = mapCategorias.get(sharedPreferences.getString("categoria", ""));
         if (categoria.getMarca()) {
             plusEmpleado.setVisible(true);
@@ -350,293 +268,69 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             findViewById(R.id.fABTareas).setVisibility(View.INVISIBLE);
         }
 
-        Query queryAE0 = mDatabase.child("tareas").child(uidProyecto).orderByChild("estado").equalTo("0");
-        queryAE0.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (previousChildName != null)
-                    Log.d("Debug onChildAdded estado 0",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        if (!buscarTarea(0,aux.getUidTarea())) {
-                            long auxTareasCreadas = tareasCreadas++;
-                            arrayAllEstados.get(0).add(new Pair<>(auxTareasCreadas, aux));
-                            adaptadorTareasDADAE0.notifyDataSetChanged();
+        //Bucle que se encarga de agregar un listener en la base de datos por cada estado
+        for (int i = 0; i < 5; i++) {
+            int posicion = i;
+            mDatabase.child("tareas")
+                    .child(uidProyecto)
+                    .orderByChild("estado")
+                    .equalTo(String.valueOf(i))
+                    .addChildEventListener(new ChildEventListener() {
+                        //onChildAdded se activa cuando se agregan hijos al estado i
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            if (previousChildName != null)
+                                Log.d("Debug onChildAdded estado "+posicion,previousChildName);
+                            if (snapshot.exists()) {
+                                Tarea aux = snapshot.getValue(Tarea.class);
+                                if (aux != null) {
+                                    aux.setUidTarea(snapshot.getKey());
+                                    if (!buscarTarea(posicion,aux.getUidTarea())) {
+                                        long auxTareasCreadas = tareasCreadas++;
+                                        arrayAllEstados.get(posicion).add(new Pair<>(auxTareasCreadas, aux));
+                                        arrayAllAdaptadores.get(posicion).notifyDataSetChanged();
+                                    }
+                                }
+                            }
                         }
-                    }
-
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 0","entro onChildChanged");
-                //Log.d("Debug onChildChanged noasigando",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 0",aux.toString());
-                        cambiarDatosTarea(0,adaptadorTareasDADAE0,snapshot.getKey(),aux);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("TareasProyectoActivityDebug estado 0","entro onChildRemoved");
-                //Log.d("Debug onChildRemoved noasignado","");
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 0",aux.toString());
-                        removeTareaAntigua(0,adaptadorTareasDADAE0,snapshot.getKey(),0);
-                    }
-                }
-            }
-
-            //Este listener se activa cuando se detectan cambios en el orden
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 0","entro onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TareasProyectoActivityDebug estado 0","entro onChildCancelled");
-            }
-        });
-
-        Query queryAE1 = mDatabase.child("tareas").child(uidProyecto).orderByChild("estado").equalTo("1");
-        queryAE1.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (previousChildName != null)
-                    Log.d("Debug onChildAdded estado 1",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null &&aux.getUidEmpleado().equals(uidEmpleado)) {
-                        if (!buscarTarea(1,aux.getUidTarea())) {
-                            long auxTareasCreadas = tareasCreadas++;
-                            arrayAllEstados.get(1).add(new Pair<>(auxTareasCreadas, aux));
-                            adaptadorTareasDADAE1.notifyDataSetChanged();
+                        //onChildChanged se activa cuando se detectan cambios en los hijos que tengan estado i y llama al que gestiona estos cambios
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            Log.d("TareasProyectoActivityDebug estado "+posicion,"entro onChildChanged");
+                            if (snapshot.exists()) {
+                                Tarea aux = snapshot.getValue(Tarea.class);
+                                if (aux != null) {
+                                    aux.setUidTarea(snapshot.getKey());
+                                    Log.d("Debug onChildChanged estado "+posicion,aux.toString());
+                                    cambiarDatosTarea(posicion,arrayAllAdaptadores.get(posicion),snapshot.getKey(),aux);
+                                }
+                            }
                         }
-                    }
 
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 1","entro onChildChanged");
-                //Log.d("Debug onChildChanged noasigando",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 1",aux.toString());
-                        cambiarDatosTarea(1,adaptadorTareasDADAE1,snapshot.getKey(),aux);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("TareasProyectoActivityDebug estado 1","entro onChildRemoved");
-                //Log.d("Debug onChildRemoved noasignado","");
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Key snapshot estado 1",snapshot.getKey());
-                        Log.d("Debug onChildChanged estado 1",aux.toString());
-                        removeTareaAntigua(1,adaptadorTareasDADAE1,snapshot.getKey(),1);
-                    }
-                }
-            }
-
-            //Este listener se activa cuando se detectan cambios en el orden
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 1","entro onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TareasProyectoActivityDebug estado 1","entro onChildCancelled");
-            }
-        });
-
-        Query queryAE2 = mDatabase.child("tareas").child(uidProyecto).orderByChild("estado").equalTo("2");
-        queryAE2.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (previousChildName != null)
-                    Log.d("Debug onChildAdded estado 2",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null && aux.getUidEmpleado().equals(uidEmpleado)) {
-                        if (!buscarTarea(2,aux.getUidTarea())) {
-                            long auxTareasCreadas = tareasCreadas++;
-                            arrayAllEstados.get(2).add(new Pair<>(auxTareasCreadas, aux));
-                            adaptadorTareasDADAE2.notifyDataSetChanged();
+                        //onChildRemoved se activa cuando se elimina un hijo con estado i y llama al metodo que gestiona estos cambios
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                            Log.d("TareasProyectoActivityDebug estado "+posicion,"entro onChildRemoved");
+                            if (snapshot.exists()) {
+                                Tarea aux = snapshot.getValue(Tarea.class);
+                                if (aux != null) {
+                                    aux.setUidTarea(snapshot.getKey());
+                                    Log.d("Debug onChildChanged estado "+posicion,aux.toString());
+                                    removeTareaAntigua(posicion,arrayAllAdaptadores.get(posicion),snapshot.getKey(),posicion);
+                                }
+                            }
                         }
-                    }
 
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 2","entro onChildChanged");
-                //Log.d("Debug onChildChanged noasigando",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 2",aux.toString());
-                        cambiarDatosTarea(2,adaptadorTareasDADAE2,snapshot.getKey(),aux);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("TareasProyectoActivityDebug estado 2","entro onChildRemoved");
-                //Log.d("Debug onChildRemoved noasignado","");
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 2",aux.toString());
-                        removeTareaAntigua(2,adaptadorTareasDADAE2,snapshot.getKey(),2);
-                    }
-                }
-            }
-
-            //Este listener se activa cuando se detectan cambios en el orden
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 2","entro onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TareasProyectoActivityDebug estado 2","entro onChildCancelled");
-            }
-        });
-
-        Query queryAE3 = mDatabase.child("tareas").child(uidProyecto).orderByChild("estado").equalTo("3");
-        queryAE3.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (previousChildName != null)
-                    Log.d("Debug onChildAdded estado 3",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null && aux.getUidEmpleado().equals(uidEmpleado)) {
-                        if (!buscarTarea(3,aux.getUidTarea())) {
-                            long auxTareasCreadas = tareasCreadas++;
-                            arrayAllEstados.get(3).add(new Pair<>(auxTareasCreadas, aux));
-                            adaptadorTareasDADAE3.notifyDataSetChanged();
-                        }
-                    }
-
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 3","entro onChildChanged");
-                //Log.d("Debug onChildChanged noasigando",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 3",aux.toString());
-                        cambiarDatosTarea(3,adaptadorTareasDADAE3,snapshot.getKey(),aux);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("TareasProyectoActivityDebug estado 3","entro onChildRemoved");
-                //Log.d("Debug onChildRemoved noasignado","");
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 3",aux.toString());
-                        removeTareaAntigua(3,adaptadorTareasDADAE3,snapshot.getKey(),3);
-                    }
-                }
-            }
-
-            //Este listener se activa cuando se detectan cambios en el orden
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 3","entro onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TareasProyectoActivityDebug estado 3","entro onChildCancelled");
-            }
-        });
-
-        Query queryAE4 = mDatabase.child("tareas").child(uidProyecto).orderByChild("estado").equalTo("4");
-        queryAE4.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (previousChildName != null)
-                    Log.d("Debug onChildAdded estado 4",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null && aux.getUidEmpleado().equals(uidEmpleado)) {
-                        if (!buscarTarea(4,aux.getUidTarea())) {
-                            long auxTareasCreadas = tareasCreadas++;
-                            arrayAllEstados.get(4).add(new Pair<>(auxTareasCreadas, aux));
-                            adaptadorTareasDADAE4.notifyDataSetChanged();
-                        }
-                    }
-
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 4","entro onChildChanged");
-                //Log.d("Debug onChildChanged noasigando",previousChildName);
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 4",aux.toString());
-                        cambiarDatosTarea(4,adaptadorTareasDADAE4,snapshot.getKey(),aux);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Log.d("TareasProyectoActivityDebug estado 4","entro onChildRemoved");
-                //Log.d("Debug onChildRemoved noasignado","");
-                if (snapshot.exists()) {
-                    Tarea aux = snapshot.getValue(Tarea.class);
-                    if (aux != null) {
-                        Log.d("Debug onChildChanged estado 4",aux.toString());
-                        removeTareaAntigua(4,adaptadorTareasDADAE4,snapshot.getKey(),4);
-                    }
-                }
-            }
-
-            //Este listener se activa cuando se detectan cambios en el orden
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d("TareasProyectoActivityDebug estado 4","entro onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("TareasProyectoActivityDebug estado 4","entro onChildCancelled");
-            }
-        });
+                        //Este listener se activa cuando se detectan cambios en el orden
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { Log.d("TareasProyectoActivityDebug estado 0","entro onChildMoved"); }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { Log.d("TareasProyectoActivityDebug estado 0","entro onChildCancelled"); }
+                    });
+        }
     }
 
+    //Metodo que devuelve true si encuentra la tarea pasada por parametros
     private boolean buscarTarea(int arrayEstados,String uidTarea){
         for (int i=0;i<arrayAllEstados.get(arrayEstados).size();i++) {
             if (arrayAllEstados.get(arrayEstados).get(i).second.getUidTarea().equals(uidTarea))
@@ -645,6 +339,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         return false;
     }
 
+    //Todo: repaso con los nuevos cambios
     //Metodo que cambia los datos nuevos de una tarea por la encontrada en el array
     private void cambiarDatosTarea(int arrayEstados,AdaptadorTareasDAD adapter,String keyTarea,Tarea nuevosDatosTarea) {
         Log.d("debug cambio datos, keyTarea -> " + keyTarea, " Tarea a encontrar -> "+nuevosDatosTarea.toString());
@@ -658,6 +353,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         }
     }
 
+    //Todo: repaso con los nuevos cambios
     //Metodo que elimina de un array especifico una tarea que ha cambiado a otro array en la base de datos
     private void removeTareaAntigua(int arrayEstados,AdaptadorTareasDAD adapter,String keyTarea,int columna){
         for (int i = 0; i<arrayAllEstados.get(arrayEstados).size(); i++) {
@@ -672,12 +368,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             }
         }
 
-    }
-
-    public static void showDialog(String nombreTarea, Context context) {
-        CambiarDatosTareaDialog cambiarDatosTareaDialog = new CambiarDatosTareaDialog();
-        cambiarDatosTareaDialog.setDatosTarea(nombreTarea);
-        cambiarDatosTareaDialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "Cambiar datos de la tarea");
     }
 
     //Logica para hacer el drag de items
@@ -740,6 +430,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         }
     }
 
+    //Metodo que inicia la vista para añadir tareas
     public void aniadirTarea(View view) {
         Intent pantallaAniadirTarea = new Intent(this,AniadirTareaActivity.class);
         pantallaAniadirTarea.putExtra("uidProyecto", uidProyecto);
@@ -771,7 +462,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                 return true;
             });
         }
-
         super.onPrepareOptionsMenu(menu);
         return true;
     }

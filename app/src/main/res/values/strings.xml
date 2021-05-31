@@ -68,6 +68,8 @@
     <string name="creacionTareaCorrecta">La tarea se ha creado correctamente</string>
     <string name="sinAsignar">Sin asignar</string>
 
+    <string name="modifTareaCorrecta">Se ha modificado la tarea correctamente</string>
+
     <!-- FIN Textos de la aplicación -->
 
     <!-- Errores de aplicación -->
@@ -121,11 +123,14 @@
     <string name="altaEmpleadoDone">Empleado dado de alta correctamente</string>
     <string name="envioEmail">Se le ha enviado un email a su cuenta</string>
 
-    <string name="estadoInicial">Inicial</string>
-    <string name="estadoPendiente">Pendiente</string>
-    <string name="estadoEnProceso">En proceso</string>
-    <string name="estadoPausada">Pausada</string>
-    <string name="estadoTerminada">Terminada</string>
+    <string-array name="estados_array">
+        <item>Inicial</item>
+        <item>Pendiente</item>
+        <item>En proceso</item>
+        <item>Pausada</item>
+        <item>Terminada</item>
+    </string-array>
+
     <string name="empleadoAsignado">Empleado asignado</string>
     <string name="prioBaja">Baja</string>
     <string name="prioMedia">Media</string>
@@ -133,7 +138,8 @@
     <string name="prioridad">Prioridad</string>
     <string name="cambiar_datos_tarea">Cambiar datos de la tarea</string>
     <string name="alerta">Alerta!</string>
-    <string name="noPuedesDesasignarTarea">No te puedes desasignar tareas</string>
+    <string name="noPuedesDesasignarTarea">No te puedes desasignar tareas!</string>
+    <string name="modifTareaError">Se ha producido un error al modificar la tarea</string>
 
 
     <!-- FIN Mensajes de aplicación -->
