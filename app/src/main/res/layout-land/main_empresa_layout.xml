@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainEmpresaActivity">
+    tools:context=".MainEmpresaActivity"
+    android:theme="@style/Theme.Taskjects">
 
     <!-- Inicio Layout de los proyectos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
-        android:theme="@style/Theme.Taskjects"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         app:menu="@menu/bottom_app_bar"
         app:hideOnScroll="true" />
@@ -46,7 +46,6 @@
         android:id="@+id/floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/purple_500"
         app:srcCompat="@drawable/ic_plus_24dp"
         app:layout_anchor="@id/bottomAppBar"
         android:contentDescription="@string/agregar"

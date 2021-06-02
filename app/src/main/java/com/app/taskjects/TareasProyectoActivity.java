@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -49,6 +50,7 @@ import com.woxthebox.draglistview.DragItem;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -59,6 +61,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
     //Variables para el menu de abajo
     MenuItem plusEmpleado;
     BottomAppBar bottomAppBar;
+    FloatingActionButton fabTarea;
 
     //Variables que almacenan informacion relevante
     Map<String, Categoria> mapCategorias;
@@ -103,6 +106,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         //Inicializacion de componentes
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
+        fabTarea = findViewById(R.id.fABTareas);
         dadTareas = findViewById(R.id.dadTareas);
 
         //Inicialización de variables
@@ -121,8 +125,17 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         recuperarCategorias();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fabTarea.setEnabled(true);
+    }
+
     //Metodo que agrega un listener para gesitonar los cambios de las tareas entre las distintas columnas
     private void cargarEscuchadoresDadTareas() {
+        dadTareas.setHorizontalScrollBarEnabled(false);
+        dadTareas.setVerticalScrollBarEnabled(false);
+
         //Listener para controlar donde va cada card de cada tarea
         dadTareas.setBoardListener(new BoardView.BoardListener() {
 
@@ -134,48 +147,27 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             public void onItemDragEnded(int fromColumn, int fromRow, int toColumn, int toRow) {
                 //Si la nueva posicion no es la misma
                 if (fromColumn != toColumn || fromRow != toRow) {
-                    //Si la tarea pasa del estado inicial a cualquier otra, le asigno al uid del empleado de la tarea el uid del empleado actual
-                    if (fromColumn == 0 && toColumn == 1 || toColumn == 2 || toColumn == 3 || toColumn == 4) {
-                        mDatabase.child("tareas")
-                                .child(uidProyecto)
-                                .child(arrayAllEstados.get(toColumn).get(toRow).second.getUidTarea())
-                                .child("uidEmpleado")
-                                .setValue(uidEmpleado)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Tarea asignada correcto"," Correcto");
-                                        //Cambio el dato uidEmpleado donde corresponde
+                    Map<String,Object> actualizaciones = new HashMap<>();
+                    String uidTarea = arrayAllEstados.get(toColumn).get(toRow).second.getUidTarea();
+
+                    actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/uidEmpleado",uidEmpleado);
+                    actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/estado",String.valueOf(toColumn));
+                    actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/estado_uidEmpleado",String.valueOf(toColumn).concat("_").concat(uidEmpleado));
+
+                    mDatabase.updateChildren(actualizaciones)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
                                         arrayAllEstados.get(toColumn).get(toRow).second.setUidEmpleado(uidEmpleado);
-                                        //Notifico al array donde se deposita la tarea
                                         arrayAllAdaptadores.get(toColumn).notifyDataSetChanged();
+                                        Log.d("Tarea actualizada con exiteo","Actualizacion exitosa");
+                                    } else {
+                                        Log.d("Error al actualizar tarea", "Se ha producido un error");
                                     }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d("Fallo al actualizar el empelado de tarea",e.getMessage());
-                                    }
-                                });
-                    }
-                    //Actualizo el estado de la tarea (columna donde se deposita)
-                    mDatabase.child("tareas")
-                            .child(uidProyecto)
-                            .child(arrayAllEstados.get(toColumn).get(toRow).second.getUidTarea())
-                            .child("estado")
-                            .setValue(String.valueOf(toColumn))
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("Tarea cambiada de estado correcto"," Correcto");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("Fallo al actualizar el estado de tarea",e.getMessage());
                                 }
                             });
+
                     Log.d("oldColumn -> " + fromColumn, " newColumn -> " + toColumn);
                     Log.d("oldrow -> " + fromRow, " new row -> " + toRow);
                 }
@@ -270,11 +262,18 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
         //Bucle que se encarga de agregar un listener en la base de datos por cada estado
         for (int i = 0; i < 5; i++) {
+            String estado_uidEmpleado;
+            if (i == 0)
+                estado_uidEmpleado = "0_noasignado";
+            else
+                estado_uidEmpleado = String.valueOf(i).concat("_").concat(uidEmpleado);
+            Log.d("Valor string query ", estado_uidEmpleado);
+
             int posicion = i;
             mDatabase.child("tareas")
                     .child(uidProyecto)
-                    .orderByChild("estado")
-                    .equalTo(String.valueOf(i))
+                    .orderByChild("estado_uidEmpleado")
+                    .equalTo(estado_uidEmpleado)
                     .addChildEventListener(new ChildEventListener() {
                         //onChildAdded se activa cuando se agregan hijos al estado i
                         @Override
@@ -289,6 +288,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                                         long auxTareasCreadas = tareasCreadas++;
                                         arrayAllEstados.get(posicion).add(new Pair<>(auxTareasCreadas, aux));
                                         arrayAllAdaptadores.get(posicion).notifyDataSetChanged();
+
                                     }
                                 }
                             }
@@ -432,6 +432,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
     //Metodo que inicia la vista para añadir tareas
     public void aniadirTarea(View view) {
+        fabTarea.setEnabled(false);
         Intent pantallaAniadirTarea = new Intent(this,AniadirTareaActivity.class);
         pantallaAniadirTarea.putExtra("uidProyecto", uidProyecto);
         pantallaAniadirTarea.putExtra("uidEmpresa", uidEmpresa);
@@ -446,7 +447,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
             plusEmpleado = menu.add(Menu.NONE, plusEmpleadoId, 2, getString(R.string.plusEmpleado) );
 
             plusEmpleado.setVisible(false);
-            plusEmpleado.setIcon(R.drawable.ic_person_add_24dp);
+            plusEmpleado.setIcon(R.drawable.ic_person_add_white_24dp);
             plusEmpleado.setShowAsActionFlags(
                     MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW |
                             MenuItem.SHOW_AS_ACTION_ALWAYS

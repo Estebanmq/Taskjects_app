@@ -60,6 +60,7 @@
     <string name="confirmCerrarSesion">¿Desea cerrar la sesión?</string>
     <string name="confirmSalidaAplicacion">¿Desea salir de la aplicación?</string>
 
+    <string name="perfil">Perfil</string>
     <string name="creadoEl">Creado el</string>
     <string name="ultimoLoginEl">Último login el</string>
 
@@ -131,6 +132,9 @@
         <item>Terminada</item>
     </string-array>
 
+    <string name="cuentaNoExisteDeshabilitada">Esta cuenta no existe o está deshabilitada</string>
+    <string name="credencialesErroneas">Las credenciales son erroneas</string>
+
     <string name="empleadoAsignado">Empleado asignado</string>
     <string name="prioBaja">Baja</string>
     <string name="prioMedia">Media</string>
@@ -140,6 +144,7 @@
     <string name="alerta">Alerta!</string>
     <string name="noPuedesDesasignarTarea">No te puedes desasignar tareas!</string>
     <string name="modifTareaError">Se ha producido un error al modificar la tarea</string>
+
 
 
     <!-- FIN Mensajes de aplicación -->

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,13 @@ import com.app.taskjects.dialogos.RecuperarPasswordDialog;
 import com.app.taskjects.utils.Validador;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.net.UnknownHostException;
 
 public class FragmentEmpleadoLogin extends Fragment {
 
@@ -85,26 +91,35 @@ public class FragmentEmpleadoLogin extends Fragment {
                     .whereEqualTo("email",etEmailEmpleado.getText().toString())
                     .get()
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
-                            mAuth = FirebaseAuth.getInstance();
-                            //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-                            mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
-                                    intent.putExtra("uidEmpresa", uidEmpresa);
-                                    startActivity(intent);
-                                    getActivity().finish();
-                                } else {
-                                    Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
-                                    btnLoginEmpleado.setEnabled(true);
-                                }
-                            }).addOnFailureListener(e -> Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show());
+                        if (task.isSuccessful()) {
+                            if (!task.getResult().isEmpty()) {
+                                uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
+                                mAuth = FirebaseAuth.getInstance();
+                                //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+                                mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
+                                        intent.putExtra("uidEmpresa", uidEmpresa);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    } else {
+                                        Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
+                                        btnLoginEmpleado.setEnabled(true);
+                                    }
+                                }).addOnFailureListener(e -> {
+                                    if (e instanceof FirebaseAuthInvalidUserException)
+                                        Toast.makeText(getContext(), getString(R.string.cuentaNoExisteDeshabilitada), Toast.LENGTH_SHORT).show();
+                                    else if (e instanceof FirebaseAuthInvalidCredentialsException)
+                                        Toast.makeText(getContext(), getString(R.string.credencialesErroneas), Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                etEmailEmpleado.setError(getString(R.string.emailErroneo));
+                                btnLoginEmpleado.setEnabled(true);
+                            }
                         } else {
-                            etEmailEmpleado.setError(getString(R.string.emailErroneo));
-                            btnLoginEmpleado.setEnabled(true);
+                            Toast.makeText(view.getContext(),getString(R.string.error),Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    }).addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
             btnLoginEmpleado.setEnabled(true);
         }
@@ -122,10 +137,12 @@ public class FragmentEmpleadoLogin extends Fragment {
 
         //Contraseña
         if (TextUtils.isEmpty(etContraseniaEmpleado.getText().toString())) {
-            etContraseniaEmpleado.setError(getString(R.string.faltaPassword));
+            TextInputLayout textInputLayout = view.findViewById(R.id.outlinedTextFieldContraseniaEmpleado);
+            textInputLayout.setError(getString(R.string.faltaPassword));
             login = false;
         } else if (!Validador.validarPassword(etContraseniaEmpleado.getText().toString())) {
-            etContraseniaEmpleado.setError(getString(R.string.passwordErroneo));
+            TextInputLayout textInputLayout = view.findViewById(R.id.outlinedTextFieldContraseniaEmpleado);
+            textInputLayout.setError(getString(R.string.passwordErroneo));
             login = false;
         }
         return login;

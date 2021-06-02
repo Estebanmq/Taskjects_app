@@ -12,7 +12,7 @@
         android:id="@+id/tabLayoutEmpresaEmpleado"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/purple_500"
+        android:background="@color/blue_primario"
         app:tabIndicatorColor="@color/white"
         app:tabTextColor="@color/white">
 
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empleado"
-            android:icon="@drawable/ic_empleado_24dp" />
+            android:icon="@drawable/ic_empleado_white_24dp" />
 
         <!-- Tab Empresa -->
         <com.google.android.material.tabs.TabItem
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empresa"
-            android:icon="@drawable/ic_empresa_24dp"/>
+            android:icon="@drawable/ic_empresa_white_24dp"/>
 
     </com.google.android.material.tabs.TabLayout>
     <!-- Fin Layout de pestañas -->

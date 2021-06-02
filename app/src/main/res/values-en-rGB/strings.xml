@@ -10,6 +10,7 @@
     <string name="salir">Leave</string>
     <string name="empleado">Employee</string>
     <string name="empresa">Company</string>
+    <string name="perfil">Profile</string>
     <string name="email">Email</string>
     <string name="contrasenia">Password</string>
     <string name="fechaInicio">Start date</string>
@@ -100,6 +101,9 @@
         <item>Leisurely</item>
         <item>Finished</item>
     </string-array>
+
+    <string name="cuentaNoExisteDeshabilitada">This account does not exist or is disabled</string>
+    <string name="credencialesErroneas">The credentials are wrong</string>
 
     <string name="empleadoAsignado">Assigned employee</string>
     <string name="prioBaja">Low</string>

@@ -87,5 +87,7 @@ public class Tarea {
 
     public void setUidTarea(String uidTarea) { this.uidTarea = uidTarea; }
 
+    public String getEstado_uidEmpleado() { return this.estado.concat("_").concat(this.uidEmpleado); }
+
 
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".MainEmpresaActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainEmpresaActivity"
+    android:theme="@style/Theme.Taskjects">
 
     <!-- Inicio Layout de los proyectos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,6 @@ tools:context=".MainEmpresaActivity">
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
-        android:theme="@style/Theme.Taskjects"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         app:menu="@menu/bottom_app_bar"
         app:hideOnScroll="true" />

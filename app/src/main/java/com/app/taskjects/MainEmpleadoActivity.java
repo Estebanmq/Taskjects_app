@@ -60,7 +60,6 @@ public class MainEmpleadoActivity extends MenuToolbarActivity {
     Empleado empleado;
     String uidEmpresa;
 
-    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

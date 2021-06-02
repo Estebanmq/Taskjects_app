@@ -252,20 +252,20 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     }
 
     private boolean validarDatos() {
-        boolean creoProyecto = true;
+        boolean modificoProyecto = true;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
             etNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
-            creoProyecto = false;
+            modificoProyecto = false;
         }
 
         if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString())) {
             etDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
-            creoProyecto = false;
+            modificoProyecto = false;
         }
         if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString())) {
             atvJefeEmpleado.setError(getString(R.string.faltaJefeProyecto));
-            creoProyecto = false;
+            modificoProyecto = false;
         }
 
         //Comprueba si se han producido cambios...
@@ -274,7 +274,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                 mapJefes.get(atvJefeEmpleado.getText().toString()).equals(proyecto.getUidEmpleadoJefe())) {
             //Si no se han producido cambios se muestra un Toast y no permite continuar
             Toast.makeText(ModificarProyectoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
-            creoProyecto = false;
+            modificoProyecto = false;
         }
 
         if (!mapJefes.get(atvJefeEmpleado.getText().toString()).equals(proyecto.getUidEmpleadoJefe())) {
@@ -282,7 +282,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
             uidJefeProyectoAnterior = proyecto.getUidEmpleadoJefe();
         }
 
-        return creoProyecto;
+        return modificoProyecto;
     }
 
     private void actualizarEmpleadoJefe(String uidEmpleadoJefe, String uidProyecto, boolean quitar) {

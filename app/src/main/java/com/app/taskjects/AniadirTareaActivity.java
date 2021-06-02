@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
     ChipGroup cgPrioridades;
     TextInputEditText etTarea;
     AutoCompleteTextView atvEmpleados;
+    MaterialButton btnCrearTarea;
 
     //Variables para manejar la bbdd y sus datos
     DatabaseReference mDatabase;
@@ -57,6 +59,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
         cgPrioridades.setSelectionRequired(true);
         etTarea = findViewById(R.id.etTarea);
         atvEmpleados = findViewById(R.id.atvEmpleados);
+        btnCrearTarea = findViewById(R.id.btnCrearTarea);
 
         //Inicializo las variables de manejo de la BD
         db = FirebaseFirestore.getInstance();
@@ -129,6 +132,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
 
     //Metodo que crea tarea en la RTDB
     public void crearTarea(View view) {
+        btnCrearTarea.setEnabled(false);
         //Si todos los datos ok creo tarea
         if (verificarDatos()) {
             String prioridad = "0";
@@ -159,6 +163,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
                                     .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
+                                            btnCrearTarea.setEnabled(true);
                                             finish();
                                         }
                                     }).show();
@@ -176,7 +181,8 @@ public class AniadirTareaActivity extends AppCompatActivity {
                                     }).show();
                         }
                     });
-        }
+        } else
+            btnCrearTarea.setEnabled(true);
 
     }
 

@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:scrollbars="vertical">
+    android:scrollbars="vertical"
+    android:theme="@style/Theme.Taskjects">
 
     <!-- Definición de la Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -32,7 +33,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:theme="@style/Theme.MaterialComponents.Light"
             tools:context=".RegistroEmpresaActivity">
 
             <!-- Linear progress indicator -->

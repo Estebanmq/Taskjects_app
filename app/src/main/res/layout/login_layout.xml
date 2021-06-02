@@ -13,7 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue_primario"
-        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorColor="@color/tabIndicatorColor"
+        app:tabIndicatorHeight="5dp"
+        app:tabIndicatorAnimationMode="elastic"
         app:tabTextColor="@color/white">
 
         <!-- Tab Empleado -->

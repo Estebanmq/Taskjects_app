@@ -81,6 +81,7 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.perfil));
 
         //Captura el click de volver atrás
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".PerfilEmpresaActivity"
-    android:theme="@style/Theme.MaterialComponents.Light">
+    android:theme="@style/Theme.Taskjects">
 
     <!-- Definición de la Toolbar -->
     <com.google.android.material.appbar.AppBarLayout

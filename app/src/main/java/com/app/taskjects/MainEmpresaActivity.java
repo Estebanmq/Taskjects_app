@@ -23,6 +23,8 @@ import com.app.taskjects.adaptadores.AdaptadorProyectosRV;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.EventListener;
@@ -47,6 +49,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
     TextView tvInfoNoProyectos;
     RecyclerView rvProyectos;
     BottomAppBar bottomAppBar;
+    FloatingActionButton fabCrearProyecto;
 
     //Variables para gestionar el usuario de firebase
     FirebaseAuth mAuth;
@@ -75,6 +78,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
         tvInfoNoProyectos = findViewById(R.id.tvInfoNoProyectos);
         bottomAppBar = findViewById(R.id.bottomAppBar);
         setSupportActionBar(bottomAppBar);
+        fabCrearProyecto = findViewById(R.id.fabCrearProyecto);
 
         //Inicialización de variables de acceso a BD
         mAuth = FirebaseAuth.getInstance();
@@ -89,6 +93,12 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
         //Recupera todas las categorías de tipo Jefe de Proyecto (campo marca es true)
         recuperarCategoriasTipoJefe();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fabCrearProyecto.setEnabled(true);
     }
 
     private void recuperarCategoriasTipoJefe() {
@@ -218,6 +228,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
 
     //Metodo que muestra el fragment para añadir un proyecto
     public void aniadirProyecto(View view) {
+        fabCrearProyecto.setEnabled(false);
         Intent pantallaAniadirProyecto = new Intent(MainEmpresaActivity.this,AniadirProyectoActivity.class);
         pantallaAniadirProyecto.putExtra("uidEmpresa", uidEmpresa);
         startActivity(pantallaAniadirProyecto);

@@ -12,7 +12,7 @@
     <com.woxthebox.draglistview.BoardView
         android:id="@+id/dadTareas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginBottom="56dp"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -21,10 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
-        android:theme="@style/Theme.Taskjects"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         app:menu="@menu/bottom_app_bar"
-        app:hideOnScroll="true" />
+        app:hideOnScroll="false" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fABTareas"
         android:layout_width="wrap_content"

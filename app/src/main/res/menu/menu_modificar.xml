@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/itemEditar"
-        android:icon="@drawable/ic_edit_24dp"
-        android:iconTint="@color/white"
+        android:icon="@drawable/ic_edit_white_24dp"
         android:title="@string/editar"
         android:contentDescription="@string/editar"
         app:showAsAction="always" />
