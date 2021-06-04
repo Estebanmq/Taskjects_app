@@ -6,6 +6,10 @@
     <string name="cancelar">Cancel</string>
     <string name="plusEmpleado">+Employee</string>
     <string name="verPerfil">Show profile</string>
+    <string name="asignarEmpleados">Assign employee</string>
+    <string name="registroEmpleado">Employee register</string>
+    <string name="registroEmpresa">Company register</string>
+    <string name="modificarProyecto">Modify proyect</string>
     <string name="cerrarSesion">Sign off</string>
     <string name="salir">Leave</string>
     <string name="empleado">Employee</string>

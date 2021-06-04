@@ -165,7 +165,7 @@ public class MainEmpresaActivity extends MenuToolbarActivity {
                                 //Si task.isEmpty() devuelve true entonces no se han encontrado registros
                                 Toast.makeText(MainEmpresaActivity.this, getString(R.string.noSeEncuentranJefes), Toast.LENGTH_LONG).show();
                                 Log.d("taskjectsdebug","No se han encontrado empleados jefe");
-                                findViewById(R.id.floating_action_button).setVisibility(View.INVISIBLE);
+                                fabCrearProyecto.setVisibility(View.GONE);
                             }
                             //Una vez que ya he recuperados los Jefe de proyecto se cargan cargo los proyectos (Promesas de firebase)
                             cargarProyectos();

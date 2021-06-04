@@ -27,6 +27,7 @@ import com.app.taskjects.utils.Conversor;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -55,6 +56,10 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
     EditText etApellidos;
     EditText etEmail;
     AutoCompleteTextView categoriaEmpleado;
+    TextInputLayout outlinedTextFieldNifEmpleado;
+    TextInputLayout outlinedTextFieldNombre;
+    TextInputLayout outlinedTextFieldApellidos;
+    TextInputLayout outlinedTextFieldCategoria;
 
     TextView tvFechaHoraCreacion;
     TextView tvFechaHoraUltimoLogin;
@@ -92,12 +97,18 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         categoriaEmpleado = findViewById(R.id.etCategoriaEmpleado);
         categoriaEmpleado.setKeyListener(null);
 
+        outlinedTextFieldNifEmpleado = findViewById(R.id.outlinedTextFieldNifEmpleado);
+        outlinedTextFieldNombre = findViewById(R.id.outlinedTextFieldNombre);
+        outlinedTextFieldApellidos = findViewById(R.id.outlinedTextFieldApellidos);
+        outlinedTextFieldCategoria = findViewById(R.id.outlinedTextFieldCategoria);
+
         tvFechaHoraCreacion = findViewById(R.id.tvFechaHoraCreacion);
         tvFechaHoraUltimoLogin = findViewById(R.id.tvFechaHoraUltimoLogin);
 
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.perfil));
 
         //Captura el click de volver atrás
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -198,30 +209,38 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
     }
 
     private boolean validarDatos() {
-
+        outlinedTextFieldNombre.setErrorEnabled(false);
+        outlinedTextFieldApellidos.setErrorEnabled(false);
+        outlinedTextFieldCategoria.setErrorEnabled(false);
+        outlinedTextFieldNifEmpleado.setErrorEnabled(false);
         boolean resultado = true;
 
         if (TextUtils.isEmpty(etNif.getText().toString())) {
-            etNif.setError(getString(R.string.faltaNif));
+            outlinedTextFieldNifEmpleado.setErrorEnabled(true);
+            outlinedTextFieldNifEmpleado.setError(getString(R.string.faltaNif));
             resultado = false;
         } else if (!Validador.validarNif(etNif.getText().toString())) {
-            etNif.setError(getString(R.string.nifErroneo));
+            outlinedTextFieldNifEmpleado.setErrorEnabled(true);
+            outlinedTextFieldNifEmpleado.setError(getString(R.string.nifErroneo));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etNombre.getText().toString())) {
-            etNombre.setError(getString(R.string.faltaNombre));
+            outlinedTextFieldNombre.setErrorEnabled(true);
+            outlinedTextFieldNombre.setError(getString(R.string.faltaNombre));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etApellidos.getText().toString())) {
-            etApellidos.setError(getString(R.string.faltaApellidos));
+            outlinedTextFieldApellidos.setErrorEnabled(true);
+            outlinedTextFieldApellidos.setError(getString(R.string.faltaApellidos));
             resultado = false;
         }
 
-        categoriaEmpleado.setError(null);
+        outlinedTextFieldCategoria.setError(null);
         if (TextUtils.isEmpty(categoriaEmpleado.getText().toString())) {
-            categoriaEmpleado.setError(getString(R.string.faltaCategoria));
+            outlinedTextFieldCategoria.setErrorEnabled(true);
+            outlinedTextFieldCategoria.setError(getString(R.string.faltaCategoria));
             resultado = false;
         } else {
             uidCategoria = mapCategorias.get(categoriaEmpleado.getText().toString());

@@ -71,6 +71,7 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.asignarEmpleados));
 
         //Captura el click de volver atrás
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

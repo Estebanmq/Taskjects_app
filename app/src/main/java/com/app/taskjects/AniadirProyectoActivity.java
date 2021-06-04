@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,7 +45,9 @@ public class AniadirProyectoActivity extends AppCompatActivity {
     TextInputEditText etNombreProyecto;
     TextInputEditText etDescripcionProyecto;
     AutoCompleteTextView atvJefeEmpleado;
-
+    TextInputLayout outlinedTextFieldNombreProyecto;
+    TextInputLayout outlinedTextFieldDescripcionProyecto;
+    TextInputLayout outlinedTextFieldEmpleadosJefe;
     Map<String,String> mapJefes;
 
     //Variables para manejar la BBDD
@@ -60,6 +63,9 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         etNombreProyecto = findViewById(R.id.etNombreProyecto);
         etDescripcionProyecto = findViewById(R.id.etDescripcionProyecto);
         atvJefeEmpleado = findViewById(R.id.atvJefeEmpleado);
+        outlinedTextFieldNombreProyecto = findViewById(R.id.outlinedTextFieldNombreProyecto);
+        outlinedTextFieldDescripcionProyecto = findViewById(R.id.outlinedTextFieldDescripcionProyecto);
+        outlinedTextFieldEmpleadosJefe = findViewById(R.id.outlinedTextFieldEmpleadosJefe);
 
         //Inicializacion de la BD
         db = FirebaseFirestore.getInstance();
@@ -117,25 +123,32 @@ public class AniadirProyectoActivity extends AppCompatActivity {
     }
 
     public void crearProyecto(View view) {
+        outlinedTextFieldNombreProyecto.setErrorEnabled(false);
+        outlinedTextFieldDescripcionProyecto.setErrorEnabled(false);
+        outlinedTextFieldEmpleadosJefe.setErrorEnabled(false);
 
         findViewById(R.id.btnCrearProyecto).setEnabled(false);
         boolean creoProyecto = true;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
-            etNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
+            outlinedTextFieldNombreProyecto.setErrorEnabled(true);
+            outlinedTextFieldNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
             creoProyecto = false;
         }
 
         if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString())) {
-            etDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
+            outlinedTextFieldDescripcionProyecto.setErrorEnabled(true);
+            outlinedTextFieldDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
             creoProyecto = false;
         }
         if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString())) {
-            atvJefeEmpleado.setError(getString(R.string.faltaJefeProyecto));
+            outlinedTextFieldEmpleadosJefe.setErrorEnabled(true);
+            outlinedTextFieldEmpleadosJefe.setError(getString(R.string.faltaJefeProyecto));
             creoProyecto = false;
         }
 
         if (creoProyecto) {
+
             //Aqui almaceno los datos del proyecto
             Proyecto proyecto = new Proyecto(uidEmpresa, etNombreProyecto.getText().toString(), etDescripcionProyecto.getText().toString(), mapJefes.get(atvJefeEmpleado.getText().toString()));
             db.collection("proyectos")

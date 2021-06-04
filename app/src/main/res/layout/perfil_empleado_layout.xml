@@ -47,7 +47,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/outlinedTextFieldCifEmpleado"
+                android:id="@+id/outlinedTextFieldNifEmpleado"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.507"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCifEmpleado">
+                app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldNifEmpleado">
 
                 <!-- TextInput con el usuario -->
                 <com.google.android.material.textfield.TextInputEditText

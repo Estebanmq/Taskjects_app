@@ -21,6 +21,7 @@ import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.pojos.Proyecto;
 import com.app.taskjects.utils.Conversor;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +44,9 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     TextInputEditText etDescripcionProyecto;
     AutoCompleteTextView atvJefeEmpleado;
     TextView tvFechaHoraCreacion;
+    TextInputLayout outlinedTextFieldEmpleadosJefe;
+    TextInputLayout outlinedTextFieldNombreProyecto;
+    TextInputLayout outlinedTextFieldDescripcionProyecto;
 
     //Variables para manejar la BBDD
     FirebaseFirestore db;
@@ -71,6 +75,9 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         etDescripcionProyecto = findViewById(R.id.etDescripcionProyecto);
         atvJefeEmpleado = findViewById(R.id.atvJefeEmpleado);
         tvFechaHoraCreacion = findViewById(R.id.tvFechaHoraCreacion);
+        outlinedTextFieldEmpleadosJefe = findViewById(R.id.outlinedTextFieldEmpleadosJefe);
+        outlinedTextFieldNombreProyecto = findViewById(R.id.outlinedTextFieldNombreProyecto);
+        outlinedTextFieldDescripcionProyecto = findViewById(R.id.outlinedTextFieldDescripcionProyecto);
 
         //Recoge datos del intent
         uidProyecto = getIntent().getStringExtra("uidProyecto");
@@ -86,6 +93,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.modificarProyecto));
 
         //Captura el click de volver atrás
         toolbar.setNavigationOnClickListener(view -> {
@@ -143,7 +151,7 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     }
 
     private void cargarEmpleadosJefe() {
-
+        outlinedTextFieldEmpleadosJefe.setErrorEnabled(false);
         db.collection(EMPLEADOS)
                 .whereEqualTo("uidEmpresa",uidEmpresa)
                 .whereIn("categoria",categoriasJefe)
@@ -162,8 +170,9 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                             }
                             cargarDatosPantalla();
                         } else {
+                            outlinedTextFieldEmpleadosJefe.setErrorEnabled(true);
                             //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
-                            atvJefeEmpleado.setError(getString(R.string.noSeEncuentranJefes));
+                            outlinedTextFieldEmpleadosJefe.setError(getString(R.string.noSeEncuentranJefes));
                             Log.d("taskjectsdebug","No se han encontrado empleados jefe");
                         }
                     } else {
@@ -252,19 +261,26 @@ public class ModificarProyectoActivity extends AppCompatActivity {
     }
 
     private boolean validarDatos() {
+        outlinedTextFieldDescripcionProyecto.setErrorEnabled(false);
+        outlinedTextFieldEmpleadosJefe.setErrorEnabled(false);
+        outlinedTextFieldNombreProyecto.setErrorEnabled(false);
+
         boolean modificoProyecto = true;
 
         if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
-            etNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
+            outlinedTextFieldNombreProyecto.setErrorEnabled(true);
+            outlinedTextFieldNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
             modificoProyecto = false;
         }
 
         if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString())) {
-            etDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
+            outlinedTextFieldDescripcionProyecto.setErrorEnabled(true);
+            outlinedTextFieldDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
             modificoProyecto = false;
         }
         if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString())) {
-            atvJefeEmpleado.setError(getString(R.string.faltaJefeProyecto));
+            outlinedTextFieldEmpleadosJefe.setErrorEnabled(true);
+            outlinedTextFieldEmpleadosJefe.setError(getString(R.string.faltaJefeProyecto));
             modificoProyecto = false;
         }
 

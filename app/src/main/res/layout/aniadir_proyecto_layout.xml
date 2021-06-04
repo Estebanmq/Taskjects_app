@@ -63,7 +63,7 @@
                 android:id="@+id/outlinedTextFieldDescripcionProyecto"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="300dp"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
@@ -76,7 +76,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDescripcionProyecto"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="200dp"
                     android:gravity="top|start"
                     android:maxLength="254"
                     android:scrollbars="vertical"/>

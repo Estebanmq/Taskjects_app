@@ -60,6 +60,11 @@
     <string name="confirmCerrarSesion">¿Desea cerrar la sesión?</string>
     <string name="confirmSalidaAplicacion">¿Desea salir de la aplicación?</string>
 
+    <string name="asignarEmpleados">Asignar empleados</string>
+    <string name="registroEmpleado">Registro empleado</string>
+    <string name="registroEmpresa">Registro empresa</string>
+    <string name="modificarProyecto">Modificar proyecto</string>
+
     <string name="perfil">Perfil</string>
     <string name="creadoEl">Creado el</string>
     <string name="ultimoLoginEl">Último login el</string>
@@ -144,7 +149,6 @@
     <string name="alerta">Alerta!</string>
     <string name="noPuedesDesasignarTarea">No te puedes desasignar tareas!</string>
     <string name="modifTareaError">Se ha producido un error al modificar la tarea</string>
-
 
 
     <!-- FIN Mensajes de aplicación -->

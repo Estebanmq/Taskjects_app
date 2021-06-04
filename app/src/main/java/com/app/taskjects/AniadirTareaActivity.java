@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
     TextInputEditText etTarea;
     AutoCompleteTextView atvEmpleados;
     MaterialButton btnCrearTarea;
+    TextInputLayout outlinedTextFieldTarea;
 
     //Variables para manejar la bbdd y sus datos
     DatabaseReference mDatabase;
@@ -60,6 +62,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
         etTarea = findViewById(R.id.etTarea);
         atvEmpleados = findViewById(R.id.atvEmpleados);
         btnCrearTarea = findViewById(R.id.btnCrearTarea);
+        outlinedTextFieldTarea = findViewById(R.id.outlinedTextFieldTarea);
 
         //Inicializo las variables de manejo de la BD
         db = FirebaseFirestore.getInstance();
@@ -73,7 +76,7 @@ public class AniadirTareaActivity extends AppCompatActivity {
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle(getString(R.string.crearTarea));
         //Captura el click de volver atrás
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,8 +126,10 @@ public class AniadirTareaActivity extends AppCompatActivity {
 
     //Metodo que verifica el formulario de la tarea
     private boolean verificarDatos() {
+        outlinedTextFieldTarea.setErrorEnabled(false);
         if (etTarea.getText().toString().isEmpty()) {
-            etTarea.setError(getString(R.string.faltaTarea));
+            outlinedTextFieldTarea.setErrorEnabled(true);
+            outlinedTextFieldTarea.setError(getString(R.string.faltaTarea));
             return false;
         }
         return true;

@@ -82,6 +82,7 @@ public class FragmentEmpresaLogin extends Fragment {
     }
 
     private void loginEmpresa() {
+        outlinedTextFieldEmailEmpresa.setErrorEnabled(false);
         btnLoginEmpresa.setEnabled(false);
         if (verificarDatos()) {
             db.collection(EMPRESAS)
@@ -108,7 +109,8 @@ public class FragmentEmpresaLogin extends Fragment {
                                         Toast.makeText(getContext(), getString(R.string.credencialesErroneas), Toast.LENGTH_SHORT).show();
                                 });
                             } else {
-                                etEmailEmpresa.setError(getString(R.string.emailErroneo));
+                                outlinedTextFieldEmailEmpresa.setErrorEnabled(true);
+                                outlinedTextFieldEmailEmpresa.setError(getString(R.string.emailErroneo));
                                 btnLoginEmpresa.setEnabled(true);
                             }
                         } else {
@@ -123,26 +125,31 @@ public class FragmentEmpresaLogin extends Fragment {
 
 
     private boolean verificarDatos() {
-        //Todo: optimizar verificar datos
         boolean login = true;
         //Verifico todos los campos
         //Email
+        outlinedTextFieldEmailEmpresa.setErrorEnabled(true);
+        outlinedTextFieldContraseniaEmpresa.setErrorEnabled(true);
         if (TextUtils.isEmpty(etEmailEmpresa.getText().toString())) {
-            etEmailEmpresa.setError(getString(R.string.faltaEmail));
+            outlinedTextFieldEmailEmpresa.setError(getString(R.string.faltaEmail));
             login = false;
         } else if (!Validador.validarEmail(etEmailEmpresa.getText().toString())) {
-            etEmailEmpresa.setError(getString(R.string.emailErroneo));
+            outlinedTextFieldEmailEmpresa.setError(getString(R.string.emailErroneo));
             login = false;
+        } else {
+            outlinedTextFieldEmailEmpresa.setError(null);
+            outlinedTextFieldEmailEmpresa.setErrorEnabled(false);
         }
         //Contraseña
         if (TextUtils.isEmpty(etContraseniaEmpresa.getText().toString())) {
-            TextInputLayout textInputLayout = view.findViewById(R.id.outlinedTextFieldContraseniaEmpresa);
-            textInputLayout.setError(getString(R.string.faltaPassword));
+            outlinedTextFieldContraseniaEmpresa.setError(getString(R.string.faltaPassword));
             login = false;
         } else if (!Validador.validarPassword(etContraseniaEmpresa.getText().toString())) {
-            TextInputLayout textInputLayout = view.findViewById(R.id.outlinedTextFieldContraseniaEmpresa);
-            textInputLayout.setError(getString(R.string.passwordErroneo));
+            outlinedTextFieldContraseniaEmpresa.setError(getString(R.string.passwordErroneo));
             login = false;
+        } else {
+            outlinedTextFieldContraseniaEmpresa.setError(null);
+            outlinedTextFieldContraseniaEmpresa.setErrorEnabled(false);
         }
         return login;
     }

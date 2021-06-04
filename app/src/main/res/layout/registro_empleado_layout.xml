@@ -48,7 +48,7 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/outlinedTextFieldCifEmpleado"
+                    android:id="@+id/outlinedTextFieldNifEmpleado"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.507"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldCifEmpleado">
+                    app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldNifEmpleado">
 
                     <!-- TextInput con el usuario -->
                     <com.google.android.material.textfield.TextInputEditText
@@ -91,6 +91,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:maxLength="64"
+                        android:inputType="text"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,6 +115,7 @@
                         android:id="@+id/etApellidosEmpleado"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="text"
                         android:maxLength="64"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -127,11 +129,11 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:hint="@string/emailEmpleado"
+                    app:startIconDrawable="@drawable/ic_email_24dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.507"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldApellidos"
-                    app:startIconDrawable="@drawable/ic_email_24dp">
+                    app:layout_constraintTop_toBottomOf="@+id/outlinedTextFieldApellidos">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEmailEmpleado"

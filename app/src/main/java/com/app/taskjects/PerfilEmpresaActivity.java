@@ -25,6 +25,7 @@ import com.app.taskjects.utils.Conversor;
 import com.app.taskjects.utils.Validador;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,6 +51,9 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
     EditText etNombre;
     EditText etDireccion;
     EditText etEmail;
+    TextInputLayout outlinedTextFieldCif;
+    TextInputLayout outlinedTextFieldDireccion;
+    TextInputLayout outlinedTextFieldNombre;
 
     TextView tvFechaHoraCreacion;
     TextView tvFechaHoraUltimoLogin;
@@ -74,6 +78,9 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
         etNombre = findViewById(R.id.etNombreEmpleado);
         etDireccion = findViewById(R.id.etDireccion);
         etEmail = findViewById(R.id.etEmail);
+        outlinedTextFieldCif = findViewById(R.id.outlinedTextFieldCif);
+        outlinedTextFieldDireccion = findViewById(R.id.outlinedTextFieldDireccion);
+        outlinedTextFieldNombre = findViewById(R.id.outlinedTextFieldNombre);
 
         tvFechaHoraCreacion = findViewById(R.id.tvFechaHoraCreacion);
         tvFechaHoraUltimoLogin = findViewById(R.id.tvFechaHoraUltimoLogin);
@@ -151,24 +158,31 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
     }
 
     private boolean validarDatos() {
+        outlinedTextFieldCif.setErrorEnabled(false);
+        outlinedTextFieldNombre.setErrorEnabled(false);
+        outlinedTextFieldDireccion.setErrorEnabled(false);
 
         boolean resultado = true;
 
         if (TextUtils.isEmpty(etCif.getText().toString())) {
-            etCif.setError(getString(R.string.faltaCif));
+            outlinedTextFieldCif.setErrorEnabled(true);
+            outlinedTextFieldCif.setError(getString(R.string.faltaCif));
             resultado = false;
         } else if (!Validador.validarCif(etCif.getText().toString())) {
-            etCif.setError(getString(R.string.cifErroneo));
+            outlinedTextFieldCif.setErrorEnabled(true);
+            outlinedTextFieldCif.setError(getString(R.string.cifErroneo));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etDireccion.getText().toString())) {
-            etDireccion.setError(getString(R.string.faltaDireccion));
+            outlinedTextFieldDireccion.setErrorEnabled(true);
+            outlinedTextFieldDireccion.setError(getString(R.string.faltaDireccion));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etNombre.getText().toString())) {
-            etNombre.setError(getString(R.string.faltaNombre));
+            outlinedTextFieldNombre.setErrorEnabled(true);
+            outlinedTextFieldNombre.setError(getString(R.string.faltaNombre));
             resultado = false;
         }
 

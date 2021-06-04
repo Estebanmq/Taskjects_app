@@ -30,6 +30,8 @@ public class FragmentEmpleadoLogin extends Fragment {
     //Inicializacion componentes
     TextInputEditText etEmailEmpleado;
     TextInputEditText etContraseniaEmpleado;
+    TextInputLayout outlinedTextFieldEmailEmpleado;
+    TextInputLayout outlinedTextFieldContraseniaEmpleado;
     MaterialButton btnLoginEmpleado;
     TextView textViewRecuperarContrasenia;
     TextView textViewRegistro;
@@ -55,6 +57,8 @@ public class FragmentEmpleadoLogin extends Fragment {
         textViewRegistro = view.findViewById(R.id.textViewRegistro);
         etEmailEmpleado = view.findViewById(R.id.etEmailEmpleado);
         etContraseniaEmpleado = view.findViewById(R.id.etContraseniaEmpleado);
+        outlinedTextFieldEmailEmpleado = view.findViewById(R.id.outlinedTextFieldEmailEmpleado);
+        outlinedTextFieldContraseniaEmpleado = view.findViewById(R.id.outlinedTextFieldContraseniaEmpleado);
 
         btnLoginEmpleado = view.findViewById(R.id.btnLoginEmpleado);
         db = FirebaseFirestore.getInstance();
@@ -85,6 +89,7 @@ public class FragmentEmpleadoLogin extends Fragment {
     }
 
     private void loginEmpleado() {
+        outlinedTextFieldEmailEmpleado.setErrorEnabled(false);
         btnLoginEmpleado.setEnabled(false);
         if (verificarDatos()) {
             db.collection("empleados")
@@ -95,7 +100,6 @@ public class FragmentEmpleadoLogin extends Fragment {
                             if (!task.getResult().isEmpty()) {
                                 uidEmpresa = task.getResult().getDocuments().get(0).getString("uidEmpresa");
                                 mAuth = FirebaseAuth.getInstance();
-                                //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
                                 mAuth.signInWithEmailAndPassword(etEmailEmpleado.getText().toString(), etContraseniaEmpleado.getText().toString()).addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         Intent intent = new Intent(view.getContext(), MainEmpleadoActivity.class);
@@ -113,7 +117,8 @@ public class FragmentEmpleadoLogin extends Fragment {
                                         Toast.makeText(getContext(), getString(R.string.credencialesErroneas), Toast.LENGTH_SHORT).show();
                                 });
                             } else {
-                                etEmailEmpleado.setError(getString(R.string.emailErroneo));
+                                outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
+                                outlinedTextFieldEmailEmpleado.setError(getString(R.string.emailErroneo));
                                 btnLoginEmpleado.setEnabled(true);
                             }
                         } else {
@@ -126,24 +131,30 @@ public class FragmentEmpleadoLogin extends Fragment {
     }
 
     private boolean verificarDatos() {
+        outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
+        outlinedTextFieldContraseniaEmpleado.setErrorEnabled(true);
         boolean login = true;
         if (TextUtils.isEmpty(etEmailEmpleado.getText().toString())) {
-            etEmailEmpleado.setError(getString(R.string.faltaEmail));
+            outlinedTextFieldEmailEmpleado.setError(getString(R.string.faltaEmail));
             login = false;
         } else if (!Validador.validarEmail(etEmailEmpleado.getText().toString())) {
-            etEmailEmpleado.setError(getString(R.string.emailErroneo));
+            outlinedTextFieldEmailEmpleado.setError(getString(R.string.emailErroneo));
             login = false;
+        } else {
+            outlinedTextFieldEmailEmpleado.setError(null);
+            outlinedTextFieldEmailEmpleado.setErrorEnabled(false);
         }
 
         //Contraseña
         if (TextUtils.isEmpty(etContraseniaEmpleado.getText().toString())) {
-            TextInputLayout textInputLayout = view.findViewById(R.id.outlinedTextFieldContraseniaEmpleado);
-            textInputLayout.setError(getString(R.string.faltaPassword));
+            outlinedTextFieldContraseniaEmpleado.setError(getString(R.string.faltaPassword));
             login = false;
         } else if (!Validador.validarPassword(etContraseniaEmpleado.getText().toString())) {
-            TextInputLayout textInputLayout = view.findViewById(R.id.outlinedTextFieldContraseniaEmpleado);
-            textInputLayout.setError(getString(R.string.passwordErroneo));
+            outlinedTextFieldContraseniaEmpleado.setError(getString(R.string.passwordErroneo));
             login = false;
+        } else {
+            outlinedTextFieldContraseniaEmpleado.setError(null);
+            outlinedTextFieldContraseniaEmpleado.setErrorEnabled(false);
         }
         return login;
     }

@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -37,6 +38,7 @@ public class RecuperarPasswordDialog extends DialogFragment {
     FirebaseAuth mAuth;
 
     EditText etEmail;
+    TextInputLayout outlinedTextFieldEmail;
 
     public RecuperarPasswordDialog() {
         // Required empty public constructor
@@ -64,6 +66,7 @@ public class RecuperarPasswordDialog extends DialogFragment {
         builder.setView(v);
 
         etEmail = v.findViewById(R.id.etEmail);
+        outlinedTextFieldEmail = v.findViewById(R.id.outlinedTextFieldEmail);
 
         final AlertDialog dialogo =  builder.create();
         dialogo.setOnShowListener(new DialogInterface.OnShowListener(){
@@ -95,13 +98,16 @@ public class RecuperarPasswordDialog extends DialogFragment {
     }
 
     private boolean recuperarPassword() {
-
+        outlinedTextFieldEmail.setErrorEnabled(false);
         if (TextUtils.isEmpty(etEmail.getText().toString())) {
             Log.d("taskjectsdebug", "asigna el error");
-            etEmail.setError(getString(R.string.faltaEmail));
+            outlinedTextFieldEmail.setErrorEnabled(true);
+            outlinedTextFieldEmail.setError(getString(R.string.faltaEmail));
         } else if (!Validador.validarEmail(etEmail.getText().toString())) {
-            etEmail.setError(getString(R.string.emailErroneo));
+            outlinedTextFieldEmail.setErrorEnabled(true);
+            outlinedTextFieldEmail.setError(getString(R.string.emailErroneo));
         } else {
+            outlinedTextFieldEmail.setError(null);
             Log.d("taskjectsdebug", "entra en recuperarContraseña");
             mAuth.sendPasswordResetEmail(etEmail.getText().toString())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -115,7 +121,8 @@ public class RecuperarPasswordDialog extends DialogFragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            etEmail.setError(getString(R.string.emailErroneo));
+                            outlinedTextFieldEmail.setErrorEnabled(true);
+                            outlinedTextFieldEmail.setError(getString(R.string.emailErroneo));
                         }
                     });
         }

@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -52,6 +53,11 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     EditText etEmail;
     EditText etPassword;
 
+    TextInputLayout outlinedTextFieldCif;
+    TextInputLayout outlinedTextFieldNombre;
+    TextInputLayout outlinedTextFieldEmail;
+    TextInputLayout outlinedTextFieldPassword;
+
     Button btRegistrar;
     LinearProgressIndicator lineaProgreso;
 
@@ -69,12 +75,18 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPasswordEmpleado);
 
+        outlinedTextFieldCif = findViewById(R.id.outlinedTextFieldCif);
+        outlinedTextFieldNombre = findViewById(R.id.outlinedTextFieldNombre);
+        outlinedTextFieldEmail = findViewById(R.id.outlinedTextFieldEmail);
+        outlinedTextFieldPassword = findViewById(R.id.outlinedTextFieldPassword);
+
         btRegistrar = findViewById(R.id.btRegistrar);
         lineaProgreso = findViewById(R.id.lineaProgreso);
 
         //Inicializo la toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.registroEmpresa));
 
         //Captura el click de volver atrás
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -99,36 +111,46 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     }
 
     private boolean validarDatos() {
-
+        outlinedTextFieldCif.setErrorEnabled(false);
+        outlinedTextFieldEmail.setErrorEnabled(false);
+        outlinedTextFieldNombre.setErrorEnabled(false);
+        outlinedTextFieldPassword.setErrorEnabled(false);
         boolean resultado = true;
 
         Log.d("taskjectsdebug", "entra en validar datos");
         if (TextUtils.isEmpty(etCif.getText().toString())) {
-            etCif.setError(getString(R.string.faltaCif));
+            outlinedTextFieldCif.setErrorEnabled(true);
+            outlinedTextFieldCif.setError(getString(R.string.faltaCif));
             resultado = false;
         } else if (!Validador.validarCif(etCif.getText().toString())) {
-            etCif.setError(getString(R.string.cifErroneo));
+            outlinedTextFieldCif.setErrorEnabled(true);
+            outlinedTextFieldCif.setError(getString(R.string.cifErroneo));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etNombre.getText().toString())) {
-            etNombre.setError(getString(R.string.faltaNombre));
+            outlinedTextFieldNombre.setErrorEnabled(true);
+            outlinedTextFieldNombre.setError(getString(R.string.faltaNombre));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etEmail.getText().toString())) {
-            etEmail.setError(getString(R.string.faltaEmail));
+            outlinedTextFieldEmail.setErrorEnabled(true);
+            outlinedTextFieldEmail.setError(getString(R.string.faltaEmail));
             resultado = false;
         } else if (!Validador.validarEmail(etEmail.getText().toString())) {
-            etEmail.setError(getString(R.string.emailErroneo));
+            outlinedTextFieldEmail.setErrorEnabled(true);
+            outlinedTextFieldEmail.setError(getString(R.string.emailErroneo));
             resultado = false;
         }
 
         if (TextUtils.isEmpty(etPassword.getText().toString())) {
-            etPassword.setError(getString(R.string.faltaPassword));
+            outlinedTextFieldPassword.setErrorEnabled(true);
+            outlinedTextFieldPassword.setError(getString(R.string.faltaPassword));
             resultado = false;
         } else if (!Validador.validarPassword(etPassword.getText().toString())) {
-            etPassword.setError(getString(R.string.passwordErroneo));
+            outlinedTextFieldPassword.setErrorEnabled(true);
+            outlinedTextFieldPassword.setError(getString(R.string.passwordErroneo));
             resultado = false;
         }
 
@@ -142,7 +164,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     }
 
     private void validarCifFirestore() {
-
+        outlinedTextFieldCif.setErrorEnabled(false);
         CollectionReference empresasRef = db.collection(EMPRESAS);
         Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase());
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -152,7 +174,8 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                     if (task.getResult().isEmpty()) {
                         darAltaAuth();
                     } else {
-                        etCif.setError(getString(R.string.cifYaExiste));
+                        outlinedTextFieldCif.setErrorEnabled(true);
+                        outlinedTextFieldCif.setError(getString(R.string.cifYaExiste));
                         btRegistrar.setEnabled(true);
                         lineaProgreso.setVisibility(View.INVISIBLE);
                     }
@@ -168,7 +191,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     }
 
     private void darAltaAuth() {
-
+        outlinedTextFieldEmail.setErrorEnabled(false);
         mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -180,10 +203,10 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                             btRegistrar.setEnabled(true);
                             lineaProgreso.setVisibility(View.INVISIBLE);
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                etEmail.setError(getString(R.string.emailYaExiste));
+                                outlinedTextFieldEmail.setErrorEnabled(true);
+                                outlinedTextFieldEmail.setError(getString(R.string.emailYaExiste));
                             } else {
                                 Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
-                                //Todo: dejar log para arreglar el problema
                             }
                         }
                     }
@@ -214,7 +237,6 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                         btRegistrar.setEnabled(true);
                         lineaProgreso.setVisibility(View.INVISIBLE);
                         Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
-                        //Todo: dejar log para arreglar el problema
                     }
                 });
 

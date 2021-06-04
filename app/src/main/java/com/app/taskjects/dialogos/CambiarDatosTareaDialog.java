@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.ChipGroup;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,6 +45,7 @@ public class CambiarDatosTareaDialog extends DialogFragment {
     //Componentes
     private TextView etNombreTarea;
     private ChipGroup cgPrioridad;
+    TextInputLayout outlinedTextFieldNombreTareaCDTarea;
 
     public CambiarDatosTareaDialog() {}
 
@@ -64,6 +66,7 @@ public class CambiarDatosTareaDialog extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_cambiar_datos_tarea, null);
         builder.setView(v);
 
+        outlinedTextFieldNombreTareaCDTarea = v.findViewById(R.id.outlinedTextFieldNombreTareaCDTarea);
         etNombreTarea = v.findViewById(R.id.etNombreTareaCDTarea);
         cgPrioridad = v.findViewById(R.id.chipGroupPrioridadesCDTarea);
 
@@ -146,6 +149,7 @@ public class CambiarDatosTareaDialog extends DialogFragment {
     //Validacion de datos de la modificacion de la tarea
     private boolean validarDatos() {
         boolean modificoTarea = true;
+        outlinedTextFieldNombreTareaCDTarea.setErrorEnabled(false);
 
         //Si no hay cambios lo notifico, si no, valido campo a campo
         if (this.etNombreTarea.getText().toString().equals(this.nombreTarea) &&
@@ -155,7 +159,8 @@ public class CambiarDatosTareaDialog extends DialogFragment {
         } else {
             //Si la tarea esta vacia no modifico, si no agrego al map la modificacion
             if (this.etNombreTarea.getText().toString().equals("")) {
-                this.etNombreTarea.setError(getString(R.string.faltaTarea));
+                outlinedTextFieldNombreTareaCDTarea.setErrorEnabled(true);
+                outlinedTextFieldNombreTareaCDTarea.setError(getString(R.string.faltaTarea));
                 modificoTarea = false;
             } else {
                 this.actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/tarea",this.etNombreTarea.getText().toString());
