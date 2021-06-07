@@ -75,7 +75,7 @@ public class PerfilEmpresaActivity extends AppCompatActivity {
 
         //Inicio componentes
         etCif = findViewById(R.id.etCifEmpresa);
-        etNombre = findViewById(R.id.etNombreEmpleado);
+        etNombre = findViewById(R.id.etNombreEmpresa);
         etDireccion = findViewById(R.id.etDireccion);
         etEmail = findViewById(R.id.etEmail);
         outlinedTextFieldCif = findViewById(R.id.outlinedTextFieldCif);

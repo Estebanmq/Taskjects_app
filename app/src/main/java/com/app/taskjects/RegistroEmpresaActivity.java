@@ -70,7 +70,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         etCif = findViewById(R.id.etCifEmpresa);
-        etNombre = findViewById(R.id.etNombreEmpleado);
+        etNombre = findViewById(R.id.etNombreEmpresa);
         etDireccion = findViewById(R.id.etDireccion);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPasswordEmpleado);

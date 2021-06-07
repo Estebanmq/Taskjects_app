@@ -1,8 +1,6 @@
 package com.app.taskjects.utils;
 
-import android.util.Patterns;
-
-import java.util.regex.Pattern;
+import androidx.core.util.PatternsCompat;
 
 public class Validador {
 
@@ -13,8 +11,7 @@ public class Validador {
     }
 
     public static boolean validarEmail(String email) {
-        Pattern pattern = Patterns.EMAIL_ADDRESS;
-        return pattern.matcher(email).matches();
+        return PatternsCompat.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public static boolean validarPassword(String password) { return password.matches("^[A-Za-z0-9$|@#!&*]{6,24}$"); }
