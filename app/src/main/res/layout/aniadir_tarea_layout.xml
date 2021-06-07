@@ -54,7 +54,7 @@
                     android:id="@+id/etTarea"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="60"
+                    android:maxLength="33"
                     android:singleLine="true"/>
             </com.google.android.material.textfield.TextInputLayout>
             <!-- Fin TextInputLayout del nombre del proyecto -->
