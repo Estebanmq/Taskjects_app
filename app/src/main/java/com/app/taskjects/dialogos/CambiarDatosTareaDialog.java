@@ -3,7 +3,6 @@ package com.app.taskjects.dialogos;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +18,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.app.taskjects.R;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.ChipGroup;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -90,41 +87,28 @@ public class CambiarDatosTareaDialog extends DialogFragment {
 
         final AlertDialog dialogo =  builder.create();
 
-        dialogo.setOnShowListener(new DialogInterface.OnShowListener(){
-            @Override
-            public void onShow(DialogInterface dialogInterface){
-                //Instancio el boton de Aceptar en el dialogo
-                Button button = dialogo.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //Si la validacion de datos es correcta actualizo los datos modificados en la base de datos
-                        if (validarDatos()) {
-                            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-                            //Aqui le paso el map con todas las modificaciones que tiene que hacer
-                            mDatabase.updateChildren(actualizaciones)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            //Si la tarea ha sido completada con exito cierro el dialogo y notifico del exito de la operacion, si no, notifico del fallo
-                                            if (task.isSuccessful()) {
-                                                dialogo.dismiss();
-                                                Toast.makeText(getContext(), getString(R.string.modifTareaCorrecta), Toast.LENGTH_SHORT).show();
-                                                Log.d("Tarea modificada correctamente","Modificacion correcta");
-                                            } else {
-                                                Log.d("Error al actualizar los datos","");
-                                                Toast.makeText(getContext(),getString(R.string.modifTareaError),Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+        dialogo.setOnShowListener(dialogInterface -> {
+            //Instancio el boton de Aceptar en el dialogo
+            Button button = dialogo.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view -> {
+                //Si la validacion de datos es correcta actualizo los datos modificados en la base de datos
+                if (validarDatos()) {
+                    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                    //Aqui le paso el map con todas las modificaciones que tiene que hacer
+                    mDatabase.updateChildren(actualizaciones)
+                            .addOnCompleteListener(task -> {
+                                //Si la tarea ha sido completada con exito cierro el dialogo y notifico del exito de la operacion, si no, notifico del fallo
+                                if (task.isSuccessful()) {
+                                    dialogo.dismiss();
+                                    Toast.makeText(getContext(), getString(R.string.modifTareaCorrecta), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.d("Error al actualizar los datos","");
+                                    Toast.makeText(getContext(),getString(R.string.modifTareaError),Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
-                        }
-                    }
-
-                });
-
-
-            }
+                }
+            });
         });
         return dialogo;
     }
@@ -152,18 +136,18 @@ public class CambiarDatosTareaDialog extends DialogFragment {
         outlinedTextFieldNombreTareaCDTarea.setErrorEnabled(false);
 
         //Si no hay cambios lo notifico, si no, valido campo a campo
-        if (this.etNombreTarea.getText().toString().equals(this.nombreTarea) &&
+        if (this.etNombreTarea.getText().toString().trim().equals(this.nombreTarea) &&
                 cgPrioridad.getCheckedChipId() == idPrioridadAnterior) {
             Toast.makeText(getContext(), getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
             modificoTarea = false;
         } else {
             //Si la tarea esta vacia no modifico, si no agrego al map la modificacion
-            if (this.etNombreTarea.getText().toString().equals("")) {
+            if (this.etNombreTarea.getText().toString().trim().equals("")) {
                 outlinedTextFieldNombreTareaCDTarea.setErrorEnabled(true);
                 outlinedTextFieldNombreTareaCDTarea.setError(getString(R.string.faltaTarea));
                 modificoTarea = false;
             } else {
-                this.actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/tarea",this.etNombreTarea.getText().toString());
+                this.actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/tarea",this.etNombreTarea.getText().toString().trim());
             }
 
             //Si el chip seleccionado es distinto al que tenia la tarea antes de modificarla agrego al map el cambio respectivo
@@ -183,6 +167,5 @@ public class CambiarDatosTareaDialog extends DialogFragment {
         }
         return modificoTarea;
     }
-
 
 }

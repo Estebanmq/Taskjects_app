@@ -1,11 +1,5 @@
 package com.app.taskjects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,24 +13,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.utils.Validador;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -115,12 +106,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.registroEmpleado));
 
         //Captura el click de volver atrás
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarDialogoSalida();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> mostrarDialogoSalida());
 
         cargarCategorias();
     }
@@ -128,18 +114,15 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
     private void cargarCategorias() {
 
         db.collection(CATEGORIAS).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                mapCategorias.put(document.getString("descripcion"), document.getId());
-                            }
-                            // Carga el dropmenu de categorías con los datos recuperados
-                            categoriaEmpleado.setAdapter(new ArrayAdapter<String>(RegistroEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<String>(mapCategorias.keySet())));
-                        } else {
-                            Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            mapCategorias.put(document.getString("descripcion"), document.getId());
                         }
+                        // Carga el dropmenu de categorías con los datos recuperados
+                        categoriaEmpleado.setAdapter(new ArrayAdapter<>(RegistroEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<>(mapCategorias.keySet())));
+                    } else {
+                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -167,53 +150,53 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
         outlinedTextFieldCif.setErrorEnabled(false);
         boolean resultado = true;
 
-        if (TextUtils.isEmpty(etNif.getText().toString())) {
+        if (TextUtils.isEmpty(etNif.getText().toString().trim())) {
             outlinedTextFieldNifEmpleado.setErrorEnabled(true);
             outlinedTextFieldNifEmpleado.setError(getString(R.string.faltaNif));
             resultado = false;
-        } else if (!Validador.validarNif(etNif.getText().toString())) {
+        } else if (!Validador.validarNif(etNif.getText().toString().trim())) {
             outlinedTextFieldNifEmpleado.setErrorEnabled(true);
             outlinedTextFieldNifEmpleado.setError(getString(R.string.nifErroneo));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etNombre.getText().toString())) {
+        if (TextUtils.isEmpty(etNombre.getText().toString().trim())) {
             outlinedTextFieldNombre.setErrorEnabled(true);
             outlinedTextFieldNombre.setError(getString(R.string.faltaNombre));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etApellidos.getText().toString())) {
+        if (TextUtils.isEmpty(etApellidos.getText().toString().trim())) {
             outlinedTextFieldApellidos.setErrorEnabled(true);
             outlinedTextFieldApellidos.setError(getString(R.string.faltaApellidos));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etEmail.getText().toString())) {
+        if (TextUtils.isEmpty(etEmail.getText().toString().trim())) {
             outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
             outlinedTextFieldEmailEmpleado.setError(getString(R.string.faltaEmail));
             resultado = false;
-        } else if (!Validador.validarEmail(etEmail.getText().toString())) {
+        } else if (!Validador.validarEmail(etEmail.getText().toString().trim())) {
             outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
             outlinedTextFieldEmailEmpleado.setError(getString(R.string.emailErroneo));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etPassword.getText().toString())) {
+        if (TextUtils.isEmpty(etPassword.getText().toString().trim())) {
             outlinedTextFieldPassword.setErrorEnabled(true);
             outlinedTextFieldPassword.setError(getString(R.string.faltaPassword));
             resultado = false;
-        } else if (!Validador.validarPassword(etPassword.getText().toString())) {
+        } else if (!Validador.validarPassword(etPassword.getText().toString().trim())) {
             outlinedTextFieldPassword.setErrorEnabled(true);
             outlinedTextFieldPassword.setError(getString(R.string.passwordErroneo));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etCif.getText().toString())) {
+        if (TextUtils.isEmpty(etCif.getText().toString().trim())) {
             outlinedTextFieldCif.setErrorEnabled(true);
             outlinedTextFieldCif.setError(getString(R.string.faltaCif));
             resultado = false;
-        } else if (!Validador.validarCif(etCif.getText().toString())) {
+        } else if (!Validador.validarCif(etCif.getText().toString().trim())) {
             outlinedTextFieldCif.setErrorEnabled(true);
             outlinedTextFieldCif.setError(getString(R.string.cifErroneo));
             resultado = false;
@@ -240,25 +223,23 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
     private void validarNifFirestore() {
         outlinedTextFieldNifEmpleado.setErrorEnabled(false);
         CollectionReference empleadosRef = db.collection(EMPLEADOS);
-        Query query = empleadosRef.whereEqualTo("nif", etNif.getText().toString().toUpperCase());
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().isEmpty()) {
-                        validarCifFirestore();
-                    } else {
-                        outlinedTextFieldNifEmpleado.setErrorEnabled(true);
-                        outlinedTextFieldNifEmpleado.setError(getString(R.string.nifYaExiste));
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                        btRegistrar.setEnabled(true);
-                    }
+        Query query = empleadosRef.whereEqualTo("nif", etNif.getText().toString().toUpperCase().trim());
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().isEmpty()) {
+                    validarCifFirestore();
                 } else {
-                    //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                    Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                    outlinedTextFieldNifEmpleado.setErrorEnabled(true);
+                    outlinedTextFieldNifEmpleado.setError(getString(R.string.nifYaExiste));
                     lineaProgreso.setVisibility(View.INVISIBLE);
                     btRegistrar.setEnabled(true);
                 }
+            } else {
+                Log.d("taskjectsdebug", "error en BD al validar NIF");
+                //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                lineaProgreso.setVisibility(View.INVISIBLE);
+                btRegistrar.setEnabled(true);
             }
         });
 
@@ -268,27 +249,24 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
     private void validarCifFirestore() {
         outlinedTextFieldCif.setErrorEnabled(false);
         CollectionReference empresasRef = db.collection(EMPRESAS);
-        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase());
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().isEmpty()) {
-                        outlinedTextFieldCif.setErrorEnabled(true);
-                        outlinedTextFieldCif.setError(getString(R.string.cifNoExiste));
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                        btRegistrar.setEnabled(true);
-                    } else {
-                        uidEmpresa = task.getResult().getDocuments().get(0).getId();
-                        Log.d("taskjectsdebug", "es correcto, sí está el cif. Recupera el uid de empresa: " + uidEmpresa);
-                        darAltaAuth();
-                    }
-                } else {
-                    //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                    Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                    btRegistrar.setEnabled(true);
+        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase().trim());
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().isEmpty()) {
+                    outlinedTextFieldCif.setErrorEnabled(true);
+                    outlinedTextFieldCif.setError(getString(R.string.cifNoExiste));
                     lineaProgreso.setVisibility(View.INVISIBLE);
+                    btRegistrar.setEnabled(true);
+                } else {
+                    uidEmpresa = task.getResult().getDocuments().get(0).getId();
+                    darAltaAuth();
                 }
+            } else {
+                Log.d("taskjectsdebug", "error en BD al validar CIF");
+                //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                btRegistrar.setEnabled(true);
+                lineaProgreso.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -296,54 +274,43 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
 
     private void darAltaAuth() {
         outlinedTextFieldEmailEmpleado.setErrorEnabled(false);
-        mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()) {
-                                    user = mAuth.getCurrentUser();
-                                    darAltaEmpleado();
-                                } else {
-                                    lineaProgreso.setVisibility(View.INVISIBLE);
-                                    btRegistrar.setEnabled(true);
-                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                        outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
-                                        outlinedTextFieldEmailEmpleado.setError(getString(R.string.emailYaExiste));
-                                    } else {
-                                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
-                                    }
-                                    Log.d("taskjectsdebug", "auth: error en task: " + task.getException());
-                                }
-                            }
+        mAuth.createUserWithEmailAndPassword(etEmail.getText().toString().trim(), etPassword.getText().toString().trim())
+                .addOnCompleteListener(this, task -> {
+                    if(task.isSuccessful()) {
+                        user = mAuth.getCurrentUser();
+                        darAltaEmpleado();
+                    } else {
+                        lineaProgreso.setVisibility(View.INVISIBLE);
+                        btRegistrar.setEnabled(true);
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
+                            outlinedTextFieldEmailEmpleado.setError(getString(R.string.emailYaExiste));
+                        } else {
+                            Log.d("taskjectsdebug", "auth: error en task: " + task.getException().getMessage());
+                            Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
                         }
+                    }
+                }
                 );
         }
 
 
     private void darAltaEmpleado() {
 
-        Empleado empleado = new Empleado(etNif.getText().toString().toUpperCase(), etNombre.getText().toString(), etApellidos.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), uidEmpresa, uidCategoria, user.getUid());
+        Empleado empleado = new Empleado(etNif.getText().toString().toUpperCase().trim(), etNombre.getText().toString().trim(), etApellidos.getText().toString().trim(), etEmail.getText().toString().trim(), etPassword.getText().toString().trim(), uidEmpresa, uidCategoria, user.getUid());
         db.collection(EMPLEADOS).add(empleado)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                        AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
-                        dialogo.setMessage(getString(R.string.altaEmpleadoDone)).setCancelable(false).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
-                    }
+                .addOnSuccessListener(documentReference -> {
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpleadoActivity.this);
+                    dialogo.setMessage(getString(R.string.altaEmpleadoDone))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.ok), (dialog, which) -> finish()).show();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        btRegistrar.setEnabled(true);
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                        Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroEmpleadoFallido), Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.d("taskjectsdebug", "error en BD al dar de alta el empleado: " + e.getMessage());
+                    btRegistrar.setEnabled(true);
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroEmpleadoFallido), Toast.LENGTH_SHORT).show();
                 });
     }
 

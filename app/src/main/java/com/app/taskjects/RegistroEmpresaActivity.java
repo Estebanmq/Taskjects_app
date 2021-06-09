@@ -1,40 +1,30 @@
 package com.app.taskjects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.app.taskjects.pojos.Empresa;
 import com.app.taskjects.utils.Validador;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 
 public class RegistroEmpresaActivity extends AppCompatActivity {
@@ -89,12 +79,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.registroEmpresa));
 
         //Captura el click de volver atrás
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarDialogoSalida();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> mostrarDialogoSalida());
     }
 
     public void registrar(View view) {
@@ -117,38 +102,37 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         outlinedTextFieldPassword.setErrorEnabled(false);
         boolean resultado = true;
 
-        Log.d("taskjectsdebug", "entra en validar datos");
-        if (TextUtils.isEmpty(etCif.getText().toString())) {
+        if (TextUtils.isEmpty(etCif.getText().toString().trim())) {
             outlinedTextFieldCif.setErrorEnabled(true);
             outlinedTextFieldCif.setError(getString(R.string.faltaCif));
             resultado = false;
-        } else if (!Validador.validarCif(etCif.getText().toString())) {
+        } else if (!Validador.validarCif(etCif.getText().toString().trim())) {
             outlinedTextFieldCif.setErrorEnabled(true);
             outlinedTextFieldCif.setError(getString(R.string.cifErroneo));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etNombre.getText().toString())) {
+        if (TextUtils.isEmpty(etNombre.getText().toString().trim())) {
             outlinedTextFieldNombre.setErrorEnabled(true);
             outlinedTextFieldNombre.setError(getString(R.string.faltaNombre));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etEmail.getText().toString())) {
+        if (TextUtils.isEmpty(etEmail.getText().toString().trim())) {
             outlinedTextFieldEmail.setErrorEnabled(true);
             outlinedTextFieldEmail.setError(getString(R.string.faltaEmail));
             resultado = false;
-        } else if (!Validador.validarEmail(etEmail.getText().toString())) {
+        } else if (!Validador.validarEmail(etEmail.getText().toString().trim())) {
             outlinedTextFieldEmail.setErrorEnabled(true);
             outlinedTextFieldEmail.setError(getString(R.string.emailErroneo));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etPassword.getText().toString())) {
+        if (TextUtils.isEmpty(etPassword.getText().toString().trim())) {
             outlinedTextFieldPassword.setErrorEnabled(true);
             outlinedTextFieldPassword.setError(getString(R.string.faltaPassword));
             resultado = false;
-        } else if (!Validador.validarPassword(etPassword.getText().toString())) {
+        } else if (!Validador.validarPassword(etPassword.getText().toString().trim())) {
             outlinedTextFieldPassword.setErrorEnabled(true);
             outlinedTextFieldPassword.setError(getString(R.string.passwordErroneo));
             resultado = false;
@@ -166,25 +150,23 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
     private void validarCifFirestore() {
         outlinedTextFieldCif.setErrorEnabled(false);
         CollectionReference empresasRef = db.collection(EMPRESAS);
-        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase());
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().isEmpty()) {
-                        darAltaAuth();
-                    } else {
-                        outlinedTextFieldCif.setErrorEnabled(true);
-                        outlinedTextFieldCif.setError(getString(R.string.cifYaExiste));
-                        btRegistrar.setEnabled(true);
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                    }
+        Query query = empresasRef.whereEqualTo("cif", etCif.getText().toString().toUpperCase().trim());
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().isEmpty()) {
+                    darAltaAuth();
                 } else {
-                    //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                    Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    outlinedTextFieldCif.setErrorEnabled(true);
+                    outlinedTextFieldCif.setError(getString(R.string.cifYaExiste));
                     btRegistrar.setEnabled(true);
+                    lineaProgreso.setVisibility(View.INVISIBLE);
                 }
+            } else {
+                Log.d("taskjectsdebug", "error en BD al validar el CIF ");
+                //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                lineaProgreso.setVisibility(View.INVISIBLE);
+                btRegistrar.setEnabled(true);
             }
         });
 
@@ -192,22 +174,20 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
     private void darAltaAuth() {
         outlinedTextFieldEmail.setErrorEnabled(false);
-        mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            user = mAuth.getCurrentUser();
-                            darAltaEmpresa();
+        mAuth.createUserWithEmailAndPassword(etEmail.getText().toString().trim(), etPassword.getText().toString().trim())
+                .addOnCompleteListener(this, task -> {
+                    if(task.isSuccessful()) {
+                        user = mAuth.getCurrentUser();
+                        darAltaEmpresa();
+                    } else {
+                        btRegistrar.setEnabled(true);
+                        lineaProgreso.setVisibility(View.INVISIBLE);
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            outlinedTextFieldEmail.setErrorEnabled(true);
+                            outlinedTextFieldEmail.setError(getString(R.string.emailYaExiste));
                         } else {
-                            btRegistrar.setEnabled(true);
-                            lineaProgreso.setVisibility(View.INVISIBLE);
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                outlinedTextFieldEmail.setErrorEnabled(true);
-                                outlinedTextFieldEmail.setError(getString(R.string.emailYaExiste));
-                            } else {
-                                Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
-                            }
+                            Log.d("taskjectsdebug", "error en BD al dar de alta en Auth: " + task.getException().getMessage());
+                            Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -216,31 +196,22 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
 
     private void darAltaEmpresa() {
 
-        Empresa empresa = new Empresa(etCif.getText().toString().toUpperCase(), etNombre.getText().toString(), etDireccion.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(), user.getUid());
+        Empresa empresa = new Empresa(etCif.getText().toString().toUpperCase().trim(), etNombre.getText().toString().trim(), etDireccion.getText().toString().trim(), etEmail.getText().toString().trim(), etPassword.getText().toString().trim(), user.getUid());
         db.collection(EMPRESAS).add(empresa)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                        AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpresaActivity.this);
-                        dialogo.setMessage(getString(R.string.altaEmpresaDone)).setCancelable(false).setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
-                    }
+                .addOnSuccessListener(documentReference -> {
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    AlertDialog.Builder dialogo = new AlertDialog.Builder(RegistroEmpresaActivity.this);
+                    dialogo.setMessage(getString(R.string.altaEmpresaDone))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.ok), (dialog, which) -> finish()).show();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        btRegistrar.setEnabled(true);
-                        lineaProgreso.setVisibility(View.INVISIBLE);
-                        Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.d("taskjectsdebug", "error en BD al dar de alta en Empresa: " + e.getMessage());
+                    btRegistrar.setEnabled(true);
+                    lineaProgreso.setVisibility(View.INVISIBLE);
+                    Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroEmpresaFallido), Toast.LENGTH_SHORT).show();
                 });
 
-        Log.d("taskjectsdebug", "sale de darAltaEmpresa");
     }
 
     @Override
@@ -257,6 +228,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -267,6 +239,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    */
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

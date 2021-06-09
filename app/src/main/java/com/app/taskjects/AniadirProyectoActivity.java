@@ -1,39 +1,27 @@
 package com.app.taskjects;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.pojos.Proyecto;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,42 +70,36 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.crearProyecto));
 
         //Captura el click de volver atrás
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarDialogoSalida();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> mostrarDialogoSalida());
 
         cargarEmpleadosJefe();
     }
 
     private void cargarEmpleadosJefe() {
         db.collection("empleados")
-                .whereEqualTo("uidEmpresa",uidEmpresa)
+                .whereEqualTo("uidEmpresa", uidEmpresa)
                 .whereEqualTo("categoria","1")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (!task.getResult().isEmpty()) {
-                                //Me recorro todos los datos que ha devuelto la query
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    //Por cada empleado jefe que encuentra lo añade al map
-                                    mapJefes.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
-                                }
-                                //Le añado un adaptador al listado que mostrara los empleados jefe
-                                atvJefeEmpleado.setAdapter(new ArrayAdapter<String>(AniadirProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
-                            } else {
-                                //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
-                                Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorGeneral), Toast.LENGTH_LONG).show();
-                                Log.d("AniadirProyectoActivity","No se han encontrado empleados jefe");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            //Me recorro todos los datos que ha devuelto la query
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                //Por cada empleado jefe que encuentra lo añade al map
+                                mapJefes.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
                             }
+                            //Le añado un adaptador al listado que mostrara los empleados jefe
+                            atvJefeEmpleado.setAdapter(new ArrayAdapter<>(AniadirProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
                         } else {
-                            //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
-                            Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
+                            Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorGeneral), Toast.LENGTH_LONG).show();
+                            Log.d("AniadirProyectoActivity","No se han encontrado empleados jefe");
+                            findViewById(R.id.btnCrearProyecto).setEnabled(false);
                         }
+                    } else {
+                        //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                        Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        findViewById(R.id.btnCrearProyecto).setEnabled(false);
                     }
                 });
     }
@@ -130,18 +112,18 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         findViewById(R.id.btnCrearProyecto).setEnabled(false);
         boolean creoProyecto = true;
 
-        if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
+        if (TextUtils.isEmpty(etNombreProyecto.getText().toString().trim())) {
             outlinedTextFieldNombreProyecto.setErrorEnabled(true);
             outlinedTextFieldNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
             creoProyecto = false;
         }
 
-        if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString())) {
+        if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString().trim())) {
             outlinedTextFieldDescripcionProyecto.setErrorEnabled(true);
             outlinedTextFieldDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
             creoProyecto = false;
         }
-        if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString())) {
+        if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString().trim())) {
             outlinedTextFieldEmpleadosJefe.setErrorEnabled(true);
             outlinedTextFieldEmpleadosJefe.setError(getString(R.string.faltaJefeProyecto));
             creoProyecto = false;
@@ -150,32 +132,14 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         if (creoProyecto) {
 
             //Aqui almaceno los datos del proyecto
-            Proyecto proyecto = new Proyecto(uidEmpresa, etNombreProyecto.getText().toString(), etDescripcionProyecto.getText().toString(), mapJefes.get(atvJefeEmpleado.getText().toString()));
+            Proyecto proyecto = new Proyecto(uidEmpresa, etNombreProyecto.getText().toString().trim(), etDescripcionProyecto.getText().toString().trim(), mapJefes.get(atvJefeEmpleado.getText().toString()));
             db.collection("proyectos")
                     .add(proyecto)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            actualizarEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()), documentReference.getId());
-
-                            Log.d("taskjectsdebug","Proyecto añadido correctamente");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            findViewById(R.id.btnCrearProyecto).setEnabled(true);
-
-                            AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(AniadirProyectoActivity.this);
-                            alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
-                                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Log.d("taskjectsdebug","Error al subir proyecto a bbdd");
-                                        }
-                                    }).show();
-                        }
+                    .addOnSuccessListener(documentReference -> actualizarEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()), documentReference.getId()))
+                    .addOnFailureListener(e -> {
+                        Log.d("taskjectsdebug","Error al subir proyecto a bbdd: " + e.getMessage());
+                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
+                        Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     });
         } else {
             findViewById(R.id.btnCrearProyecto).setEnabled(true);
@@ -188,44 +152,29 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         Log.d("taskjectsdebug","Actualiza los proyectos del empleado jefe: " + uidEmpleadoJefe);
         DocumentReference docRef = db.collection("empleados").document(uidEmpleadoJefe);
         docRef.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                .addOnSuccessListener(documentSnapshot -> {
 
-                        Empleado empleado = documentSnapshot.toObject(Empleado.class);
-                        empleado.getUidProyectos().add(uidProyecto);
-                        db.collection("empleados").document(uidEmpleadoJefe)
-                                .set(empleado)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
+                    Empleado empleado = documentSnapshot.toObject(Empleado.class);
+                    empleado.getUidProyectos().add(uidProyecto);
+                    db.collection("empleados").document(uidEmpleadoJefe)
+                            .set(empleado)
+                            .addOnSuccessListener(aVoid -> {
+                                findViewById(R.id.btnCrearProyecto).setEnabled(true);
 
-                                        AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(AniadirProyectoActivity.this);
-                                        alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
-                                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        finish();
-                                                    }
-                                                }).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
-
-                                        Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
-                                    }
-                                });
-                    }})
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        findViewById(R.id.btnCrearProyecto).setEnabled(true);
-                        Log.d("taskjectsdebug","Error al leer el empleado de la BD");
-                    }
+                                AlertDialog.Builder alertaCreacionProyectoCorrecta = new AlertDialog.Builder(AniadirProyectoActivity.this);
+                                alertaCreacionProyectoCorrecta.setMessage(getString(R.string.creacionProyectoCorrecta))
+                                        .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> finish()).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.d("taskjectsdebug","Error al actualizar el empleado en bbdd: " + e.getMessage());
+                                Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                                findViewById(R.id.btnCrearProyecto).setEnabled(true);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("taskjectsdebug","Error al leer el empleado de la BD: " + e.getMessage());
+                    Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                    findViewById(R.id.btnCrearProyecto).setEnabled(true);
                 });
     }
 
@@ -236,6 +185,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -246,6 +196,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    */
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

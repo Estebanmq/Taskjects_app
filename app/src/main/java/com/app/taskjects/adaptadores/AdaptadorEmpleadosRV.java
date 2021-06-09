@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.taskjects.R;
 import com.app.taskjects.pojos.Categoria;
 import com.app.taskjects.pojos.Empleado;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -71,28 +68,20 @@ public class AdaptadorEmpleadosRV extends RecyclerView.Adapter<AdaptadorEmpleado
         holder.cvTvCategoria.setText(mapCategorias.get(empleado.getCategoria()).getDescripcion());
         if (empleado.getUidProyectos().contains(uidProyecto)) {
             holder.cbIncluido.setChecked(true);
-            Log.d("taskjectsdebug", "uidEmpleadoJefe: " + uidJefeProyecto + " empleado.getUid(): " + empleado.getUid());
             if (empleado.getUid().equalsIgnoreCase(this.uidJefeProyecto)) {
-                Log.d("taskjectsdebug", "desactiva este checkBox");
                 holder.cbIncluido.setEnabled(false);
             }
         } else {
             holder.cbIncluido.setChecked(false);
         }
 
-        holder.cbIncluido.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d("taskjectsdebug", "clic en la posición: " + position);
-                if (isChecked) {
-                    Log.d("taskjectsdebug", "pasa a checkeado");
-                    listEmpleados.get(position).getUidProyectos().add(uidProyecto);
-                } else {
-                    Log.d("taskjectsdebug", "pasa a descheckeado");
-                    listEmpleados.get(position).getUidProyectos().remove(uidProyecto);
-                }
-                actualizarEmpleado(position);
+        holder.cbIncluido.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                listEmpleados.get(position).getUidProyectos().add(uidProyecto);
+            } else {
+                listEmpleados.get(position).getUidProyectos().remove(uidProyecto);
             }
+            actualizarEmpleado(position);
         });
     }
 
@@ -115,18 +104,11 @@ public class AdaptadorEmpleadosRV extends RecyclerView.Adapter<AdaptadorEmpleado
 
         db.collection(EMPLEADOS).document(listEmpleados.get(position).getUid())
                 .set(listEmpleados.get(position))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("taskjectsdebug", "DocumentSnapshot successfully written!");
-                    }
+                .addOnSuccessListener(aVoid -> {
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("taskjectsdebug", "Error writing document", e);
-                        Toast.makeText(context, context.getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.d("taskjectsdebug", "Error writing document: " + e.getMessage());
+                    Toast.makeText(context, context.getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                 });
     }
 }

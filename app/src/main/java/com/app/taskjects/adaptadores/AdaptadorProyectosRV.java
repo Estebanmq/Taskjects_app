@@ -63,21 +63,17 @@ public class AdaptadorProyectosRV extends RecyclerView.Adapter<AdaptadorProyecto
         holder.cvTvJefeEmpleado.setText(listProyectos.get(position).getNombreEmpleadoJefe());
         holder.cvTvUid.setText(listProyectos.get(position).getUid());
 
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent;
-                if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
-                    intent = new Intent(context, ModificarProyectoActivity.class);
-                } else {
-                    intent = new Intent(context, TareasProyectoActivity.class);
-                }
-                intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
-                intent.putExtra("uidEmpresa", listProyectos.get(position).getUidEmpresa());
-                intent.putExtra("uidJefeProyecto", listProyectos.get(position).getUidEmpleadoJefe());
-                context.startActivity(intent);
+        holder.parentLayout.setOnClickListener(v -> {
+            Intent intent;
+            if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
+                intent = new Intent(context, ModificarProyectoActivity.class);
+            } else {
+                intent = new Intent(context, TareasProyectoActivity.class);
             }
+            intent.putExtra("uidProyecto",listProyectos.get(position).getUid());
+            intent.putExtra("uidEmpresa", listProyectos.get(position).getUidEmpresa());
+            intent.putExtra("uidJefeProyecto", listProyectos.get(position).getUidEmpleadoJefe());
+            context.startActivity(intent);
         });
     }
 

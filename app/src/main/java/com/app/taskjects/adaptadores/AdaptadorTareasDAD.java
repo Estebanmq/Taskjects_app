@@ -1,23 +1,18 @@
 package com.app.taskjects.adaptadores;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
 import com.app.taskjects.R;
-import com.app.taskjects.TareasProyectoActivity;
 import com.app.taskjects.dialogos.CambiarDatosTareaDialog;
 import com.app.taskjects.pojos.Tarea;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.woxthebox.draglistview.DragItemAdapter;
 
@@ -61,19 +56,13 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
         String uidEmpleado = aux.getUidEmpleado();
 
         holder.tvTarea.setText(aux.getTarea());
-        //Log.d("AdaptadorTareas onBindViewHolder","Nombre de la tarea ->"+listTareasAux.get(position).second.getTarea());
         if (uidEmpleado.equals("noasignado"))
             holder.tvEmpleadoTarea.setText(R.string.sinAsignar);
         else {
             db.collection("empleados")
                     .document(uidEmpleado)
                     .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot snapshot) {
-                            holder.tvEmpleadoTarea.setText(snapshot.getString("nombre").concat(" " + snapshot.getString("apellidos")));
-                        }
-                    });
+                    .addOnSuccessListener(snapshot -> holder.tvEmpleadoTarea.setText(snapshot.getString("nombre").concat(" " + snapshot.getString("apellidos"))));
         }
 
         switch (aux.getPrioridad()) {
@@ -118,7 +107,6 @@ public class AdaptadorTareasDAD extends DragItemAdapter<Pair<Long, Tarea>,Adapta
             cambiarDatosTareaDialog.setDatosTarea(this.tvTarea.getText().toString(),this.tvUidProyectoUidTareaPrioridad.getText().toString());
             //Muestro el dialogo en el contexto TareasProyecto con el tag Cambiar datos de la tarea
             cambiarDatosTareaDialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "Cambiar datos de la tarea");
-
         }
 
         @Override

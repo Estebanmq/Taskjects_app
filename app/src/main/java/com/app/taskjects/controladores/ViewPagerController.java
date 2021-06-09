@@ -3,9 +3,6 @@ package com.app.taskjects.controladores;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.app.taskjects.FragmentEmpleadoLogin;
@@ -23,7 +20,6 @@ public class ViewPagerController extends FragmentStateAdapter {
         super(fm);
         this.numTabs = numTabs;
     }
-
 
     //Metodo que se encarga de asignar a cada pestaña del TabLayout su respectivo fragment
     @NonNull
