@@ -1,28 +1,19 @@
 package com.app.taskjects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
 import com.app.taskjects.adaptadores.AdaptadorEmpleadosRV;
 import com.app.taskjects.pojos.Categoria;
 import com.app.taskjects.pojos.Empleado;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +29,6 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
     RecyclerView rvEmpleados;
 
     //Variables para manejar la bbdd y sus datos
-    FirebaseAuth mAuth;
     FirebaseFirestore db;
 
     //Variables de control de la clase
@@ -74,12 +64,7 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.asignarEmpleados));
 
         //Captura el click de volver atrás
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
         recuperarCategorias();
     }
@@ -87,43 +72,36 @@ public class AsignarEmpleadosActivity extends AppCompatActivity {
     private void recuperarCategorias() {
 
         db.collection(CATEGORIAS).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                mapCategorias.put(document.getId(), document.toObject(Categoria.class));
-                            }
-                            recuperarEmpleados();
-                        } else {
-                            Toast.makeText(AsignarEmpleadosActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            mapCategorias.put(document.getId(), document.toObject(Categoria.class));
                         }
+                        recuperarEmpleados();
+                    } else {
+                        Log.d("taskjectsdebug", "error en BD al recuperar categorias");
+                        Toast.makeText(AsignarEmpleadosActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
     private void recuperarEmpleados() {
 
-        Log.d("taskjectsdebug", "entra a recuperar empleados");
         List<Empleado> listEmpleados = new ArrayList<>();
         db.collection(EMPLEADOS)
                 .whereEqualTo("uidEmpresa",uidEmpresa)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                        if (error != null || snapshot.isEmpty()) {
-                            Toast.makeText(AsignarEmpleadosActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        listEmpleados.clear();
-                        Log.d("taskjectsdebug", "lee empleados");
-                        for (QueryDocumentSnapshot documentSnapshot : snapshot) {
-                            Empleado empleado = documentSnapshot.toObject(Empleado.class);
-                            Log.d("taskjectsdebug", "carga empleado " + empleado.getNombre());
-                            listEmpleados.add(empleado);
-                        }
-                        rvEmpleados.setAdapter(new AdaptadorEmpleadosRV(listEmpleados, mapCategorias, uidProyecto, uidJefeProyecto));
+                .addSnapshotListener((snapshot, error) -> {
+                    if (error != null || snapshot==null || snapshot.isEmpty()) {
+                        Log.d("taskjectsdebug", "error al recuperar empleados");
+                        Toast.makeText(AsignarEmpleadosActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        return;
                     }
+                    listEmpleados.clear();
+                    for (QueryDocumentSnapshot documentSnapshot : snapshot) {
+                        Empleado empleado = documentSnapshot.toObject(Empleado.class);
+                        listEmpleados.add(empleado);
+                    }
+                    rvEmpleados.setAdapter(new AdaptadorEmpleadosRV(listEmpleados, mapCategorias, uidProyecto, uidJefeProyecto));
                 });
     }
 }

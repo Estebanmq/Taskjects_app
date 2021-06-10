@@ -29,6 +29,9 @@ import java.util.Map;
 
 public class AniadirProyectoActivity extends AppCompatActivity {
 
+    private final String PROYECTOS = "proyectos";
+    private final String EMPLEADOS = "empleados";
+
     //Componentes
     TextInputEditText etNombreProyecto;
     TextInputEditText etDescripcionProyecto;
@@ -76,7 +79,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
     }
 
     private void cargarEmpleadosJefe() {
-        db.collection("empleados")
+        db.collection(EMPLEADOS)
                 .whereEqualTo("uidEmpresa", uidEmpresa)
                 .whereEqualTo("categoria","1")
                 .get()
@@ -86,7 +89,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                             //Me recorro todos los datos que ha devuelto la query
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 //Por cada empleado jefe que encuentra lo añade al map
-                                mapJefes.put(documentSnapshot.getString("nombre").concat(" ".concat(documentSnapshot.getString("apellidos"))) , documentSnapshot.getId());
+                                mapJefes.put(documentSnapshot.getString("nombre").concat(" ").concat(documentSnapshot.getString("apellidos")) , documentSnapshot.getId());
                             }
                             //Le añado un adaptador al listado que mostrara los empleados jefe
                             atvJefeEmpleado.setAdapter(new ArrayAdapter<>(AniadirProyectoActivity.this,R.layout.lista_jefes_proyecto,new ArrayList<>(mapJefes.keySet())));
@@ -97,6 +100,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
                             findViewById(R.id.btnCrearProyecto).setEnabled(false);
                         }
                     } else {
+                        Log.d("AniadirProyectoActivity","error al acceder a BD para recuperar jefes de proyecto");
                         //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
                         Toast.makeText(AniadirProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                         findViewById(R.id.btnCrearProyecto).setEnabled(false);
@@ -133,7 +137,7 @@ public class AniadirProyectoActivity extends AppCompatActivity {
 
             //Aqui almaceno los datos del proyecto
             Proyecto proyecto = new Proyecto(uidEmpresa, etNombreProyecto.getText().toString().trim(), etDescripcionProyecto.getText().toString().trim(), mapJefes.get(atvJefeEmpleado.getText().toString()));
-            db.collection("proyectos")
+            db.collection(PROYECTOS)
                     .add(proyecto)
                     .addOnSuccessListener(documentReference -> actualizarEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()), documentReference.getId()))
                     .addOnFailureListener(e -> {
@@ -149,14 +153,13 @@ public class AniadirProyectoActivity extends AppCompatActivity {
 
     private void actualizarEmpleadoJefe(String uidEmpleadoJefe, String uidProyecto) {
 
-        Log.d("taskjectsdebug","Actualiza los proyectos del empleado jefe: " + uidEmpleadoJefe);
-        DocumentReference docRef = db.collection("empleados").document(uidEmpleadoJefe);
+        DocumentReference docRef = db.collection(EMPLEADOS).document(uidEmpleadoJefe);
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
 
                     Empleado empleado = documentSnapshot.toObject(Empleado.class);
                     empleado.getUidProyectos().add(uidProyecto);
-                    db.collection("empleados").document(uidEmpleadoJefe)
+                    db.collection(EMPLEADOS).document(uidEmpleadoJefe)
                             .set(empleado)
                             .addOnSuccessListener(aVoid -> {
                                 findViewById(R.id.btnCrearProyecto).setEnabled(true);

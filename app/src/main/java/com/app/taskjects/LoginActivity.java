@@ -1,16 +1,13 @@
 package com.app.taskjects;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.os.Bundle;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.taskjects.controladores.ViewPagerController;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 
 public class LoginActivity extends FragmentActivity {
 
@@ -21,8 +18,7 @@ public class LoginActivity extends FragmentActivity {
     TabItem tabItemEmpresa,tabItemEmpleado;
     ViewPager2 viewPager;
 
-
-    //Controlador / Adaptador para asignar a cada pestaña del TabLayout su propio fragment
+    //Controlador/Adaptador para asignar a cada pestaña del TabLayout su propio fragment
     ViewPagerController adaptadorViewPager;
 
     @Override
@@ -35,7 +31,6 @@ public class LoginActivity extends FragmentActivity {
         tabItemEmpleado = findViewById(R.id.tabItemEmpleado);
         tabItemEmpresa = findViewById(R.id.tabItemEmpresa);
         viewPager = findViewById(R.id.viewPager);
-
 
         //Llamada al metodo que se encarga de rellenar cada pestaña del TabLayout con su fragment asignado
         rellenarTabsTabLayout();

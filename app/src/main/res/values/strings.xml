@@ -60,7 +60,7 @@
     <string name="confirmCerrarSesion">¿Desea cerrar la sesión?</string>
     <string name="confirmSalidaAplicacion">¿Desea salir de la aplicación?</string>
 
-    <string name="asignarEmpleados">Asignar empleados</string>
+    <string name="asignarEmpleados">Asignación empleados</string>
     <string name="registroEmpleado">Registro empleado</string>
     <string name="registroEmpresa">Registro empresa</string>
     <string name="modificarProyecto">Modificar proyecto</string>

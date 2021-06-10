@@ -116,7 +116,6 @@ public class ModificarProyectoActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 document = task.getResult();
                 if (document.exists()) {
-                    Log.d("taskjectsdebug", "Encuentra el documento");
                     recuperarCategoriasTipoJefe();
                 } else {
                     Log.d("taskjectsdebug", "Error! no encuentra el documento");
@@ -140,11 +139,11 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             categoriasJefe.add(document.getId());
-                            Log.d("taskjectsdebug", "Recupera categoría Jefe: " + document.getId());
                         }
                         //Recupera los empleados que son Jefe de Proyecto
                         cargarEmpleadosJefe();
                     } else {
+                        Log.d("taskjectsdebug", "error en BD al recuperar categorias tipo jefe");
                         Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -159,7 +158,6 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (!task.getResult().isEmpty()) {
-                            Log.d("taskjectsdebug", "encuentra jefes de proyecto");
                             //Me recorro todos los datos que ha devuelto la query
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 //Por cada empleado jefe que encuentra lo añade al map
@@ -173,9 +171,9 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                             outlinedTextFieldEmpleadosJefe.setErrorEnabled(true);
                             //Si task.isEmpty() devuelve true entonces no se han encontrado registros, se lo indico al usuario
                             outlinedTextFieldEmpleadosJefe.setError(getString(R.string.noSeEncuentranJefes));
-                            Log.d("taskjectsdebug","No se han encontrado empleados jefe");
                         }
                     } else {
+                        Log.d("taskjectsdebug","error en BD al cargar empleados jefe");
                         //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
                         Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
@@ -227,15 +225,13 @@ public class ModificarProyectoActivity extends AppCompatActivity {
 
         if (validarDatos()) {
 
-            proyecto.setNombre(etNombreProyecto.getText().toString());
-            proyecto.setDescripcion(etDescripcionProyecto.getText().toString());
+            proyecto.setNombre(etNombreProyecto.getText().toString().trim());
+            proyecto.setDescripcion(etDescripcionProyecto.getText().toString().trim());
             proyecto.setUidEmpleadoJefe(mapJefes.get(atvJefeEmpleado.getText().toString()));
 
             DocumentReference proyectoUpdate = db.collection(PROYECTOS).document(uidProyecto);
             proyectoUpdate.set(proyecto).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Log.d("taskjectsdebug","Proyecto modificado correctamente");
-
                     if (cambioJefe) {
                         actualizarEmpleadoJefe(uidJefeProyectoAnterior, proyecto.getUid(), true);
 
@@ -247,12 +243,9 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(ModificarProyectoActivity.this);
-                    alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
-                            .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> {
-                                findViewById(R.id.btnModifProyecto).setEnabled(true);
-                                Log.d("taskjectsdebug","Error al subir proyecto a bbdd");
-                            }).show();
+                    Log.d("taskjectsdebug","Error al actualizar el proyecto en bbdd");
+                    Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                    findViewById(R.id.btnCrearProyecto).setEnabled(true);
                 }
             });
         } else {
@@ -267,26 +260,26 @@ public class ModificarProyectoActivity extends AppCompatActivity {
 
         boolean modificoProyecto = true;
 
-        if (TextUtils.isEmpty(etNombreProyecto.getText().toString())) {
+        if (TextUtils.isEmpty(etNombreProyecto.getText().toString().trim())) {
             outlinedTextFieldNombreProyecto.setErrorEnabled(true);
             outlinedTextFieldNombreProyecto.setError(getString(R.string.faltaNombreProyecto));
             modificoProyecto = false;
         }
 
-        if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString())) {
+        if (TextUtils.isEmpty(etDescripcionProyecto.getText().toString().trim())) {
             outlinedTextFieldDescripcionProyecto.setErrorEnabled(true);
             outlinedTextFieldDescripcionProyecto.setError(getString(R.string.faltaDescripcion));
             modificoProyecto = false;
         }
-        if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString())) {
+        if (TextUtils.isEmpty(atvJefeEmpleado.getText().toString().trim())) {
             outlinedTextFieldEmpleadosJefe.setErrorEnabled(true);
             outlinedTextFieldEmpleadosJefe.setError(getString(R.string.faltaJefeProyecto));
             modificoProyecto = false;
         }
 
         //Comprueba si se han producido cambios...
-        if (etNombreProyecto.getText().toString().equals(proyecto.getNombre()) &&
-                etDescripcionProyecto.getText().toString().equals(proyecto.getDescripcion()) &&
+        if (etNombreProyecto.getText().toString().trim().equals(proyecto.getNombre()) &&
+                etDescripcionProyecto.getText().toString().trim().equals(proyecto.getDescripcion()) &&
                 mapJefes.get(atvJefeEmpleado.getText().toString()).equals(proyecto.getUidEmpleadoJefe())) {
             //Si no se han producido cambios se muestra un Toast y no permite continuar
             Toast.makeText(ModificarProyectoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
@@ -303,7 +296,6 @@ public class ModificarProyectoActivity extends AppCompatActivity {
 
     private void actualizarEmpleadoJefe(String uidEmpleadoJefe, String uidProyecto, boolean quitar) {
 
-        Log.d("taskjectsdebug","Actualiza los proyectos del empleado jefe: " + uidEmpleadoJefe);
         DocumentReference docRef = db.collection(EMPLEADOS).document(uidEmpleadoJefe);
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -323,13 +315,15 @@ public class ModificarProyectoActivity extends AppCompatActivity {
                                 }
                             })
                             .addOnFailureListener(e -> {
+                                Log.d("taskjectsdebug","Error en BD al actualizar el empleado");
                                 findViewById(R.id.btnModifProyecto).setEnabled(true);
-                                Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
+                                Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                             });
                 })
                 .addOnFailureListener(e -> {
+                    Log.d("taskjectsdebug","error en BD al actualizar el empleado jefe");
                     findViewById(R.id.btnModifProyecto).setEnabled(true);
-                    Log.d("taskjectsdebug","Error al subir el empleado a bbdd");
+                    Toast.makeText(ModificarProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                 });
     }
 

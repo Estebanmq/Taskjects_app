@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,6 @@ public class FragmentEmpresaLogin extends Fragment {
             startActivity(new Intent(view.getContext(), RegistroEmpresaActivity.class));
         });
 
-
         //Le agrego un Listener al btn para llamar a loginEmpresa
         btnLoginEmpresa.setOnClickListener(view -> loginEmpresa());
 
@@ -86,43 +86,47 @@ public class FragmentEmpresaLogin extends Fragment {
         btnLoginEmpresa.setEnabled(false);
         if (verificarDatos()) {
             db.collection(EMPRESAS)
-                    .whereEqualTo("email",etEmailEmpresa.getText().toString())
+                    .whereEqualTo("email", etEmailEmpresa.getText().toString().trim())
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             if (!task.getResult().isEmpty()) {
                                 mAuth = FirebaseAuth.getInstance();
-                                //Todo: java.lang.RuntimeException: There was an error while initializing the connection to the GoogleApi: java.lang.IllegalStateException: A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-                                mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString(), etContraseniaEmpresa.getText().toString()).addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
-                                        getActivity().finish();
-                                    } else {
-                                        Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
-                                        btnLoginEmpresa.setEnabled(true);
-                                    }
-
-                                }).addOnFailureListener(e -> {
-                                    if (e instanceof FirebaseAuthInvalidUserException)
-                                        Toast.makeText(getContext(), getString(R.string.cuentaNoExisteDeshabilitada), Toast.LENGTH_SHORT).show();
-                                    else if (e instanceof FirebaseAuthInvalidCredentialsException)
-                                        Toast.makeText(getContext(), getString(R.string.credencialesErroneas), Toast.LENGTH_SHORT).show();
-                                });
+                                mAuth.signInWithEmailAndPassword(etEmailEmpresa.getText().toString().trim(), etContraseniaEmpresa.getText().toString().trim())
+                                        .addOnCompleteListener(task1 -> {
+                                            if (task1.isSuccessful()) {
+                                                startActivity(new Intent(view.getContext(), MainEmpresaActivity.class));
+                                                getActivity().finish();
+                                            } else {
+                                                Toast.makeText(view.getContext(), getString(R.string.datosLoginEmpresaIncorrectos), Toast.LENGTH_SHORT).show();
+                                                btnLoginEmpresa.setEnabled(true);
+                                            }})
+                                        .addOnFailureListener(e -> {
+                                            if (e instanceof FirebaseAuthInvalidUserException) {
+                                                Toast.makeText(getContext(), getString(R.string.cuentaNoExisteDeshabilitada), Toast.LENGTH_SHORT).show();
+                                            } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                                                Toast.makeText(getContext(), getString(R.string.credencialesErroneas), Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.d("FragmentEmpresaLogin","error en BD al hacer el login: " + e.getMessage());
+                                                Toast.makeText(getContext(), getString(R.string.errorAccesoBD), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                             } else {
                                 outlinedTextFieldEmailEmpresa.setErrorEnabled(true);
                                 outlinedTextFieldEmailEmpresa.setError(getString(R.string.emailErroneo));
                                 btnLoginEmpresa.setEnabled(true);
                             }
                         } else {
-                            Toast.makeText(view.getContext(),getString(R.string.error),Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(e -> Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show());;
+                            Toast.makeText(view.getContext(),getString(R.string.errorGeneral),Toast.LENGTH_SHORT).show();
+                        }})
+                    .addOnFailureListener(e -> {
+                        Log.d("FragmentEmpresaLogin","error en BD al buscar el email tecleado: " + e.getMessage());
+                        Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                    });
         } else {
             btnLoginEmpresa.setEnabled(true);
         }
     }
-
-
 
     private boolean verificarDatos() {
         boolean login = true;
@@ -130,10 +134,10 @@ public class FragmentEmpresaLogin extends Fragment {
         //Email
         outlinedTextFieldEmailEmpresa.setErrorEnabled(true);
         outlinedTextFieldContraseniaEmpresa.setErrorEnabled(true);
-        if (TextUtils.isEmpty(etEmailEmpresa.getText().toString())) {
+        if (TextUtils.isEmpty(etEmailEmpresa.getText().toString().trim())) {
             outlinedTextFieldEmailEmpresa.setError(getString(R.string.faltaEmail));
             login = false;
-        } else if (!Validador.validarEmail(etEmailEmpresa.getText().toString())) {
+        } else if (!Validador.validarEmail(etEmailEmpresa.getText().toString().trim())) {
             outlinedTextFieldEmailEmpresa.setError(getString(R.string.emailErroneo));
             login = false;
         } else {
@@ -141,10 +145,10 @@ public class FragmentEmpresaLogin extends Fragment {
             outlinedTextFieldEmailEmpresa.setErrorEnabled(false);
         }
         //Contraseña
-        if (TextUtils.isEmpty(etContraseniaEmpresa.getText().toString())) {
+        if (TextUtils.isEmpty(etContraseniaEmpresa.getText().toString().trim())) {
             outlinedTextFieldContraseniaEmpresa.setError(getString(R.string.faltaPassword));
             login = false;
-        } else if (!Validador.validarPassword(etContraseniaEmpresa.getText().toString())) {
+        } else if (!Validador.validarPassword(etContraseniaEmpresa.getText().toString().trim())) {
             outlinedTextFieldContraseniaEmpresa.setError(getString(R.string.passwordErroneo));
             login = false;
         } else {

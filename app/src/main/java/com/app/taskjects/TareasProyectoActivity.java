@@ -1,12 +1,5 @@
 package com.app.taskjects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.core.util.Pair;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -21,17 +14,18 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.taskjects.pojos.Categoria;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.util.Pair;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.app.taskjects.adaptadores.AdaptadorTareasDAD;
+import com.app.taskjects.pojos.Categoria;
 import com.app.taskjects.pojos.Tarea;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -41,14 +35,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.database.Query;
-
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.ColumnProperties;
 import com.woxthebox.draglistview.DragItem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -155,21 +145,15 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                     actualizaciones.put("tareas/"+uidProyecto+"/"+uidTarea+"/estado_uidEmpleado",String.valueOf(toColumn).concat("_").concat(uidEmpleado));
 
                     mDatabase.updateChildren(actualizaciones)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        arrayAllEstados.get(toColumn).get(toRow).second.setUidEmpleado(uidEmpleado);
-                                        arrayAllAdaptadores.get(toColumn).notifyDataSetChanged();
-                                        Log.d("Tarea actualizada con exiteo","Actualizacion exitosa");
-                                    } else {
-                                        Log.d("Error al actualizar tarea", "Se ha producido un error");
-                                    }
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    arrayAllEstados.get(toColumn).get(toRow).second.setUidEmpleado(uidEmpleado);
+                                    arrayAllAdaptadores.get(toColumn).notifyDataSetChanged();
+                                } else {
+                                    Log.d("taskjectsdebug", "error en BD al actualizar la tarea");
+                                    Toast.makeText(TareasProyectoActivity.this,getString(R.string.errorAccesoBD),Toast.LENGTH_SHORT).show();
                                 }
                             });
-
-                    Log.d("oldColumn -> " + fromColumn, " newColumn -> " + toColumn);
-                    Log.d("oldrow -> " + fromRow, " new row -> " + toRow);
                 }
             }
             @Override
@@ -231,20 +215,15 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
     private void recuperarCategorias() {
 
         db.collection(CATEGORIAS).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Categoria categoria = document.toObject(Categoria.class);
-
-                                Log.d("taskjectsdebug", "almacena la categoría: " + document.getId() + " con descripcion: " + categoria.getDescripcion());
-                                mapCategorias.put(document.getId(), document.toObject(Categoria.class));
-                            }
-                            cargaDeTareas();
-                        } else {
-                            Toast.makeText(TareasProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            mapCategorias.put(document.getId(), document.toObject(Categoria.class));
                         }
+                        cargaDeTareas();
+                    } else {
+                        Log.d("taskjectsdebug", "error en BD al recuperar categorias");
+                        Toast.makeText(TareasProyectoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -267,7 +246,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                 estado_uidEmpleado = "0_noasignado";
             else
                 estado_uidEmpleado = String.valueOf(i).concat("_").concat(uidEmpleado);
-            Log.d("Valor string query ", estado_uidEmpleado);
 
             int posicion = i;
             mDatabase.child("tareas")
@@ -278,8 +256,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                         //onChildAdded se activa cuando se agregan hijos al estado i
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                            if (previousChildName != null)
-                                Log.d("Debug onChildAdded estado "+posicion,previousChildName);
+                            //if (previousChildName != null)
                             if (snapshot.exists()) {
                                 Tarea aux = snapshot.getValue(Tarea.class);
                                 if (aux != null) {
@@ -288,7 +265,6 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                                         long auxTareasCreadas = tareasCreadas++;
                                         arrayAllEstados.get(posicion).add(new Pair<>(auxTareasCreadas, aux));
                                         arrayAllAdaptadores.get(posicion).notifyDataSetChanged();
-
                                     }
                                 }
                             }
@@ -296,12 +272,10 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                         //onChildChanged se activa cuando se detectan cambios en los hijos que tengan estado i y llama al que gestiona estos cambios
                         @Override
                         public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                            Log.d("TareasProyectoActivityDebug estado "+posicion,"entro onChildChanged");
                             if (snapshot.exists()) {
                                 Tarea aux = snapshot.getValue(Tarea.class);
                                 if (aux != null) {
                                     aux.setUidTarea(snapshot.getKey());
-                                    Log.d("Debug onChildChanged estado "+posicion,aux.toString());
                                     cambiarDatosTarea(posicion,arrayAllAdaptadores.get(posicion),snapshot.getKey(),aux);
                                 }
                             }
@@ -310,12 +284,10 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
                         //onChildRemoved se activa cuando se elimina un hijo con estado i y llama al metodo que gestiona estos cambios
                         @Override
                         public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                            Log.d("TareasProyectoActivityDebug estado "+posicion,"entro onChildRemoved");
                             if (snapshot.exists()) {
                                 Tarea aux = snapshot.getValue(Tarea.class);
                                 if (aux != null) {
                                     aux.setUidTarea(snapshot.getKey());
-                                    Log.d("Debug onChildChanged estado "+posicion,aux.toString());
                                     removeTareaAntigua(posicion,arrayAllAdaptadores.get(posicion),snapshot.getKey(),posicion);
                                 }
                             }
@@ -323,9 +295,9 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
                         //Este listener se activa cuando se detectan cambios en el orden
                         @Override
-                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { Log.d("TareasProyectoActivityDebug estado 0","entro onChildMoved"); }
+                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) { Log.d("TareasProyectoActivityDebug estado 0","entro onChildCancelled"); }
+                        public void onCancelled(@NonNull DatabaseError error) { }
                     });
         }
     }
@@ -339,13 +311,10 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         return false;
     }
 
-    //Todo: repaso con los nuevos cambios
     //Metodo que cambia los datos nuevos de una tarea por la encontrada en el array
     private void cambiarDatosTarea(int arrayEstados,AdaptadorTareasDAD adapter,String keyTarea,Tarea nuevosDatosTarea) {
-        Log.d("debug cambio datos, keyTarea -> " + keyTarea, " Tarea a encontrar -> "+nuevosDatosTarea.toString());
         for (int i = 0; i<arrayAllEstados.get(arrayEstados).size(); i++) {
             if (arrayAllEstados.get(arrayEstados).get(i).second.getUidTarea().equals(keyTarea)) {
-                Log.d("Posicion del item -> ",""+adapter.getPositionForItemId(arrayAllEstados.get(arrayEstados).get(i).first));
                 int posicionTarea = adapter.getPositionForItemId(arrayAllEstados.get(arrayEstados).get(i).first);
                 arrayAllEstados.get(arrayEstados).get(posicionTarea).second.setNuevosDatos(nuevosDatosTarea);
                 adapter.notifyDataSetChanged();
@@ -353,18 +322,12 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
         }
     }
 
-    //Todo: repaso con los nuevos cambios
     //Metodo que elimina de un array especifico una tarea que ha cambiado a otro array en la base de datos
     private void removeTareaAntigua(int arrayEstados,AdaptadorTareasDAD adapter,String keyTarea,int columna){
         for (int i = 0; i<arrayAllEstados.get(arrayEstados).size(); i++) {
-            Log.d("Debug for tareas",arrayAllEstados.get(arrayEstados).get(i).second.toString());
-            Log.d("Debug for tareas key tarea snapshot ->",keyTarea);
-            Log.d("Debug for tareas key tarea array -> ",arrayAllEstados.get(arrayEstados).get(i).second.getUidTarea());
             if (arrayAllEstados.get(arrayEstados).get(i).second.getUidTarea().equals(keyTarea)) {
-                Log.d("Posicion del item -> ",""+adapter.getPositionForItemId(arrayAllEstados.get(arrayEstados).get(i).first));
                 dadTareas.removeItem(columna,adapter.getPositionForItemId(arrayAllEstados.get(arrayEstados).get(i).first));
                 adapter.notifyDataSetChanged();
-
             }
         }
 
@@ -377,7 +340,7 @@ public class TareasProyectoActivity extends MenuToolbarActivity {
 
         @Override
         public void onBindDragView(View clickedView, View dragView) {
-            Log.d("Debug tareas","Entro en el bindDragView");
+
             CharSequence text = ((TextView) clickedView.findViewById(R.id.tvTarea)).getText();
             ((TextView) dragView.findViewById(R.id.tvTarea)).setText(text);
             CharSequence text2 = ((TextView) clickedView.findViewById(R.id.tvEmpleadoTarea)).getText();

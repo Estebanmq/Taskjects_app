@@ -16,13 +16,10 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen_taskjects_layout);
 
-        new Handler().postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                Intent loginScreen = new Intent(SplashScreen.this,LoginActivity.class);
-                SplashScreen.this.startActivity(loginScreen);
-                SplashScreen.this.finish();
-            }
+        new Handler().postDelayed(() -> {
+            Intent loginScreen = new Intent(SplashScreen.this,LoginActivity.class);
+            SplashScreen.this.startActivity(loginScreen);
+            SplashScreen.this.finish();
         },SPLASH_DISPLAY_LENGTH);
 
     }

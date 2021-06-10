@@ -1,10 +1,8 @@
 package com.app.taskjects;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,8 +43,6 @@ public class MenuToolbarActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.verPerfil:
-                Log.d("taskjectsdebug","Pulsada acción verPerfil");
-
                 Intent intent;
                 //Dependiendo de si es una empresa o un empleado llama a ver una activity u otra
                 if (sharedPreferences.getString("tipoLogin", "").equals("E")) {
@@ -57,7 +53,6 @@ public class MenuToolbarActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.cerrarSesion:
-                Log.d("taskjectsdebug","Pulsada acción cerrarSesión");
                 AlertDialog.Builder alertaCerrarSesion = new AlertDialog.Builder(this);
                 //Si pulsa en de acuerdo cierra la aplicación
                 alertaCerrarSesion.setMessage(getString(R.string.confirmCerrarSesion))
@@ -74,7 +69,6 @@ public class MenuToolbarActivity extends AppCompatActivity {
                         }).show();
                 return true;
             case R.id.salir:
-                Log.d("taskjectsdebug","Pulsada acción Salir");
                 AlertDialog.Builder alertaSalidaAplicacion = new AlertDialog.Builder(this);
                 //Si pulsa en de acuerdo cierra la aplicación
                 alertaSalidaAplicacion.setMessage(getString(R.string.confirmSalidaAplicacion))

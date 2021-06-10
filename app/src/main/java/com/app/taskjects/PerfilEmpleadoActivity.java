@@ -1,12 +1,6 @@
 package com.app.taskjects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,18 +16,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.app.taskjects.pojos.Empleado;
 import com.app.taskjects.utils.Conversor;
 import com.app.taskjects.utils.Validador;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -111,15 +106,12 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.perfil));
 
         //Captura el click de volver atrás
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Si está en modo edición...
-                if (modoEdit) {
-                    mostrarDialogoSalida();
-                } else {
-                    finish();
-                }
+        toolbar.setNavigationOnClickListener(view -> {
+            //Si está en modo edición...
+            if (modoEdit) {
+                mostrarDialogoSalida();
+            } else {
+                finish();
             }
         });
 
@@ -131,7 +123,6 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
 
     private void cargarDatosPantalla() {
 
-        Log.d("taskjectsdebug","carga datos de SharedPreferences con el mAuth.uid: " + mAuth.getUid());
         SharedPreferences sharedPreferences = getSharedPreferences(mAuth.getUid(), Context.MODE_PRIVATE);
         etNif.setText(sharedPreferences.getString("nif", getString(R.string.error)));
         etNombre.setText(sharedPreferences.getString("nombre", getString(R.string.error)));
@@ -150,28 +141,22 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
 
     private void cargarCategorias() {
 
-        Log.d("taskjectsdebug", "entra a lectura categorías");
         db.collection(CATEGORIAS)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                mapCategorias.put(document.getString("descripcion"), document.getId());
-                                if (document.getId().equals(categoria)) {
-                                    descCategoria = document.getString("descripcion");
-                                }
-                                Log.d("taskjectsdebug", "lectura categorías - dato recuperado:" + document.getId() + " " + document.getString("descripcion"));
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            mapCategorias.put(document.getString("descripcion"), document.getId());
+                            if (document.getId().equals(categoria)) {
+                                descCategoria = document.getString("descripcion");
                             }
-
-                            // Carga el dropmenu de categorías con los datos recuperados
-                            categoriaEmpleado.setText(descCategoria);
-                            categoriaEmpleado.setAdapter(new ArrayAdapter<>(PerfilEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<String>(mapCategorias.keySet())));
-                        } else {
-                            Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                            Log.d("taskjectsdebug", "lectura categorías: no se han recuperado datos!");
                         }
+                        // Carga el dropmenu de categorías con los datos recuperados
+                        categoriaEmpleado.setText(descCategoria);
+                        categoriaEmpleado.setAdapter(new ArrayAdapter<>(PerfilEmpleadoActivity.this, R.layout.lista_categorias, new ArrayList<>(mapCategorias.keySet())));
+                    } else {
+                        Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                        Log.d("taskjectsdebug", "error en BD al recuperar categorias");
                     }
                 });
     }
@@ -188,17 +173,15 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
             db.collection(EMPLEADOS)
                     .whereEqualTo("uidAuth", mAuth.getUid())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                                Empleado empleado = task.getResult().getDocuments().get(0).toObject(Empleado.class);
-                                actualizarEmpleado(empleado);
-                            } else {
-                                Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
-                                //Pone el botón de modificarPerfil como enabled
-                                findViewById(R.id.btModificar).setEnabled(true);
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            Empleado empleado = task.getResult().getDocuments().get(0).toObject(Empleado.class);
+                            actualizarEmpleado(empleado);
+                        } else {
+                            Log.d("taskjectsdebug","error en BD al actualizar el empleado");
+                            Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                            //Pone el botón de modificarPerfil como enabled
+                            findViewById(R.id.btModificar).setEnabled(true);
                         }
                     });
         } else {
@@ -215,23 +198,23 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         outlinedTextFieldNifEmpleado.setErrorEnabled(false);
         boolean resultado = true;
 
-        if (TextUtils.isEmpty(etNif.getText().toString())) {
+        if (TextUtils.isEmpty(etNif.getText().toString().trim())) {
             outlinedTextFieldNifEmpleado.setErrorEnabled(true);
             outlinedTextFieldNifEmpleado.setError(getString(R.string.faltaNif));
             resultado = false;
-        } else if (!Validador.validarNif(etNif.getText().toString())) {
+        } else if (!Validador.validarNif(etNif.getText().toString().trim())) {
             outlinedTextFieldNifEmpleado.setErrorEnabled(true);
             outlinedTextFieldNifEmpleado.setError(getString(R.string.nifErroneo));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etNombre.getText().toString())) {
+        if (TextUtils.isEmpty(etNombre.getText().toString().trim())) {
             outlinedTextFieldNombre.setErrorEnabled(true);
             outlinedTextFieldNombre.setError(getString(R.string.faltaNombre));
             resultado = false;
         }
 
-        if (TextUtils.isEmpty(etApellidos.getText().toString())) {
+        if (TextUtils.isEmpty(etApellidos.getText().toString().trim())) {
             outlinedTextFieldApellidos.setErrorEnabled(true);
             outlinedTextFieldApellidos.setError(getString(R.string.faltaApellidos));
             resultado = false;
@@ -247,9 +230,9 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         }
 
         //Comprueba si se han producido cambios...
-        if (etNif.getText().toString().equalsIgnoreCase(nif) &&
-                etNombre.getText().toString().equalsIgnoreCase(nombre) &&
-                etApellidos.getText().toString().equalsIgnoreCase(apellidos) &&
+        if (etNif.getText().toString().trim().equalsIgnoreCase(nif) &&
+                etNombre.getText().toString().trim().equalsIgnoreCase(nombre) &&
+                etApellidos.getText().toString().trim().equalsIgnoreCase(apellidos) &&
                 uidCategoria.equalsIgnoreCase(categoria)) {
             //Si no se han producido cambios se muestra un Toast y no permite continuar
             Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.noHayCambios), Toast.LENGTH_LONG).show();
@@ -262,36 +245,23 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
 
     private void actualizarEmpleado(Empleado empleado) {
 
-        empleado.setNif(etNif.getText().toString().toUpperCase());
-        empleado.setNombre(etNombre.getText().toString());
-        empleado.setApellidos(etApellidos.getText().toString());
+        empleado.setNif(etNif.getText().toString().toUpperCase().trim());
+        empleado.setNombre(etNombre.getText().toString().trim());
+        empleado.setApellidos(etApellidos.getText().toString().trim());
         empleado.setCategoria(uidCategoria);
 
         DocumentReference empresaUpdate = db.collection(EMPLEADOS).document(empleado.getUid());
-        empresaUpdate.set(empleado).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    AlertDialog.Builder alertaModificacionProyectoCorrecta = new AlertDialog.Builder(PerfilEmpleadoActivity.this);
-                    alertaModificacionProyectoCorrecta.setMessage(getString(R.string.modifPerfilCorrecta))
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    finish();
-                                }
-                            }).show();
-                } else {
-                    AlertDialog.Builder alertaErrorAccesoBBDD = new AlertDialog.Builder(PerfilEmpleadoActivity.this);
-                    alertaErrorAccesoBBDD.setMessage(getString(R.string.errorAccesoBD))
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("taskjectsdebug","Error al subir la empresa a bbdd");
-                                }
-                            }).show();
-                    //Pone el botón de modificarPerfil como enabled
-                    findViewById(R.id.btModificar).setEnabled(true);
-                }
+        empresaUpdate.set(empleado).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                AlertDialog.Builder alertaModificacionProyectoCorrecta = new AlertDialog.Builder(PerfilEmpleadoActivity.this);
+                alertaModificacionProyectoCorrecta.setMessage(getString(R.string.modifPerfilCorrecta))
+                        .setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> finish()).show();
+            } else {
+                Log.d("taskjectsdebug","error en BD al actualizar el empleado");
+                //Si hay algun problema al recuperar datos de la base de datos le muestro al usuario que hay un problema
+                Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorAccesoBD), Toast.LENGTH_LONG).show();
+                //Pone el botón de modificarPerfil como enabled
+                findViewById(R.id.btModificar).setEnabled(true);
             }
         });
     }
@@ -320,6 +290,7 @@ public class PerfilEmpleadoActivity extends AppCompatActivity {
         if (etNif.getText().toString().equals(getString(R.string.error)) ||
                 etNombre.getText().toString().equals(getString(R.string.error)) ||
                 etApellidos.getText().toString().equals(getString(R.string.error))) {
+            Log.d("taskjectsdebug","error al recuperar datos del empleado de sharedPreferences");
             Toast.makeText(PerfilEmpleadoActivity.this, getString(R.string.errorGeneral), Toast.LENGTH_LONG).show();
         } else {
             modoEdit = true;

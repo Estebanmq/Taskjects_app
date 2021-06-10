@@ -286,7 +286,7 @@ public class RegistroEmpleadoActivity extends AppCompatActivity {
                             outlinedTextFieldEmailEmpleado.setErrorEnabled(true);
                             outlinedTextFieldEmailEmpleado.setError(getString(R.string.emailYaExiste));
                         } else {
-                            Log.d("taskjectsdebug", "auth: error en task: " + task.getException().getMessage());
+                            Log.d("taskjectsdebug", "auth: error al dar de alta");
                             Toast.makeText(RegistroEmpleadoActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -186,7 +186,7 @@ public class RegistroEmpresaActivity extends AppCompatActivity {
                             outlinedTextFieldEmail.setErrorEnabled(true);
                             outlinedTextFieldEmail.setError(getString(R.string.emailYaExiste));
                         } else {
-                            Log.d("taskjectsdebug", "error en BD al dar de alta en Auth: " + task.getException().getMessage());
+                            Log.d("taskjectsdebug", "error en BD al dar de alta en Auth");
                             Toast.makeText(RegistroEmpresaActivity.this, getString(R.string.registroCuentaFallido), Toast.LENGTH_SHORT).show();
                         }
                     }

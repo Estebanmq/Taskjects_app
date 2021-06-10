@@ -3,7 +3,7 @@
     <style name="Theme.Taskjects" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue_primario</item>
-        <item name="colorPrimaryVariant">@color/blue_secundario</item>
+        <item name="colorPrimaryVariant">@color/blue_primario</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/blue_secundario</item>
